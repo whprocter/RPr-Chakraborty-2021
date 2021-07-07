@@ -1,6 +1,8 @@
-# Title of Study
+# Replication Study of Chakraborty 2021
 
-> Insert names of the original auhtors in Kedron, P.J. format
+This study is a replication of:
+
+>  Chakraborty, J. 2021. Social inequities in the distribution of COVID-19: An intra-categorical analysis of people with disabilities in the U.S. *Disability and Health Journal* **14**:1-5. DOI:[10.1016/j.dhjo.2020.101007](https://doi.org/10.1016/j.dhjo.2020.101007)
 
 ## Abstract
 

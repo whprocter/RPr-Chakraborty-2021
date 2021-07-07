@@ -6,7 +6,15 @@ This study is a replication of:
 
 ## Abstract
 
-> Briefly describe the study. If the study is a reproduction or replication, the full citation of the original study should be included here with digital object identifier (DOI) to the study and, if applicable, any preregistration, code or data repositories. Delete this instruction from the final repository.
+> The original paper is a national scale study of the relationship between COVID-19 incidence and disability characteristics (by demographic) in the United States. The paper aims to determine whether COVID-19 incidenc is more significant inn counties with larger proportions of socio-demographically disadvantaged people with disabilities, based on race, ethnicity, poverty status, and biological sex.
+
+The replication study authors are:
+- [Joseph Holler](http://www.middlebury.edu/academics/geog/faculty/node/454160)
+- [Derrick Burt](https://derrickburt.github.io)
+- [Drew An-Pham](https://daptx.github.io/)
+- [Peter Kedron](https://sgsup.asu.edu/peter-kedron)
+
+
 
 ## Respository Documents
 

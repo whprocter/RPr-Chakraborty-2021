@@ -53,11 +53,13 @@ This registration is based upon a thorough reading of the original research arti
 
 As of the 7/21/21 the data exist and we have accessed it, though no analysis has been conducted related to the research plan (including calculation of summary statistics). We have designed the reproduction design that is outlined below only making reference to the methodology outlined in the original paper.
 
+Although the raw data from the original study is not available in an online repository. We received COVID-19 incidence rate data from the author and accessed the disability and sociodemographic website from the Census Bureau website.
+
 ### Data collection and spatial sampling
 
 The study exclusively uses secondary data sources.
 
-The published results are based of COVID-19 cases reported at the county-level, this is not a sampled dataset. The disability data from the ACS are collected at the county level **(check)**. Details on the data collection can be found [here](https://www.census.gov/topics/health/disability/guidance/data-collection-acs.html) and details on sampling methods can be found [here](https://www.census.gov/programs-surveys/acs/technical-documentation/code-lists.html).
+The published results are based of COVID-19 cases reported at the county-level, this is not a sampled dataset. The disability data from the ACS are collected at the county level. Details on the data collection can be found [here](https://www.census.gov/topics/health/disability/guidance/data-collection-acs.html) and details on sampling methods can be found [here](https://www.census.gov/programs-surveys/acs/technical-documentation/code-lists.html).
 
 ## Data description
 
@@ -69,9 +71,13 @@ The 2018 ACS 5 year estimates for disabilities can be accessed from the U.S. Cen
 
 ## Variables
 
-All variables in this study were derived from secondary data. There are no experimentally manipulated variables in this experiment. Eighteen independent variables, a percentage of total disabled persons per county and seventeen 'disaggregated' categories that break down socio-demographic characteristics of the disabled population. COVID-19 incidence rate can be seen as the dependent variables **(check)**.
+All variables in this study were derived from secondary data.
+There are no experimentally manipulated variables in this experiment.
+Eighteen independent variables, a percentage of total disabled persons per county and seventeen 'disaggregated' categories that break down socio-demographic characteristics of the disabled population.
+COVID-19 incidence rate can be seen as the dependent variables.
 
-The socio-demographic variables are broken down into the following categories. Their table code from the ACS data has been included in this documentation
+The socio-demographic variables are broken down into the following categories.
+Their table code from the ACS data has been included in this documentation
 
 ##### COVID-19 incidence rate
 
@@ -98,7 +104,7 @@ The socio-demographic variables are broken down into the following categories. T
 ##### Ethnicity
 
 - percent w disability: Non-Hispanic White
-  - calculation: S1810_C03_0011E
+  - colID: S1810_C03_0011E
 - percent w disability: Hispanic
   - col ID: **???**
 - percent w disability: Hispanic Non-White taking the total and subtracting the other two
@@ -126,22 +132,49 @@ The socio-demographic variables are broken down into the following categories. T
 
 #### Attribute variable transformations
 
-The attribute variable transformations are well documented in the paper. The COVID-19 incidence rate is normalized at the county-level per 100,000 people. All of the disability and sociodemographic variables are provided in the format that they are used, as a percentage of total people at the county-level.
+The attribute variable transformations are well documented in the paper.
+The COVID-19 incidence rate is normalized at the county-level per 100,000 people.
+All of the disability and sociodemographic variables are provided in the format that they are used, as a percentage of total people at the county-level.
 
-For the GEE,
+Before conducting the GEE, all independent variables are normalized into z-scores.
+
+For the GEE, two different clustering scores are assigned to each county.
+The first clustering score is just a categorical variable determined by the counties state.
+The second clustering score is a relative risk score calculated by identifying spatial clusters from a spatial scan statistic based on the Poisson Model.
 
 #### Geographic transformations
 
-adding a probability (derived from the covid observations; variable transformation) +
+Although there are no explicit geographic transformations in this experiment, the variable transformations that occur during the GEE are geographic in nature: they assign values based on spatial clustering or state.
 
+Having looked at the SATSCAN outputs from the original study, our best guess is that the author might have calculated centroids for each county before running the GEE.
 
 ## Analyses
 
 
 ### Geographical characteristics
 
+The **coordinate reference system** is not specified in the methodology. Without having performed the GEE clustering analysis before, we cannot say for sure whether this.
+It seems, however, because the outputs are in lat/lon format, that the author used a geographic coordinate system to perform a geodesic calculation.
+
+The **spatial extent** of the study were the contiguous 49 United States (including the District of Columbia).
+
+The **spatial scale** and **unit of analysis** of the study is are U.S. counties.
+
+**Edge effects** will not be accounted for in the analysis.
+
+This analysis does create **spatial subgroups** based on **spatial clustering**.
+There are criteria for two different types of spatial clustering; we address these in the attribute variable transformation section.
+
+This analysis does not measure or account for any **first order spatial effects**, **second order spatial effects**, or **spatial anisotropies**.
+
 
 ### Temporal characteristics
+
+The **temporal extent** of the study is based on the COVID-19 incidence rate, which covers cases from 1/22/2020-8/1/2020.
+The study also uses 5 year estimates for county disability and sociodemographic characteristics collected from 2014-2018.
+This range is not explicitly stated in the original study.
+
+The **temporal support** for the COVID-19 incidence rate was case data collected from 1/22/2020-8/1/2020. The **temporal support** for the disability sociodemographic data was data collected from 2014-2018. 
 
 
 ### Data exclusion
@@ -160,6 +193,10 @@ adding a probability (derived from the covid observations; variable transformati
 ## Reproduction study design
 
 ### Planned differences from the original study
+
+We plan to implement the analysis to the greatest extent possible in Python Jupyter notebooks on CyberGISX and in R / RStudio, whereas the original study was conducted using ArcGIS (dekstop v 10.7), SPSS, and SaTScan (v9.6).
+
+Map the GEE
 
 
 ### Evaluating the reproduction results

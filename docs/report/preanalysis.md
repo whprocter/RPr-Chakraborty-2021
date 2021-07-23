@@ -186,12 +186,12 @@ The study does not analyze the presence of **outliers**. The study does not **we
 
 ### Analytical specification
 
-For the county-level bivariate correlations between COVID-19 incidence rates and sociodemographic disability characteristics. Pearson's Rho is used as the bivariate correlation coefficient.
+The county-level bivariate correlations are used to test association between intra-categorical rates of disability and COVID-19 incidence rates. Pearson's rho is the bivariate correlation coefficient.
 As this is a parametric test, normality should be tested.
 A separate hypothesis is formulated for each sociodemographic disability characteristic.
 
-For the generalized estimating equation to predict county-level COVID-19 incidence rates.
-A Beta is used as the correlation coefficient.
+The generalized estimating equation models are used to test association between intra-categorical rates of disability and COVID-19 incidence rates while accounting for spatial clustering.
+Beta is the correlation coefficient.
 As specified by the author, "GEEs extend the generalized linear model to accommodate clustered data, in addition to relaxing several assumptions  of traditional regression (i.e., normality)".
 Additionally, the author notes that "clusters of observations must be defined based on the assumption that observations within a cluster are correlated while observations from different clusters are independent."
 
@@ -209,6 +209,8 @@ To check robustness, the author notes that GEEs "require the specification of an
 
 ### Exploratory analyses and contingency planning
 
+
+
 ## Reproduction study design
 
 ### Planned differences from the original study
@@ -218,6 +220,7 @@ We plan to implement the analysis to the greatest extent possible in Python Jupy
 Checking for normality before correlations or switching to a Spearman's Rho.
 
 ### Evaluating the reproduction results
+
 
 
 ## Referencing the original paper

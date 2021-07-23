@@ -197,10 +197,17 @@ Additionally, the author notes that "clusters of observations must be defined ba
 
 ### Inference criteria and robustness
 
+To make inferences, p-values and correlation coefficients are checked.
 
+For the bivariate correlation, Pearson's rho coefficients with two-tailed p-values (p<0.01; p<0.05) were used to test significance for all independent variables.
+The author of the original study seems to place more emphasis on the significance and direction of the coefficient than the magnitude.
+Overall model fit was not checked.
+
+For the GEE, Beta coefficients with two tailed p-values for a Wald chi-square test (p<0.01; p<0.05) were used to test significance of all independent variables.
+The author of the original study seems to place more emphasis on the significance and direction of the coefficient than the magnitude.
+To check robustness, the author notes that GEEs "require the specification of an intra-cluster dependency correlation matrix. Th 'exchangeable correlation matrix was selected for the results reported [here], since this specification yielded the best statistical fit based on the QIC model criterion"
 
 ### Exploratory analyses and contingency planning
-
 
 ## Reproduction study design
 
@@ -208,8 +215,7 @@ Additionally, the author notes that "clusters of observations must be defined ba
 
 We plan to implement the analysis to the greatest extent possible in Python Jupyter notebooks on CyberGISX and in R / RStudio, whereas the original study was conducted using ArcGIS (dekstop v 10.7), SPSS, and SaTScan (v9.6).
 
-Map the GEE
-
+Checking for normality before correlations or switching to a Spearman's Rho.
 
 ### Evaluating the reproduction results
 

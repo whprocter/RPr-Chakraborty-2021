@@ -8,7 +8,7 @@ Version 1.0 | Created Jul 7, 2021 | Last Updated Jul 22, 2021
 
 ## Abstract
 
-Chakraborty (2020) published a report outlining a national scale investigation of the relationship between COVID-19 and U.S. disability characteristics at the county-level. The report aims to examine public concern that persons with disabilities (PwDs) face disproportionate challenges due to COVID-19. To investigate this, Chakraborty examines the statistical relationship between confirmed county-level COVID-19 case rates and county-level socio-demographic and disability variables. Specifically, Chakraborty tests county-level bivariate correlations between COVID-19 incidence against the percentage of disability and socio-demographic category, with a separate hypothesis and model for each subcategory within disability, race, ethnicity, age, and biological sex. Additionally, a generalized estimating equation is employed to predict the relationship and significance between COVID-19 incidence and  disability subgroups within each socio-demographic category while considering inter-county spatial clusters.
+Chakraborty (2020) published a report outlining a national scale investigation of the relationship between COVID-19 and U.S. disability characteristics at the county-level. The report aims to examine public concern that persons with disabilities (PwDs) face disproportionate challenges due to COVID-19. To investigate this, Chakraborty examines the statistical relationship between confirmed county-level COVID-19 case rates and county-level socio-demographic and disability variables. Specifically, Chakraborty tests county-level bivariate correlations between COVID-19 incidence against the percentage of disability and socio-demographic category, with a separate hypothesis and model for each subcategory within disability, race, ethnicity, age, and biological sex. Additionally, a generalized estimating equation (GEE) is employed to predict the relationship and significance between COVID-19 incidence and  disability subgroups within each socio-demographic category while considering inter-county spatial clusters.
 
 This reproduction study is motivated by three factors. First, measuring the relationship between COVID-19 incidence and socio-demographic and disability characteristics can provide important information for healthcare policy and resource allocation. Second, as there is no available code or data online, providing a more fully reproducible platform allows for research that can be replicated in new geographic, thematic, and thematic contexts as well as tested uncertainty due to data constraints and subjective modeling decisions.
 
@@ -49,7 +49,7 @@ The study was originally conducted using SATSCAN software (unspecified version) 
 
 ### Existing data and data exploration
 
-This registration is based upon a thorough reading of the original research article and an understanding of the data without actually seeing it.
+This registration is based upon a thorough reading of the original research article and an understanding of the data.
 
 As of the 7/21/21 the data exist and we have accessed it, though no analysis has been conducted related to the research plan (including calculation of summary statistics). We have designed the reproduction design that is outlined below only making reference to the methodology outlined in the original paper.
 
@@ -101,7 +101,7 @@ The socio-demographic variables are broken down into the following categories. T
   - calculation: S1810_C03_0011E
 - percent w disability: Hispanic
   - col ID: **???**
-- percent w disability: Hispanic Non-White
+- percent w disability: Hispanic Non-White taking the total and subtracting the other two
   - colID: S1810_C03_006E
 
 ##### Age
@@ -126,7 +126,9 @@ The socio-demographic variables are broken down into the following categories. T
 
 #### Attribute variable transformations
 
-adding a probability (derived from the covid observations; variable transformation)
+The attribute variable transformations are well documented in the paper. The COVID-19 incidence rate is normalized at the county-level per 100,000 people. All of the disability and sociodemographic variables are provided in the format that they are used, as a percentage of total people at the county-level.
+
+For the GEE,
 
 #### Geographic transformations
 

@@ -190,24 +190,26 @@ There are criteria for two different types of spatial clustering; we address the
 
 This analysis does not measure or account for any **first order spatial effects**, **second order spatial effects**, or **spatial anisotropies**.
 
-
 ### Temporal characteristics
 
 The **temporal extent** of the study is based on the COVID-19 incidence rate, which covers cases from 1/22/2020-8/1/2020.
 The study also uses 5 year estimates for county disability and sociodemographic characteristics collected from 2014-2018.
 This range is not explicitly stated in the original study.
 
-The **temporal support** for the COVID-19 incidence rate was case data collected from 1/22/2020-8/1/2020. The **temporal support** for the disability sociodemographic data was data collected from 2014-2018.  **Temporal effects** are not measured or accounted for.
+The **temporal support** for the COVID-19 incidence rate was case data collected from 1/22/2020-8/1/2020.
+The **temporal support** for the disability sociodemographic data was data collected from 2014-2018.
+**Temporal effects** are not measured or accounted for.
 
 ### Data exclusion
 
 There is no documentation of any **data exclusion** based on attribute criteria in the original study.
 
-The study does not analyze the presence of **outliers**. The study does not **weight samples**.
+The study does not analyze the presence of **outliers**.
+The study does not **weight samples**.
 
 ### Analytical specification
 
-The county-level bivariate correlations are used to test association between intra-categorical rates of disability and COVID-19 incidence rates. Pearson's rho is the bivariate correlation coefficient.
+The county-level Pearson's rho correlation coefficient is used to test association between intra-categorical rates of disability and COVID-19 incidence rates.
 As this is a parametric test, normality should be tested.
 A separate hypothesis is formulated for each sociodemographic disability characteristic.
 

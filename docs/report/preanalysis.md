@@ -1,8 +1,9 @@
-# Pre-Registration of Rpr-Reproduction of Kang et al 2020 Rapidly measuring spatial accessibility of COVID-19 healthcare resources: a case study of Illinois, USA
+# Pre-Registration of Rpr-Reproduction of Social Inequities in the distribution of COVID-19: An intra-categorical analysis of people with disabilities in the U.S.
 
-Joseph Holler, Department of Geography, Middlebury College, Middlebury VT 05753
-Drew An-Pham, Department of Geography, Middlebury College, Middlebury VT 05753
-Derrick Burt, Department of Geography, Middlebury College, Middlebury VT 05753
+Joseph Holler, Department of Geography, Middlebury College, Middlebury VT 05753 <br>
+Peter Kedron, School of Geographical Sciences and Urban Planning, Arizona State University, Tempe AZ 85281 <br>
+Drew An-Pham, Department of Geography, Middlebury College, Middlebury VT 05753 <br>
+Derrick Burt, Department of Geography, Middlebury College, Middlebury VT 05753 <br>
 
 Version 1.0 | Created Jul 7, 2021 | Last Updated Jul 22, 2021
 
@@ -21,7 +22,7 @@ Chakraborty, J. 2021. Social inequities in the distribution of COVID-19: An intr
 
 ### Keywords
 
-COVID-19; Disability; Intra-categorical analysis; Race/ethnicity; Poverty
+COVID-19; Disability; Intersectionality; Race/ethnicity; Poverty; Reproducibility
 
 ## Study design
 
@@ -163,6 +164,7 @@ The **spatial scale** and **unit of analysis** of the study is are U.S. counties
 **Edge effects** will not be accounted for in the analysis.
 
 This analysis does create **spatial subgroups** based on **spatial clustering**.
+The purpose of this grouping is to control for **spatial heterogeneity** between regions (defined as states) and different case rate intensity during the pandemic.
 There are criteria for two different types of spatial clustering; we address these in the attribute variable transformation section.
 
 This analysis does not measure or account for any **first order spatial effects**, **second order spatial effects**, or **spatial anisotropies**.
@@ -174,14 +176,24 @@ The **temporal extent** of the study is based on the COVID-19 incidence rate, wh
 The study also uses 5 year estimates for county disability and sociodemographic characteristics collected from 2014-2018.
 This range is not explicitly stated in the original study.
 
-The **temporal support** for the COVID-19 incidence rate was case data collected from 1/22/2020-8/1/2020. The **temporal support** for the disability sociodemographic data was data collected from 2014-2018. 
-
+The **temporal support** for the COVID-19 incidence rate was case data collected from 1/22/2020-8/1/2020. The **temporal support** for the disability sociodemographic data was data collected from 2014-2018.  **Temporal effects** are not measured or accounted for.
 
 ### Data exclusion
 
+There is no documentation of any **data exclusion** based on attribute criteria in the original study.
+
+The study does not analyze the presence of **outliers**. The study does not **weight samples**.
 
 ### Analytical specification
 
+For the county-level bivariate correlations between COVID-19 incidence rates and sociodemographic disability characteristics. Pearson's Rho is used as the bivariate correlation coefficient.
+As this is a parametric test, normality should be tested.
+A separate hypothesis is formulated for each sociodemographic disability characteristic.
+
+For the generalized estimating equation to predict county-level COVID-19 incidence rates.
+A Beta is used as the correlation coefficient.
+As specified by the author, "GEEs extend the generalized linear model to accommodate clustered data, in addition to relaxing several assumptions  of traditional regression (i.e., normality)".
+Additionally, the author notes that "clusters of observations must be defined based on the assumption that observations within a cluster are correlated while observations from different clusters are independent."
 
 ### Inference criteria and robustness
 

@@ -176,7 +176,7 @@ Having looked at the SATSCAN outputs from the original study, our best guess is 
 ### Geographical characteristics
 
 The **coordinate reference system** is not specified in the methodology. Without having performed the GEE clustering analysis before, we cannot say for sure whether this.
-It seems, however, because the outputs are in lat/lon format, that the author used a geographic coordinate system to perform a geodesic calculation.
+It seems, however, because the outputs are in lat/lon format, that the author used a geographic coordinate system to perform a spherical distance calculation.
 
 The **spatial extent** of the study were the contiguous 49 United States (including the District of Columbia).
 
@@ -190,24 +190,26 @@ There are criteria for two different types of spatial clustering; we address the
 
 This analysis does not measure or account for any **first order spatial effects**, **second order spatial effects**, or **spatial anisotropies**.
 
-
 ### Temporal characteristics
 
 The **temporal extent** of the study is based on the COVID-19 incidence rate, which covers cases from 1/22/2020-8/1/2020.
 The study also uses 5 year estimates for county disability and sociodemographic characteristics collected from 2014-2018.
 This range is not explicitly stated in the original study.
 
-The **temporal support** for the COVID-19 incidence rate was case data collected from 1/22/2020-8/1/2020. The **temporal support** for the disability sociodemographic data was data collected from 2014-2018.  **Temporal effects** are not measured or accounted for.
+The **temporal support** for the COVID-19 incidence rate was case data collected from 1/22/2020-8/1/2020.
+The **temporal support** for the disability sociodemographic data was data collected from 2014-2018.
+**Temporal effects** are not measured or accounted for.
 
 ### Data exclusion
 
 There is no documentation of any **data exclusion** based on attribute criteria in the original study.
 
-The study does not analyze the presence of **outliers**. The study does not **weight samples**.
+The study does not analyze the presence of **outliers**.
+The study does not **weight samples**.
 
 ### Analytical specification
 
-The county-level bivariate correlations are used to test association between intra-categorical rates of disability and COVID-19 incidence rates. Pearson's rho is the bivariate correlation coefficient.
+The county-level Pearson's rho correlation coefficient is used to test association between intra-categorical rates of disability and COVID-19 incidence rates.
 As this is a parametric test, normality should be tested.
 A separate hypothesis is formulated for each sociodemographic disability characteristic.
 
@@ -227,11 +229,13 @@ Overall model fit was not checked.
 For the GEE, Beta coefficients with two tailed p-values for a Wald chi-square test (p<0.01; p<0.05) were used to test significance of all independent variables.
 The author of the original study seems to place more emphasis on the significance and direction of the coefficient than the magnitude.
 To check robustness, the author notes that GEEs "require the specification of an intra-cluster dependency correlation matrix. The 'exchangeable correlation matrix was selected for the results reported [here], since this specification yielded the best statistical fit based on the QIC model criterion".
-Further, the author describes: "for each GEE, the normal, gamma, and inverse Gaussian distributions with logarithmic and identity link functions were explored. The gamma distribution with logarithmic link function was chosen for all GEEs since this model specification provided the lowest QIC value."
+Further, the author describes: "for each GEE, the normal, gamma, and inverse Gaussian distributions with logarithmic and identity link functions were explored.
+The gamma distribution with logarithmic link function was chosen for all GEEs since this model specification provided the lowest QIC value."
 
 ### Exploratory analyses and contingency planning
 
-There are no **exploratory** analyses in this analysis. There is no need for a **contingency plan** in this study.
+There are no **exploratory** analyses in this analysis.
+There is no need for a **contingency plan** in this study.
 
 ## Reproduction study design
 
@@ -245,24 +249,12 @@ We will plan to check the normality of our distribution of our independent varia
 
 Before comparing results from our reproduction of the statistical models, we plan to compare summary statistics for all of our dependent and independent variables to those of the original study to confirm we are using the same inputs.
 
-In order to test the results for both our bivariate correlation and GEE, we plan to construct tables (or matrices) that show the difference between our correlation coefficients and the original study's correlation coefficients. If there are any non-zeroes, we will investigate further.
+In order to test the results for both our bivariate correlation and GEE, we plan to construct tables (or matrices) that show the difference between our correlation coefficients and the original study's correlation coefficients.
+If there are any non-zeroes, we will investigate further.
+We will consider the reproduction an exact reproduction only if we can create identical coefficients for the Pearson's Rho bivariate tests of table 1 and the GEE models of table 2.
+We will consider the reproduction to be approximate if we find coefficients with the same direction and significance levels as the original study.
+We will consider the reproduction to have at least partially failed if we find coefficients with different directions or significance levels.
 
-## Referencing the original paper
+## References
 
 Chakraborty, J. 2021. Social inequities in the distribution of COVID-19: An intra-categorical analysis of people with disabilities in the U.S. *Disability and Health Journal* **14**:1-5. DOI:[10.1016/j.dhjo.2020.101007](https://doi.org/10.1016/j.dhjo.2020.101007)
-
-### Sections
-
-1. Introduction
-2. Methods
-3. Results
-4. Discussion
-5. Conclusions
-
-### Tables, figures, other elements
-
-- F1 County level distribution of COVID-19 incidence rate (cases per 100,000 people) in the continental USA. August 1, 2020.
-- T1 Summary statistics for variables analyzed and bivariate correlations with county COVID-19 incidence rate.
-- T2 Generalized estimating equations (GEE) for predicting county COVID-19 incidence rate: Standardized model coefficients and significance.
-
-## Other references

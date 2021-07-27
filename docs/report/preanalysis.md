@@ -1,32 +1,32 @@
 # Pre-Registration of Rpr-Reproduction of Social Inequities in the distribution of COVID-19: An intra-categorical analysis of people with disabilities in the U.S.
 
-Joseph Holler, Department of Geography, Middlebury College, Middlebury VT 05753 <br>
-Peter Kedron, School of Geographical Sciences and Urban Planning, Arizona State University, Tempe AZ 85281 <br>
-Drew An-Pham, Department of Geography, Middlebury College, Middlebury VT 05753 <br>
-Derrick Burt, Department of Geography, Middlebury College, Middlebury VT 05753 <br>
+Joseph Holler, Department of Geography, Middlebury College, Middlebury VT 05753  
+Derrick Burt, Department of Geography, Middlebury College, Middlebury VT 05753  
+Drew An-Pham, Department of Geography, Middlebury College, Middlebury VT 05753  
+Peter Kedron, School of Geographical Sciences and Urban Planning, Arizona State University, Tempe AZ 85281  
 
-Version 1.0 | Created Jul 7, 2021 | Last Updated Jul 22, 2021
+Version 1.0 | Created Jul 7, 2021 | Last Updated Jul 26, 2021
 
 ## Abstract
 
-Chakraborty (2020) investigates the relationships between COVID-19 rates and demographic characteristics of people with disabilities by county in the lower 48 states.
+Chakraborty (2021) investigates the relationships between COVID-19 rates and demographic characteristics of people with disabilities by county in the lower 48 states.
 The study aims to examine public concern that persons with disabilities (PwDs) face disproportionate challenges due to COVID-19.
 To investigate this, Chakraborty examines the statistical relationship between confirmed county-level COVID-19 case rates and county-level socio-demographic and disability variables.
 Specifically, Chakraborty tests county-level bivariate correlations between COVID-19 incidence against the percentage of disability and socio-demographic category, with a separate hypothesis and model for each subcategory within disability, race, ethnicity, age, and biological sex.
 To control for differences between states and geographic clusters of COVID-19 outbreaks, Chakraborty uses five generalized estimating equation (GEE) models to predict the relationship and significance between COVID-19 incidence and disability subgroups within each socio-demographic category while considering inter-county spatial clusters.
-Chakraborty (2020) finds significant positive relationships between COVID-19 rates and socially vulnerable demographic categories of race, ethnicity, poverty, age, and biological sex.
+Chakraborty (2021) finds significant positive relationships between COVID-19 rates and socially vulnerable demographic categories of race, ethnicity, poverty, age, and biological sex.
 
 This reproduction study is motivated by expanding the potential impact of Chakraborty's study for policy, research, and teaching purposes.
 Measuring the relationship between COVID-19 incidence and socio-demographic and disability characteristics can provide important information for public health policy-making and resource allocation.
-A fully reproducible study will increase the accessibility, transparency, and potential impact of Chakraborty's (2020) study by publishing a compendium complete with metadata, data, and code.
+A fully reproducible study will increase the accessibility, transparency, and potential impact of Chakraborty's (2021) study by publishing a compendium complete with metadata, data, and code.
 This will allow other researchers to review, extend, and modify the study and will allow students of geography and spatial epidemiology to learn from the study design and methods.
 
 In this reproduction, we will attempt to identically reproduce all of the results from the original study.
 This will include the map of county level distribution of COVID-19 incidence rates (Fig. 1), the summary statistics for disability and sociodemographic variables and bivariate correlations with county-level COVID-19 incidence rate (Table 1), and the GEE models for predicting COVID-19 county-level incidence rate (Table 2).
-A successful reproduction should be able to generate identical results as published by Chakraborty (2020).
+A successful reproduction should be able to generate identical results as published by Chakraborty (2021).
 
 The replication study data and code will be made available in a GitHub repository to the greatest extent that licensing and file sizes permit.
-The repository will be made public at [github.com/HEGSRR/RPr-Chakraborty2020](https://github.com/HEGSRR/RPr-Chakraborty2020).
+The repository will be made public at [github.com/HEGSRR/RPr-Chakraborty2021](https://github.com/HEGSRR/RPr-Chakraborty2021).
 To the greatest extent possible, the reproduction will be implemented with (3.7.6) Jupyter Notebooks for implementation on the [CyberGISX platform](https://cybergisxhub.cigi.illinois.edu/) with Python (3.7.6) Jupyter Notebooks.
 
 Chakraborty, J. 2021. Social inequities in the distribution of COVID-19: An intra-categorical analysis of people with disabilities in the U.S. *Disability and Health Journal* **14**:1-5. DOI:[10.1016/j.dhjo.2020.101007](https://doi.org/10.1016/j.dhjo.2020.101007)
@@ -38,22 +38,24 @@ COVID-19; Disability; Intersectionality; Race/ethnicity; Poverty; Reproducibilit
 ## Study design
 
 The reproduction study will try to implement the original study as closely as possible to reproduce the map of county level distribution of COVID-19 incidence rate, the summary statistics and bivariate correlation for disability characteristics and COVID-19 incidence, and the generalized estimating equations.
-Our two confirmatory hypotheses are that we will be able to reproduce for all three portions of the analysis.
-It should be noted that there are multiple hypotheses and models being tested within these hypotheses.
+Our two confirmatory hypotheses are that we will be able to exactly reproduce Chakraborty's results as presented in table 1 and table 2 of Chakraborty (2021). Stated as null hypotheses:
 
 > H1: There is a less than perfect match between Chakraborty's bivariate correlation coefficient for each disability/sociodemographic variable and COVID-19 incidence rate and our bivariate correlation coefficient for each disability/sociodemographic variable and COVID-19 incidence rate.
 
 > H2: There is a less than perfect match between Chakraborty's beta coefficient for the GEE of each disability/sociodemographic variable an statistics and our beta coefficient for the GEE of each disability/sociodemographic variable.
 
+There are multiple models being tested within each of the two hypotheses. That is, H1 and H2 both encompass five models, including one for each dimension of socio-demographics: race, ethnicity, poverty status, age, and biological sex.
 
 ### Original study design
 
-The original study is **observational**, with the **exploratory** objective of determining "whether COVID-19 incidence is significantly greater in counties containing higher percentages of socio-demographically disadvantaged [people with disabilities], based on their race, ethnicity, poverty status, age, and biological sex."
+The original study is **observational**, with the **exploratory** objective of determining "whether COVID-19 incidence is significantly greater in counties containing higher percentages of socio-demographically disadvantaged [people with disabilities], based on their race, ethnicity, poverty status, age, and biological sex" (Chakraborty 2021).
 This exploratory objective is broken down into five implicit hypotheses that each of the demographic characteristics of people with disabilities is associated with higher COVID-19 incidence rates.
 
 The **spatial extent** of the study are the 49 contiguous states in the U.S.
-The **spatial scale** of the analysis is at the county level. Both COVID-19 incidence rates and demographic variables are all measured at the county level.
-The **temporal extent** of the COVID-19 data ranges from 1/22/2020 (when John Hopkins began collecting the data) to 8/1/2020 (when the data was retrieved for the original study). The data on disability and sociodemographic characteristics come from the U.S. Census American Community Survey (ACS) five-year estimates for 2018 (2014-2018).
+The **spatial scale** of the analysis is at the county level.
+Both COVID-19 incidence rates and demographic variables are all measured at the county level.
+The **temporal extent** of the COVID-19 data ranges from 1/22/2020 (when John Hopkins began collecting the data) to 8/1/2020 (when the data was retrieved for the original study).
+The data on disability and sociodemographic characteristics come from the U.S. Census American Community Survey (ACS) five-year estimates for 2018 (2014-2018).
 
 There is no **randomization** in the original study.
 
@@ -65,12 +67,16 @@ Other software are not specified in the publication; however data files and comm
 
 ### Existing data and data exploration
 
-This registration is based upon a thorough reading of the original research article and an understanding of the Census data.
+This registration is based upon a thorough reading of the original research article and an understanding of Census data.
 
-As of the 7/21/21 the data exist and we have accessed it, though no analysis has been conducted related to the research plan (including calculation of summary statistics). We have designed the reproduction design that is outlined below only making reference to the methodology outlined in the original paper.
+At the time of registration, we have accessed data from the Census, Johns Hopkins, and the original author.
+We have only examined data variable names and metadata.
+We have not conducted any analysis with the data, including calculation of summary statistics.
+We have designed this reproduction study based exclusively on the methodology described in the original paper and on metadata for secondary data sources.
 
-Although the raw data from the original study is not available in an online repository, we received COVID-19 incidence rate data from the author and accessed the disability and sociodemographic website from the Census Bureau website.
-We have not analyzed the data, but viewing the variable names and data dictionaries has aided our understanding of the original study design.
+Although the raw data from the original study is not available in an online repository, we received COVID-19 incidence rate data from the author.
+Johns Hopkins still provides aggregated COVID-19 incidence rate data, but does not publicly provide archived data identical to those used in the original study.
+The disability and sociodemographic data is publicly available through the American Community Survey data tables on the Census Bureau website.
 
 ### Data collection and spatial sampling
 
@@ -89,7 +95,7 @@ We received the COVID-19 case data from 8/1/2020 from the author, as there is no
 The COVID-19 case data expresses cumulative count of reported COVID-19 from 1/22/2020 to 8/1/2020. The data can be found at the John Hopkins CCSE COVID-19 Data Repository ([https://github.com/CSSEGISandData/COVID-19](https://github.com/CSSEGISandData/COVID-19)).
 However, archived data only provides summaries at the national scale.
 
-The 2018 ACS 5 year estimates for disabilities can be accessed from the U.S. Census website. **Need to add more detail here**
+The 2018 ACS 5 year estimates for disabilities can be accessed from the U.S. Census website or through the Census API.
 
 ## Variables
 
@@ -103,60 +109,39 @@ Their table code from the ACS data has been included in this documentation
 
 ##### COVID-19 incidence rate
 
-- cases per 100,00
+- cases per 100,000 people
 
 ##### Persons with disabilities
 
-- percent of total population with a disability
-  - col ID: S1810_C03_001E
+The American Community Survey (ACS) variables used in the study are outlined below.
 
-##### Race
-
-- percent w disability: White alone
-  - col IDs: S1810_C03_004E
-- percent w disability: Black alone
-  - col IDs: S1810_C03_005E
-- percent w disability: Native American
-  - colIDs: S1810_C03_006E
-- percent w disability: Asian alone
-  - colIDs: S1810_C03_007E
-- percent w disability: Other race
-  - colIDs: S1810_C03_009E
-
-##### Ethnicity
-
-- percent w disability: Non-Hispanic White
-  - colID: S1810_C03_0011E
-- percent w disability: Hispanic
-  - col ID: **???**
-- percent w disability: Hispanic Non-White taking the total and subtracting the other two
-  - colID: S1810_C03_006E
-
-##### Age
-
-- percent w disability: 5-17
-  - col IDs: S1810_C03_014E
-- percent w disability: 18-34
-  - col IDs: S1810_C03_015E
-- percent w disability: 35-64
-  - colIDs: S1810_C03_016E
-- percent w disability: 65-74
-  - colIDs: S1810_C03_017E
-- percent w disability: 75+
-  - colIDs: S1810_C03_018E
-
-##### Biological sex
-
-- percent w disability: male
-  - col IDs: S1810_C03_001E
-- percent w disability: female
-  - col IDs: S1810_C03_003E
+Variable Name in Study | ACS Variable name
+--- | ---
+percent of total civilian non-institutionalized population with a disability | S1810_C03_001E
+**Race** |
+percent w disability: White alone | S1810_C03_004E
+percent w disability: Black alone | S1810_C03_005E
+percent w disability: Native American | S1810_C03_006E
+percent w disability: Asian alone | S1810_C03_007E
+percent w disability: Other race | S1810_C03_009E
+**Ethnicity** |
+percent w disability: Non-Hispanic White | S1810_C03_0011E
+percent w disability: Hispanic | S1810_C03_012E
+percent w disability: Non-Hispanic non-White | (S1810_C02_001E - S1810_C02_011E - S1810_C02_012E) / (S1810_C01_001E - S1810_C01_011E - S1810_C01_012E) * 100
+**Age** |
+percent w disability: 5-17 | S1810_C03_014E
+percent w disability: 18-34 | S1810_C03_015E
+percent w disability: 35-64 | S1810_C03_016E
+percent w disability: 65-74 | S1810_C03_017E
+percent w disability: 75+ | S1810_C03_018E
+**Biological sex** |
+percent w disability: male | S1810_C03_001E
+percent w disability: female | S1810_C03_003E
 
 #### Attribute variable transformations
 
-The attribute variable transformations are well documented in the paper.
 The COVID-19 incidence rate is normalized at the county-level per 100,000 people.
-All of the disability and sociodemographic variables are provided in the format that they are used, as a percentage of total people at the county-level.
+All of the disability and sociodemographic variables are provided in the format that they are used, as a percentage of "people with disabilities in each subgroup by the total civilian non-institutionalized population relevant to the variable category" (Chakraborty 2011).
 
 Before conducting the GEE, all independent variables are normalized into z-scores.
 
@@ -166,9 +151,9 @@ The second clustering score is a relative risk score calculated by identifying s
 
 #### Geographic transformations
 
-Although there are no explicit geographic transformations in this experiment, the variable transformations that occur during the GEE are geographic in nature: they assign values based on spatial clustering or state.
+Although there are no explicit geographic transformations in this experiment, the variable transformations that occur during the SaTScan procedure are geographic in nature: they assign values based on spatial clustering of COVID-19 risk, which are subsequently used to define clusters in the GEE models.
 
-Having looked at the SATSCAN outputs from the original study, our best guess is that the author might have calculated centroids for each county before running the GEE.
+Having looked at the SATSCAN outputs from the original study, our best guess is that the author might have calculated centroids for each county before running the GEE, using a geographic coordinate system.
 
 ## Analyses
 
@@ -176,7 +161,7 @@ Having looked at the SATSCAN outputs from the original study, our best guess is 
 ### Geographical characteristics
 
 The **coordinate reference system** is not specified in the methodology. Without having performed the GEE clustering analysis before, we cannot say for sure whether this.
-It seems, however, because the outputs are in lat/lon format, that the author used a geographic coordinate system to perform a spherical distance calculation.
+It seems, however, because the output coordinates are measured in in latitude and longitude, that the author used a geographic coordinate system to perform a spherical distance calculation within SaTScan.
 
 The **spatial extent** of the study were the contiguous 49 United States (including the District of Columbia).
 

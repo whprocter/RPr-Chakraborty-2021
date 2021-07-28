@@ -1,4 +1,4 @@
-﻿COUNTY_FIPS,Countyname,ST_Name,Cases,Total_POP
+﻿county_fips,county,st_name,cases,total_pop
 1001,Autauga,Alabama,972,55601
 1003,Baldwin,Alabama,3056,218022
 1005,Barbour,Alabama,550,24881

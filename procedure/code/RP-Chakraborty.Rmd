@@ -50,26 +50,151 @@ There is no **randomization** in the original study.
 The study was originally conducted using SaTScan software (unspecified version) to implement the spatial scan statistic.
 Other software are not specified in the publication; however data files and communication with the author show that spatial analysis and mapping was conducted in ArcGIS and statistics were calculated in SPSS.
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r Load Data File, include = F}
+packages = c("tidycensus", "tidyverse", "downloader", "haven", "stars", "dplyr", "sf", "rdhs", "classInt", "readr", "ggplot2", "here", "s2", "pastecs", "cartography", "secret", "vtable")
+setdiff(packages, rownames(installed.packages()))
+install.packages(setdiff(packages, rownames(installed.packages())), quietly=TRUE)
+
+library(tidycensus)
+library(tidyverse)
+library(downloader)
+library(haven)
+library(sf)
+library(stars)
+library(dplyr)
+library(here)
+library(classInt)
+library(rdhs)
+library(readr)
+library(ggplot2)
+library(s2)
+library(pastecs)
+library(cartography)
+library(secret)
+library(vtable)
+
 ```
 
-## R Markdown
+```{r formatting package versions}
+# list of required packages
+packages = c("here")
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+# load and install required packages
+package.check <- lapply(
+  packages,
+  FUN = function(x) {
+    if (!require(x, character.only = TRUE)) {
+      install.packages(x, dependencies = TRUE)
+      library(x, character.only = TRUE)
+    }
+  }
+)
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+# save the R processing environment 
+writeLines(capture.output(sessionInfo()),here("procedure","environment","r_environment.txt"))
 
-```{r cars}
-summary(cars)
+# read in R processing environment
+# the data frame package_version provides info on the libraries used for this analysis when previewed in the console
+package_version <- read.delim(here("procedure","environment","r_environment.txt"))
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r create values to access private and public raw data more efficiently}
+private_r = here("data","raw","private")
+public_r = here("data","raw","public")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r Load Data Files, message = F}
+ACS_old <- read_csv(here(public_r, "disability", "ACSST5Y2018.S1810_data_with_overlays_2021-07-22T152024.csv"))
+
+GEE <- read_csv(here(public_r, "gee", "Aug1GEEdata.csv"))
+
+library(secret) # figure out how to lock API Key
+
+census_api_key("9bdde1e9d9ab8fa69fb2d8a7fa333459b341138d")
+ACS <- get_acs(geography = "county",
+               table = "S1810",
+               year = 2018,
+               output = "wide",
+               cache_table = TRUE,
+               geometry = TRUE) 
+#Filter out Hawaii, Alaska, & other US Territories (NOT 48 states)
+ACS <- ACS[!grepl("Hawaii", ACS$NAME),] 
+ACS <- ACS[!grepl("Alaska", ACS$NAME),] 
+ACS <- ACS[!grepl("Puerto Rico", ACS$NAME),]
+ACS <- select(ACS, "NAME",
+                    "S1810_C01_001E",
+                    "S1810_C02_001E",
+                    "S1810_C02_004E",
+                    "S1810_C02_005E",
+                    "S1810_C02_006E",
+                    "S1810_C02_007E",
+                    "S1810_C02_008E",
+                    "S1810_C02_009E",
+                    "S1810_C02_010E",
+                    "S1810_C02_011E",
+                    "S1810_C02_012E",
+                    "S1810_C02_014E",
+                    "S1810_C02_015E",
+                    "S1810_C02_016E",
+                    "S1810_C02_017E",
+                    "S1810_C02_018E",
+                    "S1810_C02_002E",
+                    "S1810_C02_003E")
+ ACS <- ACS %>% mutate(
+    dis_pct = S1810_C02_001E/S1810_C01_001E * 100,
+    white_pct = S1810_C02_004E/S1810_C01_001E * 100,
+    black_pct = S1810_C02_005E/S1810_C01_001E * 100,
+    native_pct = S1810_C02_006E/S1810_C01_001E * 100,
+    asian_pct = S1810_C02_007E/S1810_C01_001E * 100,
+    other_pct = (S1810_C02_008E + S1810_C02_009E + S1810_C02_010E)/S1810_C01_001E *100,
+    non_hisp_pct = S1810_C02_011E/S1810_C01_001E * 100,
+    non_hisp_non_white_pct = (S1810_C02_001E - S1810_C02_012E - S1810_C02_011E) / S1810_C01_001E * 100,
+    hisp_pct = S1810_C02_012E/S1810_C01_001E * 100,
+    pct_5_17 = S1810_C02_014E/S1810_C01_001E * 100,
+    pct_18_34 = S1810_C02_015E/S1810_C01_001E * 100,
+    pct_35_64 = S1810_C02_016E/S1810_C01_001E * 100,
+    pct_64_75 = S1810_C02_017E/S1810_C01_001E * 100,
+    pct_75 = S1810_C02_018E/S1810_C01_001E * 100,
+    male_pct = S1810_C02_002E / S1810_C01_001E * 100,
+    female_pct = S1810_C02_003E / S1810_C01_001E * 100,
+  )
+
+ACS_Poverty <- get_acs(geography = "county",
+                       table = "C18130",
+                       year = 2018,
+                       output = "wide",
+                       cache_table = TRUE,
+                        )
+ACS_Poverty <- select(ACS_Poverty, 
+                            "NAME",
+                            "C18130_001E",
+                            "C18130_004E",
+                            "C18130_005E",
+                            "C18130_011E",
+                            "C18130_012E",
+                            "C18130_018E",
+                            "C18130_019E")
+
+#Filter out Hawaii, Alaska, & other US Territories (NOT 48 states)
+ACS_Poverty <- ACS_Poverty[!grepl("Hawaii", ACS_Poverty$NAME),] 
+ACS_Poverty <- ACS_Poverty[!grepl("Alaska", ACS_Poverty$NAME),] 
+ACS_Poverty <- ACS_Poverty[!grepl("Puerto Rico", ACS_Poverty$NAME),]
+
+ACS_Poverty <- ACS_Poverty %>%
+  mutate(
+    bpov_pct = (C18130_004E + C18130_011E + C18130_018E) / C18130_001E, 
+    apov_pct = (C18130_005E + C18130_012E + C18130_019E) / C18130_001E
+  ) %>%
+  select(-"C18130_001E") %>%
+  select(-"C18130_004E") %>%
+  select(-"C18130_005E") %>%
+  select(-"C18130_011E") %>%
+  select(-"C18130_012E") %>%
+  select(-"C18130_018E") %>%
+  select(-"C18130_019E")
+
+ACS <-
+
+
+
+```

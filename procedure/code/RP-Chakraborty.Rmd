@@ -147,10 +147,12 @@ ACS <- select(ACS, "NAME",
                     "S1810_C02_002E",
                     "S1810_C02_003E")
 
-#save as an output /data/raw/preprocessing
+st_write(ACS, here("data", "raw", "public", "disability_raw_r.csv"), append=FALSE)
+
+#save as an output /data/raw/public/pre-rocessing
 
 # ELSE;
-# reading in that file
+read.csv(here("data", "raw", "public", "disability_raw_r.csv"))
 
 # IF
 
@@ -169,6 +171,7 @@ ACS_Poverty <- select(ACS_Poverty,
                             "C18130_012E",
                             "C18130_018E",
                             "C18130_019E")
+
 #Filter out Hawaii, Alaska, & other US Territories (NOT 48 states)
 ACS_Poverty <- ACS_Poverty[!grepl("Hawaii", ACS_Poverty$NAME),] 
 ACS_Poverty <- ACS_Poverty[!grepl("Alaska", ACS_Poverty$NAME),] 
@@ -176,6 +179,9 @@ ACS_Poverty <- ACS_Poverty[!grepl("Puerto Rico", ACS_Poverty$NAME),]
 
 #ELSE
 ACS <- left_join(ACS, ACS_Poverty, by = "NAME")
+
+#split NAME by state, county & move this up after the select
+# ACS <- separate(ACS, NAME, c("County", NA, "State"))
 
  ACS <- ACS %>% mutate(
     dis_pct = S1810_C02_001E/S1810_C01_001E * 100,

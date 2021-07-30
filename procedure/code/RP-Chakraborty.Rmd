@@ -111,6 +111,12 @@ GEE <- read_csv(here(public_r, "gee", "Aug1GEEdata.csv"))
 library(secret) # figure out how to lock API Key
 
 census_api_key("9bdde1e9d9ab8fa69fb2d8a7fa333459b341138d")
+
+#insert if not statement, if disability raw exists
+# read both data sets in, join, then drop alaska + hawaii
+
+# IF file doesn't exist:
+
 ACS <- get_acs(geography = "county",
                table = "S1810",
                year = 2018,
@@ -140,6 +146,37 @@ ACS <- select(ACS, "NAME",
                     "S1810_C02_018E",
                     "S1810_C02_002E",
                     "S1810_C02_003E")
+
+#save as an output /data/raw/preprocessing
+
+# ELSE;
+# reading in that file
+
+# IF
+
+ACS_Poverty <- get_acs(geography = "county",
+                       table = "C18130",
+                       year = 2018,
+                       output = "wide",
+                       cache_table = TRUE,
+                        )
+ACS_Poverty <- select(ACS_Poverty, 
+                            "NAME",
+                            "C18130_001E",
+                            "C18130_004E",
+                            "C18130_005E",
+                            "C18130_011E",
+                            "C18130_012E",
+                            "C18130_018E",
+                            "C18130_019E")
+#Filter out Hawaii, Alaska, & other US Territories (NOT 48 states)
+ACS_Poverty <- ACS_Poverty[!grepl("Hawaii", ACS_Poverty$NAME),] 
+ACS_Poverty <- ACS_Poverty[!grepl("Alaska", ACS_Poverty$NAME),] 
+ACS_Poverty <- ACS_Poverty[!grepl("Puerto Rico", ACS_Poverty$NAME),]
+
+#ELSE
+ACS <- left_join(ACS, ACS_Poverty, by = "NAME")
+
  ACS <- ACS %>% mutate(
     dis_pct = S1810_C02_001E/S1810_C01_001E * 100,
     white_pct = S1810_C02_004E/S1810_C01_001E * 100,
@@ -157,34 +194,28 @@ ACS <- select(ACS, "NAME",
     pct_75 = S1810_C02_018E/S1810_C01_001E * 100,
     male_pct = S1810_C02_002E / S1810_C01_001E * 100,
     female_pct = S1810_C02_003E / S1810_C01_001E * 100,
-  )
-
-ACS_Poverty <- get_acs(geography = "county",
-                       table = "C18130",
-                       year = 2018,
-                       output = "wide",
-                       cache_table = TRUE,
-                        )
-ACS_Poverty <- select(ACS_Poverty, 
-                            "NAME",
-                            "C18130_001E",
-                            "C18130_004E",
-                            "C18130_005E",
-                            "C18130_011E",
-                            "C18130_012E",
-                            "C18130_018E",
-                            "C18130_019E")
-
-#Filter out Hawaii, Alaska, & other US Territories (NOT 48 states)
-ACS_Poverty <- ACS_Poverty[!grepl("Hawaii", ACS_Poverty$NAME),] 
-ACS_Poverty <- ACS_Poverty[!grepl("Alaska", ACS_Poverty$NAME),] 
-ACS_Poverty <- ACS_Poverty[!grepl("Puerto Rico", ACS_Poverty$NAME),]
-
-ACS_Poverty <- ACS_Poverty %>%
-  mutate(
     bpov_pct = (C18130_004E + C18130_011E + C18130_018E) / C18130_001E, 
     apov_pct = (C18130_005E + C18130_012E + C18130_019E) / C18130_001E
   ) %>%
+  select(-"S1810_C01_001E") %>%
+  select(-"S1810_C02_001E") %>%
+  select(-"S1810_C02_002E") %>%
+  select(-"S1810_C02_003E") %>% 
+  select(-"S1810_C02_004E") %>%
+  select(-"S1810_C02_005E") %>%
+  select(-"S1810_C02_006E") %>%
+  select(-"S1810_C02_007E") %>%
+  select(-"S1810_C02_008E") %>%
+  select(-"S1810_C02_009E") %>%
+  select(-"S1810_C02_010E") %>%
+  select(-"S1810_C02_011E") %>%
+  select(-"S1810_C02_012E") %>%
+  select(-"S1810_C02_014E") %>%
+  select(-"S1810_C02_015E") %>%
+  select(-"S1810_C02_016E") %>%
+  select(-"S1810_C02_017E") %>%  
+  select(-"S1810_C02_018E") %>%
+  # remove from poverty 
   select(-"C18130_001E") %>%
   select(-"C18130_004E") %>%
   select(-"C18130_005E") %>%
@@ -192,9 +223,4 @@ ACS_Poverty <- ACS_Poverty %>%
   select(-"C18130_012E") %>%
   select(-"C18130_018E") %>%
   select(-"C18130_019E")
-
-ACS <- left_join(ACS, ACS_Poverty, by = "NAME")
-
-
-
 ```

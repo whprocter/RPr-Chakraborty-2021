@@ -193,7 +193,7 @@ ACS_Poverty <- ACS_Poverty %>%
   select(-"C18130_018E") %>%
   select(-"C18130_019E")
 
-ACS <-
+ACS <- left_join(ACS, ACS_Poverty, by = "NAME")
 
 
 

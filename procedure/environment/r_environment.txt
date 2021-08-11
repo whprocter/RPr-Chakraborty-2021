@@ -19,19 +19,23 @@ other attached packages:
 [21] tibble_3.1.0      ggplot2_3.3.3     tidyverse_1.3.1   tidycensus_0.11.4
 
 loaded via a namespace (and not attached):
- [1] fs_1.5.0           lubridate_1.7.10   webshot_0.5.2      httr_1.4.2         rprojroot_2.0.2   
- [6] tools_4.0.4        backports_1.2.1    utf8_1.2.1         rgdal_1.5-23       R6_2.5.0          
-[11] KernSmooth_2.23-18 rgeos_0.5-5        DBI_1.1.1          colorspace_2.0-0   withr_2.4.1       
-[16] sp_1.4-5           tidyselect_1.1.0   curl_4.3           compiler_4.0.4     cli_2.5.0         
-[21] rvest_1.0.0        xml2_1.3.2         scales_1.1.1       askpass_1.1        proxy_0.4-26      
-[26] rappdirs_0.3.3     systemfonts_1.0.2  digest_0.6.27      foreign_0.8-81     svglite_2.0.0     
-[31] rmarkdown_2.7      pkgconfig_2.0.3    htmltools_0.5.1.1  dbplyr_2.1.1       rlang_0.4.10      
-[36] readxl_1.3.1       rstudioapi_0.13    generics_0.1.0     jsonlite_1.7.2     magrittr_2.0.1    
-[41] Rcpp_1.0.7         munsell_0.5.0      fansi_0.4.2        lifecycle_1.0.0    stringi_1.5.3     
-[46] yaml_2.2.1         storr_1.2.5        grid_4.0.4         maptools_1.1-1     parallel_4.0.4    
-[51] crayon_1.4.1       lattice_0.20-41    hms_1.0.0          knitr_1.32         pillar_1.6.0      
-[56] uuid_0.1-4         boot_1.3-26        wk_0.4.1           reprex_2.0.0       glue_1.4.2        
-[61] evaluate_0.14      modelr_0.1.8       vctrs_0.3.6        cellranger_1.1.0   gtable_0.3.0      
-[66] openssl_1.4.3      assertthat_0.2.1   xfun_0.22          lwgeom_0.2-6       broom_0.7.6       
-[71] e1071_1.7-7        viridisLite_0.4.0  class_7.3-18       tigris_1.0         tinytex_0.31      
-[76] units_0.7-1        ellipsis_0.3.1    
+ [1] fs_1.5.0           lubridate_1.7.10   webshot_0.5.2      httr_1.4.2        
+ [5] rprojroot_2.0.2    tools_4.0.4        backports_1.2.1    utf8_1.2.1        
+ [9] rgdal_1.5-23       R6_2.5.0           KernSmooth_2.23-18 rgeos_0.5-5       
+[13] DBI_1.1.1          colorspace_2.0-0   withr_2.4.1        sp_1.4-5          
+[17] tidyselect_1.1.0   curl_4.3           compiler_4.0.4     cli_2.5.0         
+[21] rvest_1.0.0        xml2_1.3.2         scales_1.1.1       askpass_1.1       
+[25] proxy_0.4-26       rappdirs_0.3.3     systemfonts_1.0.2  digest_0.6.27     
+[29] foreign_0.8-81     svglite_2.0.0      rmarkdown_2.7      pkgconfig_2.0.3   
+[33] htmltools_0.5.1.1  dbplyr_2.1.1       rlang_0.4.10       readxl_1.3.1      
+[37] rstudioapi_0.13    generics_0.1.0     jsonlite_1.7.2     magrittr_2.0.1    
+[41] Rcpp_1.0.7         munsell_0.5.0      fansi_0.4.2        lifecycle_1.0.0   
+[45] stringi_1.5.3      yaml_2.2.1         storr_1.2.5        grid_4.0.4        
+[49] maptools_1.1-1     parallel_4.0.4     crayon_1.4.1       lattice_0.20-41   
+[53] hms_1.0.0          knitr_1.32         pillar_1.6.0       uuid_0.1-4        
+[57] boot_1.3-26        wk_0.4.1           reprex_2.0.0       glue_1.4.2        
+[61] evaluate_0.14      modelr_0.1.8       vctrs_0.3.6        cellranger_1.1.0  
+[65] gtable_0.3.0       openssl_1.4.3      assertthat_0.2.1   xfun_0.22         
+[69] lwgeom_0.2-6       broom_0.7.6        e1071_1.7-7        viridisLite_0.4.0 
+[73] class_7.3-18       tigris_1.0         tinytex_0.31       units_0.7-1       
+[77] ellipsis_0.3.1    

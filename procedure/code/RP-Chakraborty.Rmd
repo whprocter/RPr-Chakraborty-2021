@@ -72,7 +72,6 @@ library(pastecs)
 library(cartography)
 library(secret)
 library(vtable)
-
 ```
 
 ```{r formatting package versions}
@@ -127,7 +126,8 @@ ACS <- get_acs(geography = "county",
 ACS <- ACS[!grepl("Hawaii", ACS$NAME),] 
 ACS <- ACS[!grepl("Alaska", ACS$NAME),] 
 ACS <- ACS[!grepl("Puerto Rico", ACS$NAME),]
-ACS <- select(ACS, "NAME",
+ACS <- select(ACS, "GEOID",
+                    "NAME",
                     "S1810_C01_001E",
                     "S1810_C02_001E",
                     "S1810_C02_004E",
@@ -229,4 +229,43 @@ ACS <- left_join(ACS, ACS_Poverty, by = "NAME")
   select(-"C18130_012E") %>%
   select(-"C18130_018E") %>%
   select(-"C18130_019E")
+```
+
+```{r spatial epi}
+cord <- st_centroid(ACS) %>%
+  st_coordinates(ACS)
+#500 sims, .05 value
+# write markdown for how spatial epi COULD BE used
+```
+
+```{r pull in satscan outputs}
+sat_scan_clusters <- read_sf(here("data","satscans","sat_scan_compare.col.shp")) %>%
+  separate(LOC_ID, into=c("STATE_ID","COUNTY_ID"), sep=2, remove=FALSE) %>%
+  mutate(GEOID = LOC_ID)
+
+sat_scan <- read_sf(here("data","satscans","sat_scan_compare.gis.shp")) %>%
+  separate(LOC_ID, into=c("STATE_ID","COUNTY_ID"), sep=2, remove=FALSE) %>%
+  st_drop_geometry() %>%
+  mutate(GEOID = LOC_ID) %>%
+  select("STATE_ID",
+         "COUNTY_ID",
+         "LOC_RR",
+         "GEOID")
+
+ACS_sat_scan <- left_join(ACS, sat_scan, by = "GEOID")
+
+ACS_sat_scan$LOC_RR[is.na(ACS_sat_scan$LOC_RR)] <- 0 
+
+ACS_sat_scan$bins <- cut(ACS_sat_scan$LOC_RR, 
+                         breaks=c(-.001, 0.99, 1.99, 2.99, 3.99, 4.99, Inf),
+                         labels=c("<1","1.00-1.99","2.00-2.99","3.00-3.99","4.00-4.99",">5"))
+
+ACS_sat_scan$state_rr <- paste(ACS_sat_scan$STATE_ID, ACS_sat_scan$bins)
+
+length(unique(ACS_sat_scan$state_rr))
+#118 unique clusters, we want 102
+
+#ggplot to check graph
+
+#there's a relative risk score for both county & cluster; our analysis uses county based on example in paper (paragraph 4 of methods) & citation Desjardins et al
 ```

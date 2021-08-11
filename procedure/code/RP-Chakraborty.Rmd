@@ -255,12 +255,14 @@ sat_scan <- read_sf(here("data","satscans","sat_scan_compare.gis.shp")) %>%
 ACS_sat_scan <- left_join(ACS, sat_scan, by = "GEOID")
 
 ACS_sat_scan$LOC_RR[is.na(ACS_sat_scan$LOC_RR)] <- 0 
+#converts all NAs to 0
 
 ACS_sat_scan$bins <- cut(ACS_sat_scan$LOC_RR, 
                          breaks=c(-.001, 0.99, 1.99, 2.99, 3.99, 4.99, Inf),
                          labels=c("<1","1.00-1.99","2.00-2.99","3.00-3.99","4.00-4.99",">5"))
 
 ACS_sat_scan$state_rr <- paste(ACS_sat_scan$STATE_ID, ACS_sat_scan$bins)
+#concatenates state_id with binning values for rr
 
 length(unique(ACS_sat_scan$state_rr))
 #118 unique clusters, we want 102

@@ -1,0 +1,308 @@
+---
+output: html_document
+---
+# Pre-Registration of Rpr-Reproduction of Social Inequities in the distribution of COVID-19: An intra-categorical analysis of people with disabilities in the U.S.
+
+Joseph Holler, Department of Geography, Middlebury College, Middlebury VT 05753
+Peter Kedron, School of Geographical Sciences and Urban Planning, Arizona State University, Tempe AZ 85281 
+Drew An-Pham, Department of Geography, Middlebury College, Middlebury VT 05753 Derrick Burt, Department of Geography, Middlebury College, Middlebury VT 05753
+
+Version 1.0 | Created Jul 7, 2021 | Last Updated Jul 22, 2021
+
+# Abstract
+
+Chakraborty (2021) investigates the relationships between COVID-19 rates and demographic characteristics of people with disabilities by county in the lower 48 states. The study aims to examine public concern that persons with disabilities (PwDs) face disproportionate challenges due to COVID-19. To investigate this, Chakraborty examines the statistical relationship between confirmed county-level COVID-19 case rates and county-level socio-demographic and disability variables. Specifically, Chakraborty tests county-level bivariate correlations between COVID-19 incidence against the percentage of disability and socio-demographic category, with a separate hypothesis and model for each subcategory within disability, race, ethnicity, age, and biological sex. To control for differences between states and geographic clusters of COVID-19 outbreaks, Chakraborty uses five generalized estimating equation (GEE) models to predict the relationship and significance between COVID-19 incidence and disability subgroups within each socio-demographic category while considering inter-county spatial clusters. Chakraborty (2021) finds significant positive relationships between COVID-19 rates and socially vulnerable demographic categories of race, ethnicity, poverty, age, and biological sex.
+
+This reproduction study is motivated by expanding the potential impact of Chakraborty's study for policy, research, and teaching purposes. Measuring the relationship between COVID-19 incidence and socio-demographic and disability characteristics can provide important information for public health policy-making and resource allocation. A fully reproducible study will increase the accessibility, transparency, and potential impact of Chakraborty's (2021) study by publishing a compendium complete with metadata, data, and code. This will allow other researchers to review, extend, and modify the study and will allow students of geography and spatial epidemiology to learn from the study design and methods.
+
+In this reproduction, we will attempt to identically reproduce all of the results from the original study. This will include the map of county level distribution of COVID-19 incidence rates (Fig. 1), the summary statistics for disability and sociodemographic variables and bivariate correlations with county-level COVID-19 incidence rate (Table 1), and the GEE models for predicting COVID-19 county-level incidence rate (Table 2). A successful reproduction should be able to generate identical results as published by Chakraborty (2021).
+
+The replication study data and code will be made available in a GitHub repository to the greatest extent that licensing and file sizes permit. The repository will be made public at [github.com/HEGSRR/RPr-Chakraborty2021](). To the greatest extent possible, the reproduction will be implemented with (3.7.6) Jupyter Notebooks for implementation on the CyberGISX platform with Python (3.7.6) Jupyter Notebooks.
+
+Chakraborty, J. 2021. Social inequities in the distribution of COVID-19: An intra-categorical analysis of people with disabilities in the U.S. Disability and Health Journal 14:1-5. DOI:[10.1016/j.dhjo.2020.101007]()
+
+### Keywords
+COVID-19; Disability; Intersectionality; Race/ethnicity; Poverty; Reproducibility
+
+## Study Design
+The reproduction study will try to implement the original study as closely as possible to reproduce the map of county level distribution of COVID-19 incidence rate, the summary statistics and bivariate correlation for disability characteristics and COVID-19 incidence, and the generalized estimating equations.
+Our two confirmatory hypotheses are that we will be able to exactly reproduce Chakraborty's results as presented in table 1 and table 2 of Chakraborty (2021). Stated as null hypotheses:
+
+> H1: There is a less than perfect match between Chakraborty's bivariate correlation coefficient for each disability/sociodemographic variable and COVID-19 incidence rate and our bivariate correlation coefficient for each disability/sociodemographic variable and COVID-19 incidence rate.
+
+> H2: There is a less than perfect match between Chakraborty's beta coefficient for the GEE of each disability/sociodemographic variable an statistics and our beta coefficient for the GEE of each disability/sociodemographic variable.
+
+There are multiple models being tested within each of the two hypotheses. That is, H1 and H2 both encompass five models, including one for each dimension of socio-demographics: race, ethnicity, poverty status, age, and biological sex.
+
+### Original study design
+
+The original study is **observational**, with the **exploratory** objective of determining "whether COVID-19 incidence is significantly greater in counties containing higher percentages of socio-demographically disadvantaged [people with disabilities], based on their race, ethnicity, poverty status, age, and biological sex" (Chakraborty 2021).
+This exploratory objective is broken down into five implicit hypotheses that each of the demographic characteristics of people with disabilities is associated with higher COVID-19 incidence rates.
+
+The **spatial extent** of the study are the 49 contiguous states in the U.S.
+The **spatial scale** of the analysis is at the county level.
+Both COVID-19 incidence rates and demographic variables are all measured at the county level.
+The **temporal extent** of the COVID-19 data ranges from 1/22/2020 (when John Hopkins began collecting the data) to 8/1/2020 (when the data was retrieved for the original study).
+The data on disability and sociodemographic characteristics come from the U.S. Census American Community Survey (ACS) five-year estimates for 2018 (2014-2018).
+
+There is no **randomization** in the original study.
+
+The study was originally conducted using SaTScan software (unspecified version) to implement the spatial scan statistic.
+Other software are not specified in the publication; however data files and communication with the author show that spatial analysis and mapping was conducted in ArcGIS and statistics were calculated in SPSS.
+
+```{r Load Data File, include = F}
+packages = c("tidycensus", "tidyverse", "downloader", "haven", "stars", "dplyr", "sf", "rdhs", "classInt", "readr", "ggplot2", "here", "s2", "pastecs", "cartography", "secret", "vtable")
+setdiff(packages, rownames(installed.packages()))
+install.packages(setdiff(packages, rownames(installed.packages())), quietly=TRUE)
+
+library(tidycensus)
+library(tidyverse)
+library(downloader)
+library(haven)
+library(sf)
+library(stars)
+library(dplyr)
+library(here)
+library(classInt)
+library(rdhs)
+library(readr)
+library(ggplot2)
+library(s2)
+library(pastecs)
+library(cartography)
+library(secret)
+library(vtable)
+library(SpatialEpi)
+
+```
+
+```{r formatting package versions}
+# list of required packages
+packages = c("here")
+
+# load and install required packages
+package.check <- lapply(
+  packages,
+  FUN = function(x) {
+    if (!require(x, character.only = TRUE)) {
+      install.packages(x, dependencies = TRUE)
+      library(x, character.only = TRUE)
+    }
+  }
+)
+
+# save the R processing environment 
+writeLines(capture.output(sessionInfo()),here("procedure","environment","r_environment_jh.txt"))
+
+# read in R processing environment
+# the data frame package_version provides info on the libraries used for this analysis when previewed in the console
+package_version <- read.delim(here("procedure","environment","r_environment_jh.txt"))
+```
+
+```{r create values to access private and public raw data more efficiently}
+private_r = here("data","raw","private")
+public_r = here("data","raw","public")
+```
+
+```{r Load Data Files, message = F}
+ACS_old <- read_csv(here(public_r, "disability", "ACSST5Y2018.S1810_data_with_overlays_2021-07-22T152024.csv"))
+
+GEE <- read_csv(here(public_r, "gee", "Aug1GEEdata.csv"))
+
+library(secret) # figure out how to lock API Key
+
+census_api_key("9bdde1e9d9ab8fa69fb2d8a7fa333459b341138d")
+
+#insert if not statement, if disability raw exists
+# read both data sets in, join, then drop alaska + hawaii
+
+# IF file doesn't exist:
+
+ACS <- get_acs(geography = "county",
+               table = "S1810",
+               year = 2018,
+               output = "wide",
+               cache_table = TRUE,
+               geometry = TRUE) 
+#Filter out Hawaii, Alaska, & other US Territories (NOT 48 states)
+ACS <- ACS[!grepl("Hawaii", ACS$NAME),] 
+ACS <- ACS[!grepl("Alaska", ACS$NAME),] 
+ACS <- ACS[!grepl("Puerto Rico", ACS$NAME),]
+ACS <- select(ACS, "NAME",
+                    "S1810_C01_001E",
+                    "S1810_C02_001E",
+                    "S1810_C02_004E",
+                    "S1810_C02_005E",
+                    "S1810_C02_006E",
+                    "S1810_C02_007E",
+                    "S1810_C02_008E",
+                    "S1810_C02_009E",
+                    "S1810_C02_010E",
+                    "S1810_C02_011E",
+                    "S1810_C02_012E",
+                    "S1810_C02_014E",
+                    "S1810_C02_015E",
+                    "S1810_C02_016E",
+                    "S1810_C02_017E",
+                    "S1810_C02_018E",
+                    "S1810_C02_002E",
+                    "S1810_C02_003E")
+
+st_write(ACS, here("data", "raw", "public", "disability_raw_r.csv"), append=FALSE)
+
+#save as an output /data/raw/public/pre-rocessing
+
+# ELSE;
+read.csv(here("data", "raw", "public", "disability_raw_r.csv"))
+
+# IF
+
+ACS_Poverty <- get_acs(geography = "county",
+                       table = "C18130",
+                       year = 2018,
+                       output = "wide",
+                       cache_table = TRUE,
+                        )
+ACS_Poverty <- select(ACS_Poverty, 
+                            "NAME",
+                            "C18130_001E",
+                            "C18130_004E",
+                            "C18130_005E",
+                            "C18130_011E",
+                            "C18130_012E",
+                            "C18130_018E",
+                            "C18130_019E")
+
+#Filter out Hawaii, Alaska, & other US Territories (NOT 48 states)
+ACS_Poverty <- ACS_Poverty[!grepl("Hawaii", ACS_Poverty$NAME),] 
+ACS_Poverty <- ACS_Poverty[!grepl("Alaska", ACS_Poverty$NAME),] 
+ACS_Poverty <- ACS_Poverty[!grepl("Puerto Rico", ACS_Poverty$NAME),]
+
+#ELSE
+ACS <- left_join(ACS, ACS_Poverty, by = "NAME")
+
+#split NAME by state, county & move this up after the select
+# ACS <- separate(ACS, NAME, c("County", NA, "State"))
+
+ ACS <- ACS %>% mutate(
+    dis_pct = S1810_C02_001E/S1810_C01_001E * 100,
+    white_pct = S1810_C02_004E/S1810_C01_001E * 100,
+    black_pct = S1810_C02_005E/S1810_C01_001E * 100,
+    native_pct = S1810_C02_006E/S1810_C01_001E * 100,
+    asian_pct = S1810_C02_007E/S1810_C01_001E * 100,
+    other_pct = (S1810_C02_008E + S1810_C02_009E + S1810_C02_010E)/S1810_C01_001E *100,
+    non_hisp_pct = S1810_C02_011E/S1810_C01_001E * 100,
+    non_hisp_non_white_pct = (S1810_C02_001E - S1810_C02_012E - S1810_C02_011E) / S1810_C01_001E * 100,
+    hisp_pct = S1810_C02_012E/S1810_C01_001E * 100,
+    pct_5_17 = S1810_C02_014E/S1810_C01_001E * 100,
+    pct_18_34 = S1810_C02_015E/S1810_C01_001E * 100,
+    pct_35_64 = S1810_C02_016E/S1810_C01_001E * 100,
+    pct_64_75 = S1810_C02_017E/S1810_C01_001E * 100,
+    pct_75 = S1810_C02_018E/S1810_C01_001E * 100,
+    male_pct = S1810_C02_002E / S1810_C01_001E * 100,
+    female_pct = S1810_C02_003E / S1810_C01_001E * 100,
+    bpov_pct = (C18130_004E + C18130_011E + C18130_018E) / C18130_001E, 
+    apov_pct = (C18130_005E + C18130_012E + C18130_019E) / C18130_001E
+  ) %>%
+  select(-"S1810_C01_001E") %>%
+  select(-"S1810_C02_001E") %>%
+  select(-"S1810_C02_002E") %>%
+  select(-"S1810_C02_003E") %>% 
+  select(-"S1810_C02_004E") %>%
+  select(-"S1810_C02_005E") %>%
+  select(-"S1810_C02_006E") %>%
+  select(-"S1810_C02_007E") %>%
+  select(-"S1810_C02_008E") %>%
+  select(-"S1810_C02_009E") %>%
+  select(-"S1810_C02_010E") %>%
+  select(-"S1810_C02_011E") %>%
+  select(-"S1810_C02_012E") %>%
+  select(-"S1810_C02_014E") %>%
+  select(-"S1810_C02_015E") %>%
+  select(-"S1810_C02_016E") %>%
+  select(-"S1810_C02_017E") %>%  
+  select(-"S1810_C02_018E") %>%
+  # remove from poverty 
+  select(-"C18130_001E") %>%
+  select(-"C18130_004E") %>%
+  select(-"C18130_005E") %>%
+  select(-"C18130_011E") %>%
+  select(-"C18130_012E") %>%
+  select(-"C18130_018E") %>%
+  select(-"C18130_019E")
+```
+
+```{r attempting DCluster methods}
+covid <- read_sf(here("data", "raw", "public","gee","Aug1data","Aug1data.shp"))
+covid_data <- covid %>% mutate(Observed = Confirmed, Expected = Confirmed * sum(Confirmed)/sum(POP_ESTIMA), Population=POP_ESTIMA, x=X, y=Y )
+
+kn.pboot<-boot(covid_data, statistic=kullnagar.pboot, sim="parametric", 
+	ran.gen=poisson.sim,  R=999, fractpop=.2)
+plot(kn.pboot)
+
+```
+```{r}
+mle<-calculate.mle(covid_data, model="poisson")
+thegrid=st_drop_geometry(covid_data[,c("x","y")])
+knresults<-opgam(data=covid_data, thegrid=thegrid, alpha=0.1,
+  iscluster=kn.iscluster, fractpop=.5, R=9, model="poisson", mle=mle)
+
+```
+
+```{r attempting SpatialEpi methods}
+covid <- read_sf(here("data", "raw", "public","gee","Aug1data","Aug1data.shp"))
+covid_table <- covid %>% st_drop_geometry()
+covidgeo = dplyr::select(covid_table, x=X, y=Y) %>% latlong2grid()
+covidcases = dplyr::select(covid_table, Confirmed, FIPS)
+covidpop = dplyr::select(covid_table, POP_ESTIMA, FIPS)
+
+expected.cases <- expected(covid_table$POP_ESTIMA, covid_table$Confirmed, 1)
+
+
+covid_kulldorff <- kulldorff(geo=covidgeo,
+                             cases=covidcases$Confirmed,
+                             population=covidpop$POP_ESTIMA,
+                             expected.cases=expected.cases,
+                             pop.upper.bound=0.5,
+                             n.simulations=999,
+                             alpha.level=0.05,
+                             plot=TRUE
+                             )
+
+```
+```{r}
+clusters <- covid_kulldorff$most.likely.cluster$location.IDs.included
+secondary <- covid_kulldorff$secondary.clusters
+for (i in secondary) {
+  clusters <- c(clusters, i$location.IDs.included)
+}
+
+covid$cluster <- NA
+
+for (i in 1:length(clusters)) {
+  covid[clusters[i], ]$cluster <- 1
+}
+
+cases <- sum(covid$Confirmed)
+pop <- sum(covid$POP_ESTIMA)
+covid <- covid %>% mutate(RR = (Confirmed/POP_ESTIMA) / 
+                            ( (cases-Confirmed)/ (pop-POP_ESTIMA)))
+
+covid$rrclass <- cut(covid$RR, c(-Inf,1,2,3,4,5,Inf), labels=FALSE )
+
+covid[is.na(covid$cluster), ]$rrclass <- 1
+
+library(tmap)
+tm_shape(covid) +
+  tm_polygons("rrclass", 
+              title="Relative Risk",
+              border.alpha = .5,
+              lwd = 0.5)
+```
+```{r z-score normalization}
+
+covidnorm <- covid %>% mutate(hispNorm = HispPop - mean(HispPop) / sd(HispPop) )
+
+```
+
+

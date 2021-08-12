@@ -271,27 +271,48 @@ covid_kulldorff <- kulldorff(geo=covidgeo,
 
 ```
 ```{r}
+# Get counties in most significant cluster
+# Note that the ID numbers are row numbers
 clusters <- covid_kulldorff$most.likely.cluster$location.IDs.included
+
+# Get list of secondary clusters
 secondary <- covid_kulldorff$secondary.clusters
+
+# Get counties from each secondary cluster
 for (i in secondary) {
   clusters <- c(clusters, i$location.IDs.included)
 }
 
+# Create blank column "cluster"
 covid$cluster <- NA
 
+# Change cluster to 1 for any county identified in any cluster
 for (i in 1:length(clusters)) {
   covid[clusters[i], ]$cluster <- 1
 }
 
 cases <- sum(covid$Confirmed)
 pop <- sum(covid$POP_ESTIMA)
-covid <- covid %>% mutate(RR = (Confirmed/POP_ESTIMA) / 
-                            ( (cases-Confirmed)/ (pop-POP_ESTIMA)))
 
+# Calculate Relative Risk
+covid <- covid %>% mutate(RR = (Confirmed/POP_ESTIMA) / 
+                            ( (cases-Confirmed)/
+                                (pop-POP_ESTIMA) ))
+
+# Classify relative risk from 1 to 6
 covid$rrclass <- cut(covid$RR, c(-Inf,1,2,3,4,5,Inf), labels=FALSE )
 
+# Set relative risk to 1 if county was not in a cluster
 covid[is.na(covid$cluster), ]$rrclass <- 1
 
+# Create unique State - Relative Risk IDs
+covid$STRR <- paste(covid$ST_Abbr, covid$rrclass)
+
+# Sort by the STRR cluster id, a requirement of the gee function
+covid <- covid %>% arrange(STRR)
+
+# Map Relative Risk scores
+# Note that relative risk is > 1 only if the county was in a cluster
 library(tmap)
 tm_shape(covid) +
   tm_polygons("rrclass", 
@@ -302,6 +323,33 @@ tm_shape(covid) +
 ```{r z-score normalization}
 
 covidnorm <- covid %>% mutate(hispNorm = HispPop - mean(HispPop) / sd(HispPop) )
+```
+
+## GEE Model
+
+From https://data.library.virginia.edu/getting-started-with-generalized-estimating-equations/
+
+dep_gee <- gee(depression ~ diagnose + drug*time,
+               data = dat, 
+               id = CLUSTER, 
+               family = binomial,
+               corstr = "independence")
+summary(dep_gee)
+
+From Chakraborty:
+
+"gamma distribution with logarithmic link function was chosen for all GEEs since"
+
+
+```{r gee model}
+
+age_gee <- gee(covidrate ~ young + average + old, # regression formula, dependent var first, then sequence of independent variables
+               data = covid, # data frame
+               id = STRR, # cluster IDs
+               family = gamma(link = "log"), # "gamma distribution with logarithmic link function"
+               corstr = "exchangeable" # use exchangeable correlation matrix
+               )
+summary(dep_gee)
 
 ```
 

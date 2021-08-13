@@ -301,6 +301,13 @@ paste(sum(covid$cluster==0 & covid$loc_rr >= 1),
       "counties lie outside of a cluster and have local relative risk > 1")
 
 rm(cases_sum, pop_sum)
+
+
+```
+```{r save derived COVID cluster data}
+st_write(covid, here("data","derived","public","covid_clusters.gpkg"))
+
+covid <- st_read(here("data","derived","public","covid_clusters.gpkg"))
 ```
 
 ```{r preprocess data for GEE model }

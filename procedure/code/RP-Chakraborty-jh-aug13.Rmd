@@ -336,23 +336,17 @@ gee_data <- acs %>%
          non_hisp_z = (non_hisp_pct - mean(non_hisp_pct) / sd(non_hisp_pct)),
          non_hisp_non_white_z = (non_hisp_non_white_pct - mean(non_hisp_non_white_pct) / sd(non_hisp_non_white_pct)),
          hisp_z = (hisp_pct - mean(hisp_pct) / sd(hisp_pct)),
+         bpov_z = (bpov_pct - mean(bpov_pct, na.rm = TRUE) / sd(bpov_pct, na.rm = TRUE)),
+         apov_z = (apov_pct - mean(apov_pct, na.rm = TRUE) / sd(apov_pct, na.rm = TRUE)),
          z_5_17 = (pct_5_17 - mean(pct_5_17) / sd(pct_5_17)),
          z_18_34 = (pct_18_34 - mean(pct_18_34) / sd(pct_18_34)),
          z_35_64 = (pct_35_64 - mean(pct_35_64) / sd(pct_35_64)),
          z_65_74 = (pct_65_74 - mean(pct_65_74) / sd(pct_65_74)),
          z_75 = (pct_75 - mean(pct_75) / sd(pct_75)),
          male_z = (male_pct - mean(male_pct) / sd(male_pct)),
-         female_z = (female_pct - mean(female_pct) / sd(female_pct))
+         female_z = (female_pct - mean(female_pct) / sd(female_pct)),
+         covid_rate_z = (covid_rate - mean(covid_rate) / sd(covid_rate))
          )
-
-temp <- acs[!is.na(acs$bpov_pct), ]
-gee_data <- temp %>%
-         mutate(
-         bpov_z = (bpov_pct - mean(bpov_pct) / sd(bpov_pct)),
-         apov_z = (apov_pct - mean(apov_pct) / sd(apov_pct))
-         )
-
-    
 ```
 
 ```{r z-score using iteration/for loops}
@@ -388,12 +382,10 @@ From Chakraborty:
 ```{r gee model}
 # one feature (GEOID 35039) is missing poverty data
 
-covid <- covid[covid$FIPS != "35039", ]
-
 age_gee <- gee(covid_rate ~ gee_data$bpov_z + gee_data$apov_z, # regression formula, dependent var first, then sequence of independent variables
                data = gee_data, # data frame
                id = strr, # cluster IDs
-               family = #gamma(link = "log"), # "gamma distribution with logarithmic link function"
+               family = gamma(link = "log"), # "gamma distribution with logarithmic link function"
                corstr = "exchangeable" # use exchangeable correlation matrix
 )
 summary(dep_gee)

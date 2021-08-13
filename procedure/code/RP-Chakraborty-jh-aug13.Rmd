@@ -310,17 +310,6 @@ st_write(covid, here("data","derived","public","covid_clusters.gpkg"), append = 
 covid <- st_read(here("data","derived","public","covid_clusters.gpkg"))
 ```
 
-```{r map covid rates}
-acs$bins <- cut(acs$rr_class, 
-                breaks=c(-Inf, 0,  1, 2, 3, 4, 5, Inf),
-                labels=c("NA", "<1","1.00-1.99","2.00-2.99","3.00-3.99","4.00-4.99",">5"))
-
-covid_rate_map <- ggplot() + 
-  geom_sf(data = acs,
-          aes(fill = bins), size = .1) + 
-  scale_fill_brewer(palette = "YlOrBr")
-covid_rate_map
-```
 
 ```{r preprocess data for GEE model }
 # Create unique State - Relative Risk IDs
@@ -334,6 +323,18 @@ acs <- left_join(acs, covid_clusters, by = c("geoid"="FIPS"))
 
 # Sort by the STRR cluster id, a requirement of the gee function
 acs <- arrange(acs, strr)
+```
+
+```{r map covid rates}
+acs$bins <- cut(acs$rr_class, 
+                breaks=c(-Inf, 0,  1, 2, 3, 4, 5, Inf),
+                labels=c("NA", "<1","1.00-1.99","2.00-2.99","3.00-3.99","4.00-4.99",">5"))
+
+covid_rate_map <- ggplot() + 
+  geom_sf(data = acs,
+          aes(fill = bins), size = .1) + 
+  scale_fill_brewer(palette = "YlOrBr")
+covid_rate_map
 ```
 
 ```{r z-score normalization}

@@ -114,7 +114,7 @@ census_api_key("9bdde1e9d9ab8fa69fb2d8a7fa333459b341138d")
 #insert if not statement, if disability raw exists
 # read both data sets in, join, then drop alaska + hawaii
 
-# IF file doesn't exist:
+# if(file.exists("/Users/drewderyk/Desktop/GitHub/RPr-Chakraborty2020/data/raw/public/disability_raw_r.csv") != TRUE) {
 
 ACS <- get_acs(geography = "county",
                table = "S1810",
@@ -148,13 +148,12 @@ ACS <- select(ACS, "GEOID",
                     "S1810_C02_003E")
 
 st_write(ACS, here("data", "raw", "public", "disability_raw_r.csv"), append=FALSE)
+# } else {
+  #read.csv(here("data", "raw", "public", "disability_raw_r.csv"))
+  #}
 
 #save as an output /data/raw/public/pre-rocessing
 
-# ELSE;
-read.csv(here("data", "raw", "public", "disability_raw_r.csv"))
-
-# IF
 
 ACS_Poverty <- get_acs(geography = "county",
                        table = "C18130",
@@ -238,36 +237,80 @@ cord <- st_centroid(ACS) %>%
 # write markdown for how spatial epi COULD BE used
 ```
 
+###Relative Risk Derivation
+In order to retrieve relative risk scores at both the county & cluster level, "SatScan software was used to implement a spatial scan statistic based on the Poisson Model" to determine these clusters and estimate relative risk... 
+
 ```{r pull in satscan outputs}
 sat_scan_clusters <- read_sf(here("data","satscans","sat_scan_compare.col.shp")) %>%
   separate(LOC_ID, into=c("STATE_ID","COUNTY_ID"), sep=2, remove=FALSE) %>%
   mutate(GEOID = LOC_ID)
 
 sat_scan <- read_sf(here("data","satscans","sat_scan_compare.gis.shp")) %>%
-  separate(LOC_ID, into=c("STATE_ID","COUNTY_ID"), sep=2, remove=FALSE) %>%
   st_drop_geometry() %>%
   mutate(GEOID = LOC_ID) %>%
-  select("STATE_ID",
-         "COUNTY_ID",
-         "LOC_RR",
+  select("LOC_RR",
          "GEOID")
 
-ACS_sat_scan <- left_join(ACS, sat_scan, by = "GEOID")
+ACS_sat_scan <- left_join(ACS, sat_scan, by = "GEOID") %>%
+   separate(GEOID, into=c("STATE_ID","COUNTY_ID"), sep=2, remove=FALSE)
+  
 
 ACS_sat_scan$LOC_RR[is.na(ACS_sat_scan$LOC_RR)] <- 0 
 #converts all NAs to 0
 
 ACS_sat_scan$bins <- cut(ACS_sat_scan$LOC_RR, 
-                         breaks=c(-.001, 0.99, 1.99, 2.99, 3.99, 4.99, Inf),
-                         labels=c("<1","1.00-1.99","2.00-2.99","3.00-3.99","4.00-4.99",">5"))
+                         breaks=c(-Inf, 0,  1, 2, 3, 4, 5, Inf),
+                         labels=c("NA", "<1","1.00-1.99","2.00-2.99","3.00-3.99","4.00-4.99",">5"))
 
-ACS_sat_scan$state_rr <- paste(ACS_sat_scan$STATE_ID, ACS_sat_scan$bins)
+ACS_sat_scan$CLUSTER_IDS <- paste(ACS_sat_scan$STATE_ID,",",ACS_sat_scan$bins)
 #concatenates state_id with binning values for rr
 
-length(unique(ACS_sat_scan$state_rr))
-#118 unique clusters, we want 102
+length(unique(ACS_sat_scan$CLUSTER_IDS))
+#138 unique clusters, Jay's was 102
 
-#ggplot to check graph
+ACS_check <- ggplot() + 
+  geom_sf(data = ACS_sat_scan,
+          aes(fill = bins), size = .1) + 
+  scale_fill_brewer(palette = "YlOrBr")
+ACS_check
+
+florida <- subset(ACS_sat_scan, STATE_ID == "12")
+
+florida_check <- ggplot() + 
+  geom_sf(data = florida,
+          aes(fill = bins), size = .1) + 
+  scale_fill_manual(
+    values = list(
+      "<1" = "#f6e9b0",
+      "1.00-1.99" = "#ffeba8",
+      "2.00-2.99" = "#ffd372",
+      "3.00-3.99" = "#ffa800",
+      "4.00-4.99" = "#ef9600",
+      "5>" = "#ae6f00")
+  )
+florida_check
 
 #there's a relative risk score for both county & cluster; our analysis uses county based on example in paper (paragraph 4 of methods) & citation Desjardins et al
+```
+```{r Pearson's R Correlation}
+#cor(ACS_sat_scan)
+covid <- read_sf(here(public_r, "gee", "Aug1data","Aug1data.shp")) %>%
+  mutate(covid_rate = Confirmed / POP_ESTIMA * 100000)
+covid$quintiles <- cut(covid$covid_rate,
+      breaks=c(-Inf, 267,  496, 847, 1517, 14256),
+      labels=c("0-266", "267-495","496-846","8467-1516","1517-14257"))
+covid_rate_check <- ggplot() + 
+  geom_sf(data = covid,
+          aes(fill = quintiles), size = .05) + 
+  scale_fill_manual(
+    values = list(
+      "0-266" = "#ffeba8",
+      "267-495" = "#ffd372",
+      "496-846" = "#ffa800",
+      "8467-1516" = "#ef9600",
+      "1517-14257" = "#ae6f00")
+  )
+covid_rate_check
+
+test <- left_join(ACS_sat_scan, covid, by = "COUNTY_VI")
 ```

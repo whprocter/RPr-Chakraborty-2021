@@ -35,7 +35,7 @@ loaded via a namespace (and not attached):
 [53] hms_1.0.0          knitr_1.32         pillar_1.6.0       uuid_0.1-4        
 [57] boot_1.3-26        wk_0.4.1           reprex_2.0.0       glue_1.4.2        
 [61] evaluate_0.14      modelr_0.1.8       vctrs_0.3.6        cellranger_1.1.0  
-[65] gtable_0.3.0       openssl_1.4.3      assertthat_0.2.1   xfun_0.22         
+[65] openssl_1.4.3      gtable_0.3.0       assertthat_0.2.1   xfun_0.22         
 [69] lwgeom_0.2-6       broom_0.7.6        e1071_1.7-7        viridisLite_0.4.0 
 [73] class_7.3-18       tigris_1.0         tinytex_0.31       units_0.7-1       
 [77] ellipsis_0.3.1    

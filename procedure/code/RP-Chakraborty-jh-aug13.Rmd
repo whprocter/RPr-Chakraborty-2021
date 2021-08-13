@@ -302,6 +302,7 @@ paste(sum(covid$cluster==0 & covid$loc_rr >= 1),
 rm(cases_sum, pop_sum)
 
 
+# There's a relative risk score for both county & cluster (in SatScan); our analysis uses county based on example in paper (paragraph 4 of methods) & citation Desjardins et al
 ```
 
 ```{r save derived COVID cluster data}

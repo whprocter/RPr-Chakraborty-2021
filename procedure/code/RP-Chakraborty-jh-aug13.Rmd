@@ -73,6 +73,7 @@ library(cartography)
 library(vtable)
 library(SpatialEpi)
 library(svDialogs)
+library(gee)
 
 ```
 
@@ -163,7 +164,7 @@ acs <- mutate(acs,
               pct_5_17 = S1810_C02_014E / S1810_C01_001E * 100,
               pct_18_34 = S1810_C02_015E / S1810_C01_001E * 100,
               pct_35_64 = S1810_C02_016E / S1810_C01_001E * 100,
-              pct_64_75 = S1810_C02_017E / S1810_C01_001E * 100,
+              pct_65_74 = S1810_C02_017E / S1810_C01_001E * 100,
               pct_75 = S1810_C02_018E / S1810_C01_001E * 100,
               male_pct = S1810_C02_002E / S1810_C01_001E * 100,
               female_pct = S1810_C02_003E / S1810_C01_001E * 100,
@@ -324,24 +325,48 @@ acs <- arrange(acs, strr)
 # formula applies to every cell of a matrix... 
 
 # try extracting just the pct and rate columns from acs and save as new data frame, gee_vars
-gee_data <- select( contains("pct"), contains("rate"))
+gee_data <- acs %>%
+  select(contains("pct"), contains("rate")) %>%
+  mutate(dis_z = (dis_pct - mean(dis_pct) / sd(dis_pct)),
+         white_z = (white_pct - mean(white_pct) / sd(white_pct)),
+         black_z = (black_pct - mean(black_pct) / sd(black_pct)),
+         native_z = (native_pct - mean(native_pct) / sd(native_pct)),
+         asian_z = (asian_pct - mean(asian_pct) / sd(asian_pct)),
+         other_z = (other_pct - mean(other_pct) / sd(other_pct)),
+         non_hisp_z = (non_hisp_pct - mean(non_hisp_pct) / sd(non_hisp_pct)),
+         non_hisp_non_white_z = (non_hisp_non_white_pct - mean(non_hisp_non_white_pct) / sd(non_hisp_non_white_pct)),
+         hisp_z = (hisp_pct - mean(hisp_pct) / sd(hisp_pct)),
+         z_5_17 = (pct_5_17 - mean(pct_5_17) / sd(pct_5_17)),
+         z_18_34 = (pct_18_34 - mean(pct_18_34) / sd(pct_18_34)),
+         z_35_64 = (pct_35_64 - mean(pct_35_64) / sd(pct_35_64)),
+         z_65_74 = (pct_65_74 - mean(pct_65_74) / sd(pct_65_74)),
+         z_75 = (pct_75 - mean(pct_75) / sd(pct_75)),
+         male_z = (male_pct - mean(male_pct) / sd(male_pct)),
+         female_z = (female_pct - mean(female_pct) / sd(female_pct))
+         )
 
+temp <- acs[!is.na(acs$bpov_pct), ]
+gee_data <- temp %>%
+         mutate(
+         bpov_z = (bpov_pct - mean(bpov_pct) / sd(bpov_pct)),
+         apov_z = (apov_pct - mean(apov_pct) / sd(apov_pct))
+         )
+
+    
+```
+
+```{r z-score using iteration/for loops}
 # iteratively replace all the values with z-scores: x - mean(x) / st(x)
-
 # two ideas for iterating: try evaluating columns based on column index with a for loop,
 # or try creating a list of the columns names, and iterating over the list
 
-mycolumns <- list of my columns
+# gee_columns <- list(gee_data)
 
-for i in my columns {
-gee_data$i <- (gee_data$i - mean(gee_data$i) / sd(gee_data$i)
-}
+#for (i in gee_columns) {
+#gee_data$i <- (gee_data$i - mean(gee_data$i) / sd(gee_data$i))}
 
-# or maybe something like this
-
-for i in 1:length(mycolumns ) {
-gee_data[ ,i] <- (gee_data[ ,i] - mean(gee_data[ ,i]) / sd(gee_data[ ,i])
-}
+#for i in 1:length(mycolumns ) {
+#gee_data[ ,i] <- (gee_data[ ,i] - mean(gee_data[ ,i]) / sd(gee_data[ ,i])}
 ```
 
 ## GEE Model
@@ -361,11 +386,14 @@ From Chakraborty:
 
 
 ```{r gee model}
+# one feature (GEOID 35039) is missing poverty data
 
-age_gee <- gee(covidrate ~ young + average + old, # regression formula, dependent var first, then sequence of independent variables
-               data = covid, # data frame
-               id = STRR, # cluster IDs
-               family = gamma(link = "log"), # "gamma distribution with logarithmic link function"
+covid <- covid[covid$FIPS != "35039", ]
+
+age_gee <- gee(covid_rate ~ gee_data$bpov_z + gee_data$apov_z, # regression formula, dependent var first, then sequence of independent variables
+               data = gee_data, # data frame
+               id = strr, # cluster IDs
+               family = #gamma(link = "log"), # "gamma distribution with logarithmic link function"
                corstr = "exchangeable" # use exchangeable correlation matrix
 )
 summary(dep_gee)

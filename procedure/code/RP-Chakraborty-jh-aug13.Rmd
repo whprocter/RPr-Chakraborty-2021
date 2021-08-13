@@ -403,15 +403,49 @@ From Chakraborty:
 ```{r gee model}
 # one feature (GEOID 35039) is missing poverty data
 
-# test <- test[test$FIPS != 35039, ]
+gee_data <- filter(acs, !is.na(bpov_pct) & !is.na(apov_pct) & covid_rate >0)
 
-pov_gee <- gee(covid_rate ~ bpov_pct + apov_pct, # regression formula, dependent var first, then sequence of independent variables
-               data = filter(acs, bpov_pct>0 & apov_pct>0 & covid_rate >0), # data frame
-               id = strr, # cluster IDs
+gee_data <- mutate(gee_data, id=as.integer(statefp) * 10 + rr_class)
+
+race_gee <- gee(covid_rate ~ white_pct + black_pct + native_pct + asian_pct + other_pct, # regression formula, dependent var first, then sequence of independent variables
+               data = gee_data, # data frame
+               id = id, # cluster IDs
                family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
                corstr = "exchangeable" # use exchangeable correlation matrix
 )
-summary(dep_gee)
+summary(race_gee)
+
+ethnicity_gee <- gee(covid_rate ~ non_hisp_pct + non_hisp_non_white_pct + hisp_pct, # regression formula, dependent var first, then sequence of independent variables
+               data = gee_data, # data frame
+               id = id, # cluster IDs
+               family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
+               corstr = "exchangeable" # use exchangeable correlation matrix
+)
+summary(ethnicity_gee)
+
+pov_gee <- gee(covid_rate ~ bpov_pct + apov_pct, # regression formula, dependent var first, then sequence of independent variables
+               data = gee_data, # data frame
+               id = id, # cluster IDs
+               family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
+               corstr = "exchangeable" # use exchangeable correlation matrix
+)
+summary(pov_gee)
+
+age_gee <- gee(covid_rate ~ pct_5_17 + pct_18_34 + pct_35_64 + pct_65_74 + pct_75, # regression formula, dependent var first, then sequence of independent variables
+               data = gee_data, # data frame
+               id = id, # cluster IDs
+               family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
+               corstr = "exchangeable" # use exchangeable correlation matrix
+)
+summary(age_gee)
+
+sex_gee <- gee(covid_rate ~ male_pct + female_pct, # regression formula, dependent var first, then sequence of independent variables
+               data = gee_data, # data frame
+               id = id, # cluster IDs
+               family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
+               corstr = "exchangeable" # use exchangeable correlation matrix
+)
+summary(sex_gee)
 
 ```
 

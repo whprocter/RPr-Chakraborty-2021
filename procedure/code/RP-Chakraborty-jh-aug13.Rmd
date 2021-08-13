@@ -305,7 +305,7 @@ rm(cases_sum, pop_sum)
 
 ```
 ```{r save derived COVID cluster data}
-st_write(covid, here("data","derived","public","covid_clusters.gpkg"))
+st_write(covid, here("data","derived","public","covid_clusters.gpkg"), append = FALSE)
 
 covid <- st_read(here("data","derived","public","covid_clusters.gpkg"))
 ```
@@ -351,7 +351,7 @@ gee_data <- acs %>%
          female_z = (female_pct - mean(female_pct) / sd(female_pct)),
          covid_rate_z = (covid_rate - mean(covid_rate) / sd(covid_rate))
          ) %>%
-  select(contains("z"), "geoid") %>%
+  select(contains("z"), "geoid", "strr") %>%
   st_drop_geometry()
 
   

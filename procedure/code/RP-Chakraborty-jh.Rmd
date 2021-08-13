@@ -208,8 +208,6 @@ acs <- left_join(acs, covid_rate_table, by=c("geoid"="FIPS"))
 ```
 
 
-
-
 ```{r pearsons correlation}
 # helpful resource: https://rstudio-pubs-static.s3.amazonaws.com/240657_5157ff98e8204c358b2118fa69162e18.html
 
@@ -220,21 +218,20 @@ pearsons_r <- acs %>%
   round(3) 
 pearsons_r <- pearsons_r[ , "covid_rate"]
 df = sum(!is.na(acs$dis_pct)) - 2
+
+# this estimation of t gives similar, but not identical, result to 
+# corr.test
 pearsons_t = abs(pearsons_r) / sqrt((1 - pearsons_r^2)/(df))
 
 # assuming two-tailed test or checked assumptions
 pearsons_p <- pt(pearsons_t, df, lower.tail = FALSE) %>% 
   round(4)
 
-  as.data.frame() %>% 
-  select(covid_rate)
-pearsons_r <- filter(pearsons_r, !(row.names(pearsons_r) %in% c("covid_rate")))
-
+# might want to add these results as three columns of a data frame
+# and then remove the covid_rate row
 ```
 
-```{r attempting SpatialEpi methods}
-
-
+```{r SpatialEpi Kulldorff spatial scan}
 covid_geo <- covid_table %>% 
   select(x, y) %>%
   latlong2grid()
@@ -257,7 +254,7 @@ rm(covid_table, covid_geo, expected.cases)
 
 ```
 
-```{r}
+```{r summarize Kulldorff results}
 # Get counties in most significant cluster
 # Note that the ID numbers are row numbers
 clusters <- covid_kulldorff$most.likely.cluster$location.IDs.included
@@ -282,8 +279,8 @@ cases_sum <- sum(covid$cases)
 pop_sum <- sum(covid$pop)
 
 # Calculate Local Relative Risk
-covid <- mutate(covid,
-                loc_rr = (cases / pop) / ((cases_sum - cases) / (pop_sum - pop))
+covid <- mutate(covid, 
+  loc_rr = (cases / pop) / ((cases_sum - cases) / (pop_sum - pop))
 )
 
 # Classify relative risk from 1 to 6
@@ -292,28 +289,48 @@ covid$rr_class <- cut(covid$loc_rr, c(-Inf,1,2,3,4,5,Inf), labels=FALSE )
 # Set relative risk to 1 if county was not in a cluster
 covid[covid$cluster==0, ]$rr_class <- 1
 
-paste(sum(covid$cluster==0 & covid$loc_rr >= 1),
-      "counties outside of a cluster with local relative risk > 1")
-
-# Create unique State - Relative Risk IDs
-covid$strr <- paste(covid$ST_Abbr, covid$rr_class)
-
-# Sort by the STRR cluster id, a requirement of the gee function
-covid <- arrange(covid, strr)
-
 # Map Relative Risk scores
 # Note that relative risk is > 1 only if the county was in a cluster
 library(tmap)
 tm_shape(covid) +
   tm_polygons("rr_class", 
-              title="Local Relative Risk",
-              border.alpha = .2,
-              lwd = 0.2)
+    title="Local Relative Risk",
+    border.alpha = .2,
+    lwd = 0.2
+  )
+
+paste(sum(covid$cluster==0 & covid$loc_rr >= 1),
+      "counties lie outside of a cluster and have local relative risk > 1")
+
+rm(cases_sum, pop_sum)
 ```
+
+```{r preprocess data for GEE model }
+# Create unique State - Relative Risk IDs
+covid$strr <- paste(covid$ST_Abbr, covid$rr_class)
+
+covid_clusters <- covid %>% 
+  select(FIPS, cluster, loc_rr, rr_class, strr) %>% 
+  st_drop_geometry
+
+acs <- left_join(acs, covid_clusters, by = c("geoid"="FIPS"))
+
+# Sort by the STRR cluster id, a requirement of the gee function
+acs <- arrange(acs, strr)
+```
+
 ```{r z-score normalization}
 
+# formula applies to every cell of a matrix... 
 
+# try extracting just the pct and rate columns from acs and save as new data frame, gee_vars
+select( contains("pct"), contains("rate"))
 
+# iteratively replace all the values with z-scores: x - mean(x) / st(x)
+
+# two ideas for iterating: try evaluating columns based on column index with a for loop 
+
+# 
 
 covidnorm <- covid %>% mutate(hispNorm = HispPop - mean(HispPop) / sd(HispPop) )
 ```

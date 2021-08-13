@@ -72,6 +72,8 @@ library(pastecs)
 library(cartography)
 library(secret)
 library(vtable)
+library(SpatialEpi)
+library(svDialogs)
 ```
 
 ```{r formatting package versions}
@@ -107,9 +109,10 @@ ACS_old <- read_csv(here(public_r, "disability", "ACSST5Y2018.S1810_data_with_ov
 
 GEE <- read_csv(here(public_r, "gee", "Aug1GEEdata.csv"))
 
-library(secret) # figure out how to lock API Key
 
-census_api_key("9bdde1e9d9ab8fa69fb2d8a7fa333459b341138d")
+census_api_key(dlgInput("Enter a Census API Key", 
+                        Sys.getenv("CENSUS_API_KEY"))$res,
+               overwrite = TRUE)
 
 #insert if not statement, if disability raw exists
 # read both data sets in, join, then drop alaska + hawaii
@@ -195,7 +198,7 @@ ACS <- left_join(ACS, ACS_Poverty, by = "NAME")
     pct_5_17 = S1810_C02_014E/S1810_C01_001E * 100,
     pct_18_34 = S1810_C02_015E/S1810_C01_001E * 100,
     pct_35_64 = S1810_C02_016E/S1810_C01_001E * 100,
-    pct_64_75 = S1810_C02_017E/S1810_C01_001E * 100,
+    pct_65_74 = S1810_C02_017E/S1810_C01_001E * 100,
     pct_75 = S1810_C02_018E/S1810_C01_001E * 100,
     male_pct = S1810_C02_002E / S1810_C01_001E * 100,
     female_pct = S1810_C02_003E / S1810_C01_001E * 100,
@@ -230,13 +233,6 @@ ACS <- left_join(ACS, ACS_Poverty, by = "NAME")
   select(-"C18130_019E")
 ```
 
-```{r spatial epi}
-cord <- st_centroid(ACS) %>%
-  st_coordinates(ACS)
-#500 sims, .05 value
-# write markdown for how spatial epi COULD BE used
-```
-
 ###Relative Risk Derivation
 In order to retrieve relative risk scores at both the county & cluster level, "SatScan software was used to implement a spatial scan statistic based on the Poisson Model" to determine these clusters and estimate relative risk... 
 
@@ -266,7 +262,7 @@ ACS_sat_scan$CLUSTER_IDS <- paste(ACS_sat_scan$STATE_ID,",",ACS_sat_scan$bins)
 #concatenates state_id with binning values for rr
 
 length(unique(ACS_sat_scan$CLUSTER_IDS))
-#138 unique clusters, Jay's was 102
+#158 unique clusters, Jay's was 102
 
 ACS_check <- ggplot() + 
   geom_sf(data = ACS_sat_scan,
@@ -274,31 +270,18 @@ ACS_check <- ggplot() +
   scale_fill_brewer(palette = "YlOrBr")
 ACS_check
 
-florida <- subset(ACS_sat_scan, STATE_ID == "12")
-
-florida_check <- ggplot() + 
-  geom_sf(data = florida,
-          aes(fill = bins), size = .1) + 
-  scale_fill_manual(
-    values = list(
-      "<1" = "#f6e9b0",
-      "1.00-1.99" = "#ffeba8",
-      "2.00-2.99" = "#ffd372",
-      "3.00-3.99" = "#ffa800",
-      "4.00-4.99" = "#ef9600",
-      "5>" = "#ae6f00")
-  )
-florida_check
-
 #there's a relative risk score for both county & cluster; our analysis uses county based on example in paper (paragraph 4 of methods) & citation Desjardins et al
 ```
+
 ```{r Pearson's R Correlation}
 #cor(ACS_sat_scan)
 covid <- read_sf(here(public_r, "gee", "Aug1data","Aug1data.shp")) %>%
   mutate(covid_rate = Confirmed / POP_ESTIMA * 100000)
+
 covid$quintiles <- cut(covid$covid_rate,
       breaks=c(-Inf, 267,  496, 847, 1517, 14256),
       labels=c("0-266", "267-495","496-846","8467-1516","1517-14257"))
+
 covid_rate_check <- ggplot() + 
   geom_sf(data = covid,
           aes(fill = quintiles), size = .05) + 
@@ -312,5 +295,26 @@ covid_rate_check <- ggplot() +
   )
 covid_rate_check
 
-test <- left_join(ACS_sat_scan, covid, by = "COUNTY_VI")
+covid_nogeom <- st_drop_geometry(covid) %>%
+  select("FIPS",
+         "covid_rate",
+         "quintiles")
+
+ACS_covid_rate <- left_join(ACS_sat_scan, covid_nogeom, by = c("GEOID" = "FIPS"))
+
+cor.test(ACS_covid_rate$covid_rate,
+         ACS_covid_rate$dis_pct,
+         method = "pearson")
+cor.test(ACS_covid_rate$covid_rate,
+         ACS_covid_rate$white_pct,
+         method = "pearson")
+cor.test(ACS_covid_rate$covid_rate,
+         ACS_covid_rate$black_pct,
+         method = "pearson")
+cor.test(ACS_covid_rate$covid_rate,
+         ACS_covid_rate$native_pct,
+         method = "pearson")
+cor.test(ACS_covid_rate$covid_rate,
+         ACS_covid_rate$asian_pct,
+         method = "pearson")
 ```

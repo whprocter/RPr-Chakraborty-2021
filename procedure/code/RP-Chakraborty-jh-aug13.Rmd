@@ -392,10 +392,10 @@ From Chakraborty:
 
 # test <- test[test$FIPS != 35039, ]
 
-pov_gee <- gee(covid_rate_z ~ bpov_z + apov_z, # regression formula, dependent var first, then sequence of independent variables
-               data = gee_data, # data frame
+pov_gee <- gee(covid_rate ~ bpov_pct + apov_pct, # regression formula, dependent var first, then sequence of independent variables
+               data = filter(acs, bpov_pct>0 & apov_pct>0 & covid_rate >0), # data frame
                id = strr, # cluster IDs
-               # family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
+               family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
                corstr = "exchangeable" # use exchangeable correlation matrix
 )
 summary(dep_gee)

@@ -4,10 +4,10 @@ output: html_document
 # Pre-Registration of Rpr-Reproduction of Social Inequities in the distribution of COVID-19: An intra-categorical analysis of people with disabilities in the U.S.
 
 Joseph Holler, Department of Geography, Middlebury College, Middlebury VT 05753
-Peter Kedron, School of Geographical Sciences and Urban Planning, Arizona State University, Tempe AZ 85281 
 Drew An-Pham, Department of Geography, Middlebury College, Middlebury VT 05753 Derrick Burt, Department of Geography, Middlebury College, Middlebury VT 05753
+Peter Kedron, School of Geographical Sciences and Urban Planning, Arizona State University, Tempe AZ 85281 
 
-Version 1.0 | Created Jul 7, 2021 | Last Updated Jul 22, 2021
+Version 1.0 | Created Jul 7, 2021 | Last Updated August 14, 2021
 
 # Abstract
 
@@ -51,7 +51,7 @@ The study was originally conducted using SaTScan software (unspecified version) 
 Other software are not specified in the publication; however data files and communication with the author show that spatial analysis and mapping was conducted in ArcGIS and statistics were calculated in SPSS.
 
 ```{r Load Data File, include = F}
-packages = c("tidycensus", "tidyverse", "downloader", "haven", "stars", "dplyr", "sf", "rdhs", "classInt", "readr", "ggplot2", "here", "s2", "pastecs", "cartography", "vtable", "SpatialEpi", "svDialogs")
+packages = c("tidycensus", "tidyverse", "downloader", "haven", "stars", "dplyr", "sf", "rdhs", "classInt", "readr", "ggplot2", "here", "s2", "pastecs", "cartography", "vtable", "SpatialEpi", "svDialogs", "geepack")
 setdiff(packages, rownames(installed.packages()))
 install.packages(setdiff(packages, rownames(installed.packages())), quietly=TRUE)
 
@@ -73,7 +73,7 @@ library(cartography)
 library(vtable)
 library(SpatialEpi)
 library(svDialogs)
-library(gee)
+library(geepack)
 
 ```
 
@@ -100,79 +100,90 @@ writeLines(capture.output(sessionInfo()),here("procedure","environment","r_envir
 package_version <- read.delim(here("procedure","environment","r_environment.txt"))
 ```
 
-```{r create values to access private and public raw data more efficiently}
-private_r = here("data","raw","private")
-public_r = here("data","raw","public")
-```
+## Query American Communtity Survey Data
+This will require an API key for the census, which can be acquired easily here: [api.census.gov/data/key_signup.html](https://api.census.gov/data/key_signup.html)
 
 ```{r Load Data Files, message = F}
-# ACS_old <- read_csv(here(public_r, "disability", "ACSST5Y2018.S1810_data_with_overlays_2021-07-22T152024.csv"))
-# GEE <- read_csv(here(public_r, "gee", "Aug1GEEdata.csv"))
-
+# get API Key
+# we could store this in the raw/private or scratch folder and load if the
+# researcher has already entered it once
 census_api_key(dlgInput("Enter a Census API Key", 
-                        Sys.getenv("CENSUS_API_KEY"))$res,
-               overwrite = TRUE)
+  Sys.getenv("CENSUS_API_KEY"))$res,
+  overwrite = TRUE)
 
-#insert if not statement, if disability raw exists
-# read both data sets in, join, then drop alaska + hawaii
-
-# IF file doesn't exist:
-
+# Query disability demographic data with geographic boundaries
 acs <- get_acs(geography = "county",
-               table = "S1810",
-               year = 2018,
-               output = "wide",
-               cache_table = TRUE,
-               geometry = TRUE,
-               keep_geo_vars = TRUE) 
+  table = "S1810",
+  year = 2018,
+  output = "wide",
+  cache_table = TRUE,
+  geometry = TRUE,
+  keep_geo_vars = TRUE) 
 
+# Query poverty and disability data
 acs_pov <- get_acs(geography = "county",
-                   table = "C18130",
-                   year = 2018,
-                   output = "wide",
-                   cache_table = TRUE
+  table = "C18130",
+  year = 2018,
+  output = "wide",
+  cache_table = TRUE
 )
 
-# Filter out Alaska, Hawaii & Puerto Rico
+# Remove Alaska, Hawaii & Puerto Rico
 acs <- filter(acs, !STATEFP %in% c("02", "15", "72"))
 
-# Join poverty data to acs data
+# Join poverty data to disability data
 acs <- left_join(acs, acs_pov, by = "GEOID")
 rm(acs_pov)
+```
 
+## Save raw data
+
+Optionally, you may save the raw data to data/raw/public/acs.gpkg
+
+```{r Load downloaded data, message = F}
 # Save downloaded acs data to acs.gpkg
 st_write(acs, here("data", "raw", "public", "acs.gpkg"), append=FALSE)
 ```
 
-Optionally, you may start here by loading census data from the repository
+## Load raw data
+
+Optionally, you may load the raw data and begin processing here
+
 ```{r Load downloaded data, message = F}
 acs <- st_read(here("data", "raw", "public", "acs.gpkg"))
 ```
 
+## Preprocess ACS data
+
+Calculate percentages for each sub-category of disability and remove raw census data from the data frame
+
 ```{r Preprocess ACS data, message = F}
 # calculate percentages
 acs <- mutate(acs,
-              dis_pct = S1810_C02_001E / S1810_C01_001E * 100,
-              white_pct = S1810_C02_004E / S1810_C01_001E * 100,
-              black_pct = S1810_C02_005E / S1810_C01_001E * 100,
-              native_pct = S1810_C02_006E / S1810_C01_001E * 100,
-              asian_pct = S1810_C02_007E / S1810_C01_001E * 100,
-              other_pct = (S1810_C02_008E + S1810_C02_009E + S1810_C02_010E)/S1810_C01_001E *100,
-              non_hisp_pct = S1810_C02_011E / S1810_C01_001E * 100,
-              non_hisp_non_white_pct = (S1810_C02_001E - S1810_C02_012E - S1810_C02_011E) / S1810_C01_001E * 100,
-              hisp_pct = S1810_C02_012E / S1810_C01_001E * 100,
-              pct_5_17 = S1810_C02_014E / S1810_C01_001E * 100,
-              pct_18_34 = S1810_C02_015E / S1810_C01_001E * 100,
-              pct_35_64 = S1810_C02_016E / S1810_C01_001E * 100,
-              pct_65_74 = S1810_C02_017E / S1810_C01_001E * 100,
-              pct_75 = S1810_C02_018E / S1810_C01_001E * 100,
-              male_pct = S1810_C02_002E / S1810_C01_001E * 100,
-              female_pct = S1810_C02_003E / S1810_C01_001E * 100,
-              bpov_pct = (C18130_004E + C18130_011E + C18130_018E) / C18130_001E * 100, 
-              apov_pct = (C18130_005E + C18130_012E + C18130_019E) / C18130_001E * 100
+  dis_pct = S1810_C02_001E / S1810_C01_001E * 100,
+  white_pct = S1810_C02_004E / S1810_C01_001E * 100,
+  black_pct = S1810_C02_005E / S1810_C01_001E * 100,
+  native_pct = S1810_C02_006E / S1810_C01_001E * 100,
+  asian_pct = S1810_C02_007E / S1810_C01_001E * 100,
+  other_pct = 
+    (S1810_C02_008E + S1810_C02_009E + S1810_C02_010E)/S1810_C01_001E *100,
+  non_hisp_white_pct = S1810_C02_011E / S1810_C01_001E * 100,
+  hisp_pct = S1810_C02_012E / S1810_C01_001E * 100,
+  non_hisp_non_white_pct = 
+    (S1810_C02_001E - S1810_C02_012E - S1810_C02_011E) / S1810_C01_001E * 100,
+  pct_5_17 = S1810_C02_014E / S1810_C01_001E * 100,
+  pct_18_34 = S1810_C02_015E / S1810_C01_001E * 100,
+  pct_35_64 = S1810_C02_016E / S1810_C01_001E * 100,
+  pct_65_74 = S1810_C02_017E / S1810_C01_001E * 100,
+  pct_75 = S1810_C02_018E / S1810_C01_001E * 100,
+  male_pct = S1810_C02_002E / S1810_C01_001E * 100,
+  female_pct = S1810_C02_003E / S1810_C01_001E * 100,
+  bpov_pct = (C18130_004E + C18130_011E + C18130_018E) / C18130_001E * 100, 
+  apov_pct = (C18130_005E + C18130_012E + C18130_019E) / C18130_001E * 100
 ) 
 
-# remove raw acs totals
+# remove raw acs data
+# could also do this with contains("pct")
 acs <- acs %>% 
   select(
     -contains("S181"),
@@ -186,11 +197,10 @@ acs <- acs %>%
   rename(county = NAME.x) %>% 
   rename(county_st = NAME) %>% 
   rename_with(tolower)
-
-# one feature (GEOID 35039) is missing poverty data
-acs[is.na(acs$bpov_pct), ]
-
 ```
+
+## Load COVID-19 data
+This data has been provided directly with the research compendium because it is no longer available online in the state in which it was downloaded on August 1, 2020.
 
 ```{r load covid data}
 covid <- read_sf(here("data", "raw", "public","gee","Aug1data","Aug1data.shp"))
@@ -205,8 +215,32 @@ covid_table <- st_drop_geometry(covid)
 # Join poverty data to acs data
 covid_rate_table <- select(covid_table, FIPS, covid_rate)
 acs <- left_join(acs, covid_rate_table, by=c("geoid"="FIPS"))
-
+rm(covid_rate_table)
 ```
+
+## Map Covid Rates
+
+```{r map covid rates}
+acs_covid$bins <- cut(acs_covid$rr_class, 
+                breaks=c(-Inf, 0,  1, 2, 3, 4, 5, Inf),
+                labels=c("NA", "<1","1.00-1.99","2.00-2.99","3.00-3.99","4.00-4.99",">5"))
+
+covid_rate_map <- ggplot() + 
+  geom_sf(data = acs_covid,
+          aes(fill = bins), size = .1) + 
+  scale_fill_brewer(palette = "YlOrBr")
+covid_rate_map
+```
+
+## Map Disability Rates
+
+```{r map disability rates}
+
+# Need to map disability rates here
+```
+
+
+## Calculate Person's Correlation Coefficients
 
 ```{r pearsons correlation}
 # helpful resource: https://rstudio-pubs-static.s3.amazonaws.com/240657_5157ff98e8204c358b2118fa69162e18.html
@@ -231,6 +265,22 @@ pearsons_p <- pt(pearsons_t, df, lower.tail = FALSE) %>%
 # and then remove the covid_rate row
 ```
 
+## Create Table 1 Descriptive Statistics
+**This needs to be done!**
+
+```{r descriptive statistics}
+# one feature (GEOID 35039) is missing poverty data
+acs[is.na(acs$bpov_pct), ]
+
+```
+
+## Kulldorf Spatial Scan Cluster Detection
+
+Note that the statistic is a Monte Carlo simulation with 999 iterations.
+Therefore, if you wish to exactly reproduce the same results as our reproduction
+attempt, please **do not run this section**.
+Instead, load the scan results below.
+
 ```{r SpatialEpi Kulldorff spatial scan}
 covid_geo <- covid_table %>% 
   select(x, y) %>%
@@ -252,6 +302,25 @@ covid_kulldorff <- kulldorff(geo=covid_geo,
 
 rm(covid_table, covid_geo, expected.cases)
 ```
+
+## Save scan results
+
+```{r save spatial scan results}
+saveRDS(covid_kulldorff,
+  file=here("data","derived","public","covid_kulldorff.RDS"))
+```
+
+## Load scan results
+
+```{r save spatial scan results}
+covid_kulldorff <- readRDS(here("data","derived","public","covid_kulldorff.RDS"))
+```
+
+
+## Summarize spatial scan clusters by county
+
+Summarize the results of the Kulldorff spatial scan cluster detection by county
+Code each county `0` if it is not in a cluster and `1` if it is in a cluster.
 
 ```{r summarize Kulldorff results}
 # Get counties in most significant cluster
@@ -297,134 +366,96 @@ tm_shape(covid) +
   )
 
 paste(sum(covid$cluster==0 & covid$loc_rr >= 1),
-      "counties lie outside of a cluster and have local relative risk > 1")
+  "counties lie outside of a cluster and have local relative risk > 1")
 
 rm(cases_sum, pop_sum)
 
-
-# There's a relative risk score for both county & cluster (in SatScan); our analysis uses county based on example in paper (paragraph 4 of methods) & citation Desjardins et al
+# There's a relative risk score for both county & cluster (in SatScan)
+# This reproduction uses county-based relative risk scores based on
+# paragraph 4 of the methods section of the paper and Desjardins et al
 ```
 
-```{r save derived COVID cluster data}
-st_write(covid, here("data","derived","public","covid_clusters.gpkg"), append = FALSE)
-
-covid <- st_read(here("data","derived","public","covid_clusters.gpkg"))
-```
-
+## Preprocess data for GEE modelling
 
 ```{r preprocess data for GEE model }
-# Create unique State - Relative Risk IDs
-covid$strr <- paste(covid$ST_Abbr, covid$rr_class)
-
 covid_clusters <- covid %>% 
-  select(FIPS, cluster, loc_rr, rr_class, strr) %>% 
+  select(FIPS, cluster, loc_rr, rr_class) %>% 
   st_drop_geometry
 
-acs <- left_join(acs, covid_clusters, by = c("geoid"="FIPS"))
+acs_covid <- left_join(acs, covid_clusters, by = c("geoid"="FIPS"))
 
-# Sort by the STRR cluster id, a requirement of the gee function
-acs <- arrange(acs, strr)
+# Filter out non-positive COVID rates and missing data
+# Create unique State - Relative Risk IDs by combining state code and rr_class
+# Sort by the cluster id's (a requirement of the gee function)
+gee_data <- acs_covid %>%
+  filter(covid_rate > 0) %>% 
+  mutate(id = as.integer(statefp) * 10 + rr_class) %>% 
+  arrange(acs_covid, id)
+
+rm(covid_clusters)
 ```
 
-```{r map covid rates}
-acs$bins <- cut(acs$rr_class, 
-                breaks=c(-Inf, 0,  1, 2, 3, 4, 5, Inf),
-                labels=c("NA", "<1","1.00-1.99","2.00-2.99","3.00-3.99","4.00-4.99",">5"))
+## Save preprocessed GEE data inputs
 
-covid_rate_map <- ggplot() + 
-  geom_sf(data = acs,
-          aes(fill = bins), size = .1) + 
-  scale_fill_brewer(palette = "YlOrBr")
-covid_rate_map
+Optionally, you may save the preprocessed to `data/raw/public/gee_data.gpkg`
+
+```{r save preprocessed COVID cluster data}
+st_write(gee_data, here("data","derived","public","gee_data.gpkg"), append = FALSE)
 ```
 
-```{r z-score normalization}
+## Load preprocessed GEE input data
 
-# formula applies to every cell of a matrix... 
+Optionally, you may load the preprocessed data from `data/raw/public/gee_data.gpkg`
 
-# try extracting just the pct and rate columns from acs and save as new data frame, gee_vars
-gee_data <- acs %>%
-  select(contains("pct"), contains("rate"), "geoid", "strr") %>%
-  mutate(dis_z = (dis_pct - mean(dis_pct) / sd(dis_pct)),
-         white_z = (white_pct - mean(white_pct) / sd(white_pct)),
-         black_z = (black_pct - mean(black_pct) / sd(black_pct)),
-         native_z = (native_pct - mean(native_pct) / sd(native_pct)),
-         asian_z = (asian_pct - mean(asian_pct) / sd(asian_pct)),
-         other_z = (other_pct - mean(other_pct) / sd(other_pct)),
-         non_hisp_z = (non_hisp_pct - mean(non_hisp_pct) / sd(non_hisp_pct)),
-         non_hisp_non_white_z = (non_hisp_non_white_pct - mean(non_hisp_non_white_pct) / sd(non_hisp_non_white_pct)),
-         hisp_z = (hisp_pct - mean(hisp_pct) / sd(hisp_pct)),
-         bpov_z = (bpov_pct - mean(bpov_pct, na.rm = TRUE) / sd(bpov_pct, na.rm = TRUE)),
-         apov_z = (apov_pct - mean(apov_pct, na.rm = TRUE) / sd(apov_pct, na.rm = TRUE)),
-         z_5_17 = (pct_5_17 - mean(pct_5_17) / sd(pct_5_17)),
-         z_18_34 = (pct_18_34 - mean(pct_18_34) / sd(pct_18_34)),
-         z_35_64 = (pct_35_64 - mean(pct_35_64) / sd(pct_35_64)),
-         z_65_74 = (pct_65_74 - mean(pct_65_74) / sd(pct_65_74)),
-         z_75 = (pct_75 - mean(pct_75) / sd(pct_75)),
-         male_z = (male_pct - mean(male_pct) / sd(male_pct)),
-         female_z = (female_pct - mean(female_pct) / sd(female_pct)),
-         covid_rate_z = (covid_rate - mean(covid_rate) / sd(covid_rate))
-         ) %>%
-  select(contains("z"), "geoid", "strr") %>%
-  st_drop_geometry()
-
-  
+```{r save preprocessed COVID cluster data}
+gee_data <- st_read(here("data","derived","public","gee_data.gpkg"))
 ```
 
-```{r z-score using iteration/for loops}
-# iteratively replace all the values with z-scores: x - mean(x) / st(x)
-# two ideas for iterating: try evaluating columns based on column index with a for loop,
-# or try creating a list of the columns names, and iterating over the list
+ 
 
-# gee_columns <- list(gee_data)
+Need report on number & frequency of clusters
 
-#for (i in gee_columns) {
-#gee_data$i <- (gee_data$i - mean(gee_data$i) / sd(gee_data$i))}
-
-#for i in 1:length(mycolumns ) {
-#gee_data[ ,i] <- (gee_data[ ,i] - mean(gee_data[ ,i]) / sd(gee_data[ ,i])}
+```{r}
+# list the clusters and count # of counties in each
 ```
 
-## GEE Model
 
-From https://data.library.virginia.edu/getting-started-with-generalized-estimating-equations/
 
-dep_gee <- gee(depression ~ diagnose + drug*time,
-data = dat, 
-id = CLUSTER, 
-family = binomial,
-corstr = "independence")
-summary(dep_gee)
+## GEE Models
 
-From Chakraborty:
+Generalized Estimating Equation parameters:
 
-"gamma distribution with logarithmic link function was chosen for all GEEs since"
+"The **‘exchangeable’ correlation matrix** was selected for the results reported here, since this speci-fication yielded the best statistical fit based on the QIC (quasi- likelihood under the independence) model criterion."
+(Chakraborty 2021, Methods paragraph 5)
 
+"The **gamma distribution** with **logarithmic link function** was chosen for all GEEs since this model specification provided the lowest QIC value."
+(Chakraborty 2021, Methods paragraph 5)
+
+Useful Reference:
+https://data.library.virginia.edu/getting-started-with-generalized-estimating-equations/
 
 ```{r gee model}
-# one feature (GEOID 35039) is missing poverty data
 
-gee_data <- filter(acs, !is.na(bpov_pct) & !is.na(apov_pct) & covid_rate >0)
+# it would be smarter to iterate over a list of models and their parameters
 
-gee_data <- mutate(gee_data, id=as.integer(statefp) * 10 + rr_class)
+race_gee <- geeglm(covid_rate ~ white_pct + black_pct + native_pct + asian_pct + other_pct, # regression formula, dependent var first, then sequence of independent variables
+               data = gee_data, # data frame
+               id = statefp, # cluster IDs
+               family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
+               corstr = "exchangeable" # use exchangeable correlation matrix
+)
+race_gee
+#summary(race_gee)
 
-race_gee <- gee(covid_rate ~ white_pct + black_pct + native_pct + asian_pct + other_pct, # regression formula, dependent var first, then sequence of independent variables
+ethnicity_gee <- geeglm(covid_rate ~ non_hisp_white_pct + hisp_pct + non_hisp_non_white_pct, # regression formula, dependent var first, then sequence of independent variables
                data = gee_data, # data frame
                id = id, # cluster IDs
                family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
                corstr = "exchangeable" # use exchangeable correlation matrix
 )
-summary(race_gee)
+ethnicity_gee
 
-ethnicity_gee <- gee(covid_rate ~ non_hisp_pct + non_hisp_non_white_pct + hisp_pct, # regression formula, dependent var first, then sequence of independent variables
-               data = gee_data, # data frame
-               id = id, # cluster IDs
-               family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
-               corstr = "exchangeable" # use exchangeable correlation matrix
-)
-summary(ethnicity_gee)
-
-pov_gee <- gee(covid_rate ~ bpov_pct + apov_pct, # regression formula, dependent var first, then sequence of independent variables
+pov_gee <- geeglm(covid_rate ~ bpov_pct + apov_pct, # regression formula, dependent var first, then sequence of independent variables
                data = gee_data, # data frame
                id = id, # cluster IDs
                family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
@@ -432,69 +463,22 @@ pov_gee <- gee(covid_rate ~ bpov_pct + apov_pct, # regression formula, dependent
 )
 summary(pov_gee)
 
-age_gee <- gee(covid_rate ~ pct_5_17 + pct_18_34 + pct_35_64 + pct_65_74 + pct_75, # regression formula, dependent var first, then sequence of independent variables
+age_gee <- geeglm(covid_rate ~ pct_5_17 + pct_18_34 + pct_35_64 + pct_65_74 + pct_75, # regression formula, dependent var first, then sequence of independent variables
                data = gee_data, # data frame
                id = id, # cluster IDs
                family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
                corstr = "exchangeable" # use exchangeable correlation matrix
 )
 summary(age_gee)
+QIC(age_gee)
 
-sex_gee <- gee(covid_rate ~ male_pct + female_pct, # regression formula, dependent var first, then sequence of independent variables
+sex_gee <- geeglm(covid_rate ~ male_pct + female_pct, # regression formula, dependent var first, then sequence of independent variables
                data = gee_data, # data frame
                id = id, # cluster IDs
                family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
                corstr = "exchangeable" # use exchangeable correlation matrix
 )
 summary(sex_gee)
-
+QIC(sex_gee)
 ```
 
-
-
-```{r attempting DCluster methods}
-# Note that DCluster loads MASS which as a SELECT function conflicting with dplyr
-# covid <- read_sf(here("data", "raw", "public","gee","Aug1data","Aug1data.shp"))
-# covid_data <- covid %>% mutate(Observed = Confirmed, Expected = Confirmed * sum(Confirmed)/sum(POP_ESTIMA), Population=POP_ESTIMA, x=X, y=Y )
-# 
-# kn.pboot<-boot(covid_data, statistic=kullnagar.pboot, sim="parametric", 
-# 	ran.gen=poisson.sim,  R=999, fractpop=.2)
-# plot(kn.pboot)
-# 
-# mle<-calculate.mle(covid_data, model="poisson")
-# thegrid=st_drop_geometry(covid_data[,c("x","y")])
-# knresults<-opgam(data=covid_data, thegrid=thegrid, alpha=0.1,
-#   iscluster=kn.iscluster, fractpop=.5, R=9, model="poisson", mle=mle)
-```
-
-# Select relevant columns
-acs <- select(acs,
-NAME = "NAME.x",
-"STATEFP",
-"COUNTYFP",
-"GEOID",
-"S1810_C01_001E",
-"S1810_C02_001E",
-"S1810_C02_004E",
-"S1810_C02_005E",
-"S1810_C02_006E",
-"S1810_C02_007E",
-"S1810_C02_008E",
-"S1810_C02_009E",
-"S1810_C02_010E",
-"S1810_C02_011E",
-"S1810_C02_012E",
-"S1810_C02_014E",
-"S1810_C02_015E",
-"S1810_C02_016E",
-"S1810_C02_017E",
-"S1810_C02_018E",
-"S1810_C02_002E",
-"S1810_C02_003E",
-"C18130_001E",
-"C18130_004E",
-"C18130_005E",
-"C18130_011E",
-"C18130_012E",
-"C18130_018E",
-"C18130_019E")

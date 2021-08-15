@@ -1,0 +1,135 @@
+---
+title: "Miscellanous Code Notes"
+author: "Joseph Holler"
+date: "8/14/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r attempting DCluster methods}
+# Note that DCluster loads MASS which as a SELECT function conflicting with dplyr
+# covid <- read_sf(here("data", "raw", "public","gee","Aug1data","Aug1data.shp"))
+# covid_data <- covid %>% mutate(Observed = Confirmed, Expected = Confirmed * sum(Confirmed)/sum(POP_ESTIMA), Population=POP_ESTIMA, x=X, y=Y )
+# 
+# kn.pboot<-boot(covid_data, statistic=kullnagar.pboot, sim="parametric", 
+# 	ran.gen=poisson.sim,  R=999, fractpop=.2)
+# plot(kn.pboot)
+# 
+# mle<-calculate.mle(covid_data, model="poisson")
+# thegrid=st_drop_geometry(covid_data[,c("x","y")])
+# knresults<-opgam(data=covid_data, thegrid=thegrid, alpha=0.1,
+#   iscluster=kn.iscluster, fractpop=.5, R=9, model="poisson", mle=mle)
+```
+
+# List of relevant ACS variables
+"S1810_C01_001E",
+"S1810_C02_001E",
+"S1810_C02_004E",
+"S1810_C02_005E",
+"S1810_C02_006E",
+"S1810_C02_007E",
+"S1810_C02_008E",
+"S1810_C02_009E",
+"S1810_C02_010E",
+"S1810_C02_011E",
+"S1810_C02_012E",
+"S1810_C02_014E",
+"S1810_C02_015E",
+"S1810_C02_016E",
+"S1810_C02_017E",
+"S1810_C02_018E",
+"S1810_C02_002E",
+"S1810_C02_003E",
+"C18130_001E",
+"C18130_004E",
+"C18130_005E",
+"C18130_011E",
+"C18130_012E",
+"C18130_018E",
+"C18130_019E"
+
+```{r z-score normalization}
+
+# formula applies to every cell of a matrix... 
+
+# try extracting just the pct and rate columns from acs and save as new data frame, gee_vars
+gee_data <- acs %>%
+  select(contains("pct"), contains("rate"), "geoid", "strr") %>%
+  mutate(dis_z = (dis_pct - mean(dis_pct) / sd(dis_pct)),
+         white_z = (white_pct - mean(white_pct) / sd(white_pct)),
+         black_z = (black_pct - mean(black_pct) / sd(black_pct)),
+         native_z = (native_pct - mean(native_pct) / sd(native_pct)),
+         asian_z = (asian_pct - mean(asian_pct) / sd(asian_pct)),
+         other_z = (other_pct - mean(other_pct) / sd(other_pct)),
+         non_hisp_z = (non_hisp_pct - mean(non_hisp_pct) / sd(non_hisp_pct)),
+         non_hisp_non_white_z = (non_hisp_non_white_pct - mean(non_hisp_non_white_pct) / sd(non_hisp_non_white_pct)),
+         hisp_z = (hisp_pct - mean(hisp_pct) / sd(hisp_pct)),
+         bpov_z = (bpov_pct - mean(bpov_pct, na.rm = TRUE) / sd(bpov_pct, na.rm = TRUE)),
+         apov_z = (apov_pct - mean(apov_pct, na.rm = TRUE) / sd(apov_pct, na.rm = TRUE)),
+         z_5_17 = (pct_5_17 - mean(pct_5_17) / sd(pct_5_17)),
+         z_18_34 = (pct_18_34 - mean(pct_18_34) / sd(pct_18_34)),
+         z_35_64 = (pct_35_64 - mean(pct_35_64) / sd(pct_35_64)),
+         z_65_74 = (pct_65_74 - mean(pct_65_74) / sd(pct_65_74)),
+         z_75 = (pct_75 - mean(pct_75) / sd(pct_75)),
+         male_z = (male_pct - mean(male_pct) / sd(male_pct)),
+         female_z = (female_pct - mean(female_pct) / sd(female_pct)),
+         covid_rate_z = (covid_rate - mean(covid_rate) / sd(covid_rate))
+         ) %>%
+  select(contains("z"), "geoid", "strr") %>%
+  st_drop_geometry()
+```
+
+```{r z-score using iteration/for loops}
+# iteratively replace all the values with z-scores: x - mean(x) / st(x)
+# two ideas for iterating: try evaluating columns based on column index with a for loop,
+# or try creating a list of the columns names, and iterating over the list
+
+# gee_columns <- list(gee_data)
+
+#for (i in gee_columns) {
+#gee_data$i <- (gee_data$i - mean(gee_data$i) / sd(gee_data$i))}
+
+#for i in 1:length(mycolumns ) {
+#gee_data[ ,i] <- (gee_data[ ,i] - mean(gee_data[ ,i]) / sd(gee_data[ ,i])}
+```
+
+```{r pull in satscan outputs}
+sat_scan_clusters <- read_sf(here("data","satscans","sat_scan_compare.col.shp")) %>%
+  separate(LOC_ID, into=c("STATE_ID","COUNTY_ID"), sep=2, remove=FALSE) %>%
+  mutate(GEOID = LOC_ID)
+
+sat_scan <- read_sf(here("data","satscans","sat_scan_compare.gis.shp")) %>%
+  st_drop_geometry() %>%
+  mutate(GEOID = LOC_ID) %>%
+  select("LOC_RR",
+         "GEOID")
+
+ACS_sat_scan <- left_join(ACS, sat_scan, by = "GEOID") %>%
+   separate(GEOID, into=c("STATE_ID","COUNTY_ID"), sep=2, remove=FALSE)
+  
+
+ACS_sat_scan$LOC_RR[is.na(ACS_sat_scan$LOC_RR)] <- 0 
+#converts all NAs to 0
+
+ACS_sat_scan$bins <- cut(ACS_sat_scan$LOC_RR, 
+                         breaks=c(-Inf, 0,  1, 2, 3, 4, 5, Inf),
+                         labels=c("NA", "<1","1.00-1.99","2.00-2.99","3.00-3.99","4.00-4.99",">5"))
+
+ACS_sat_scan$CLUSTER_IDS <- paste(ACS_sat_scan$STATE_ID,",",ACS_sat_scan$bins)
+#concatenates state_id with binning values for rr
+
+length(unique(ACS_sat_scan$CLUSTER_IDS))
+#158 unique clusters, Jay's was 102
+
+ACS_check <- ggplot() + 
+  geom_sf(data = ACS_sat_scan,
+          aes(fill = bins), size = .1) + 
+  scale_fill_brewer(palette = "YlOrBr")
+ACS_check
+
+#there's a relative risk score for both county & cluster; our analysis uses county based on example in paper (paragraph 4 of methods) & citation Desjardins et al
+```

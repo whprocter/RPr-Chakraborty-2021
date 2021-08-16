@@ -158,6 +158,7 @@ acs_derived <- mutate(acs,
 ) 
 
 # select only relevant geographic identifiers and derived percentages
+# and transform to USA Contiguous Albers Equal Area Conic projection
 acs_derived <- acs_derived %>% 
   select(
     geoid = GEOID,
@@ -165,7 +166,8 @@ acs_derived <- acs_derived %>%
     county = NAME.x,
     county_st = NAME,
     contains("pct")
-  )
+  ) %>% 
+  st_transform(5070)
 ```
 
 ## Load COVID-19 data
@@ -334,19 +336,20 @@ covid$cluster <- 0
 # Change cluster to 1 for any county identified in any cluster
 covid[clusters, ]$cluster <- 1
 
-cases_sum <- sum(covid$cases)
-pop_sum <- sum(covid$pop)
+# Calculate and Classify Local Relative Risk
+# cut() classifies rr_loc from 1 to 6
+# * cluster forces counties outside of clusters to be assigned to class 0
+covid <- covid %>% 
+  mutate( 
+    rr_loc = 
+      (cases / pop) / ((sum(covid$cases) - cases) / (sum(covid$pop) - pop)),
+    rr_class = 
+      (cut(rr_loc, c(-Inf,1,2,3,4,5,Inf), labels=FALSE) - 1) * cluster + 1
+  ) %>% 
+  st_transform(5070)
 
-# Calculate Local Relative Risk
-covid <- mutate(covid, 
-  loc_rr = (cases / pop) / ((cases_sum - cases) / (pop_sum - pop))
-)
-
-# Classify relative risk from 1 to 6
-covid$rr_class <- cut(covid$loc_rr, c(-Inf,1,2,3,4,5,Inf), labels=FALSE )
-
-# Set relative risk to 1 if county was not in a cluster
-covid[covid$cluster==0, ]$rr_class <- 1
+# Count frequency of each class of COVID risk
+covid %>% st_drop_geometry %>% count(rr_class)
 
 # Map Relative Risk scores
 # Note that relative risk is > 1 only if the county was in a cluster
@@ -355,13 +358,12 @@ tm_shape(covid) +
     title="Local Relative Risk",
     border.alpha = .2,
     lwd = 0.2,
-    palette="YlOrBr"
+    palette="YlOrBr",
+    style="cat"
   )
 
 paste(sum(covid$cluster==0 & covid$loc_rr >= 1),
   "counties lie outside of a cluster and have local relative risk > 1")
-
-rm(cases_sum, pop_sum)
 
 # There's a relative risk score for both county & cluster (in SatScan)
 # This reproduction uses county-based relative risk scores based on
@@ -372,7 +374,7 @@ rm(cases_sum, pop_sum)
 
 ```{r preprocess data for GEE model }
 covid_clusters <- covid %>% 
-  select(fips, cluster, loc_rr, rr_class) %>% 
+  select(fips, cluster, rr_loc, rr_class) %>% 
   st_drop_geometry
 
 # Filter out non-positive COVID rates and missing data
@@ -391,14 +393,14 @@ rm(covid_clusters)
 Optionally, you may save the preprocessed to `data/raw/public/gee_data.gpkg`
 
 ```{r save preprocessed COVID cluster data}
-st_write(gee_data, here("data","derived","public","gee_data.gpkg"), append = FALSE)
+write_sf(gee_data, here("data","derived","public","gee_data.gpkg"))
 ```
 
 ## Load preprocessed GEE input data
 
 Optionally, you may load the preprocessed data from `data/raw/public/gee_data.gpkg`
 
-```{r save preprocessed COVID cluster data}
+```{r load preprocessed COVID cluster data}
 gee_data <- st_read(here("data","derived","public","gee_data.gpkg"))
 ```
 
@@ -428,15 +430,18 @@ https://data.library.virginia.edu/getting-started-with-generalized-estimating-eq
 ```{r gee model}
 
 # it would be smarter to iterate over a list of models and their parameters
+# currently stuck on how to add GLM model results to a cell of a dataframe
 
 race_gee <- geeglm(covid_rate ~ white_pct + black_pct + native_pct + asian_pct + other_pct, # regression formula, dependent var first, then sequence of independent variables
                data = gee_data, # data frame
-               id = statefp, # cluster IDs
+               id = id, # cluster IDs
                family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
                corstr = "exchangeable" # use exchangeable correlation matrix
 )
-race_gee
-#summary(race_gee)
+coef(summary(race_gee))
+# Wald and P calculated in summary only; 
+# coef() extracts coefficients table from the summary, same as $coefficients 
+QIC(race_gee)
 
 ethnicity_gee <- geeglm(covid_rate ~ non_hisp_white_pct + hisp_pct + non_hisp_non_white_pct, # regression formula, dependent var first, then sequence of independent variables
                data = gee_data, # data frame
@@ -444,7 +449,7 @@ ethnicity_gee <- geeglm(covid_rate ~ non_hisp_white_pct + hisp_pct + non_hisp_no
                family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
                corstr = "exchangeable" # use exchangeable correlation matrix
 )
-summary(ethnicity_gee)
+coef(summary(ethnicity_gee))
 QIC(ethnicity_gee)
 
 
@@ -454,7 +459,7 @@ pov_gee <- geeglm(covid_rate ~ bpov_pct + apov_pct, # regression formula, depend
                family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
                corstr = "exchangeable", # use exchangeable correlation matrix
 )
-summary(pov_gee)
+coef(summary(pov_gee))
 QIC(pov_gee)
 
 age_gee <- geeglm(covid_rate ~ pct_5_17 + pct_18_34 + pct_35_64 + pct_65_74 + pct_75, # regression formula, dependent var first, then sequence of independent variables
@@ -463,7 +468,7 @@ age_gee <- geeglm(covid_rate ~ pct_5_17 + pct_18_34 + pct_35_64 + pct_65_74 + pc
                family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
                corstr = "exchangeable" # use exchangeable correlation matrix
 )
-summary(age_gee)
+coef(summary(age_gee))
 QIC(age_gee)
 
 sex_gee <- geeglm(covid_rate ~ male_pct + female_pct, # regression formula, dependent var first, then sequence of independent variables
@@ -472,7 +477,7 @@ sex_gee <- geeglm(covid_rate ~ male_pct + female_pct, # regression formula, depe
                family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
                corstr = "exchangeable" # use exchangeable correlation matrix
 )
-summary(sex_gee)
+coef(summary(sex_gee))
 QIC(sex_gee)
 ```
 

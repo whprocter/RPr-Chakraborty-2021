@@ -174,3 +174,44 @@ ACS_check
 
 #there's a relative risk score for both county & cluster; our analysis uses county based on example in paper (paragraph 4 of methods) & citation Desjardins et al
 ```
+
+
+```{r attempts to iterate over the 5 models}
+gee_theme <- c("race","ethnicity","poverty status","age","biological sex")
+gee_formula <- c("covid_rate ~ white_pct + black_pct + native_pct + asian_pct + other_pct",
+  "covid_rate ~ non_hisp_white_pct + hisp_pct + non_hisp_non_white_pct",
+  "covid_rate ~ bpov_pct + apov_pct",
+  "covid_rate ~ pct_5_17 + pct_18_34 + pct_35_64 + pct_65_74 + pct_75",
+  "covid_rate ~ male_pct + female_pct"
+  )
+gee_models <- data.frame(gee_theme, gee_formula)
+
+gee_formula <- formula(covid_rate ~ white_pct + black_pct + native_pct + asian_pct + other_pct)
+
+
+
+gee_models$model <- I(geeglm(gee_formula,
+    data = gee_data, # data frame
+    id = id, # cluster IDs
+    family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
+    corstr = "exchangeable" # use exchangeable correlation matrix)
+  ))
+
+
+gee_models <- gee_models %>% 
+  mutate(gee_model = geeglm(formula(gee_formula),
+    data = gee_data, # data frame
+    id = id, # cluster IDs
+    family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
+    corstr = "exchangeable" # use exchangeable correlation matrix)
+  ))
+
+                                      
+
+gee_models$model <- geeglm(paste(gee_models$formula, collapse = " "),
+  data = gee_data, # data frame
+  id = id, # cluster IDs
+  family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
+  corstr = "exchangeable" # use exchangeable correlation matrix)
+)
+```

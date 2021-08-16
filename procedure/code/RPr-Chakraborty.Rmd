@@ -50,43 +50,19 @@ There is no **randomization** in the original study.
 The study was originally conducted using SaTScan software (unspecified version) to implement the spatial scan statistic.
 Other software are not specified in the publication; however data files and communication with the author show that spatial analysis and mapping was conducted in ArcGIS and statistics were calculated in SPSS.
 
-```{r Load Data File, include = F}
-packages = c("tidycensus", "tidyverse", "downloader", "haven", "stars", "dplyr", "sf", "rdhs", "classInt", "readr", "ggplot2", "here", "s2", "pastecs", "cartography", "vtable", "SpatialEpi", "svDialogs", "geepack")
-setdiff(packages, rownames(installed.packages()))
-install.packages(setdiff(packages, rownames(installed.packages())), quietly=TRUE)
 
-library(tidycensus)
-library(tidyverse)
-library(downloader)
-library(haven)
-library(sf)
-library(stars)
-library(dplyr) # may not need this if you have tidyverse
-library(here)
-library(classInt)
-library(rdhs)
-library(readr)
-library(ggplot2)
-library(s2)
-library(pastecs)
-library(cartography)
-library(vtable)
-library(SpatialEpi)
-library(svDialogs)
-library(geepack)
 
-```
-
-```{r formatting package versions}
+```{r setup}
 # list of required packages
-packages = c("here")
+# we could probably be listing them all here, making the previous block redundant.
+packages = c("tidycensus", "tidyverse", "downloader", "haven", "stars", "dplyr", "sf", "rdhs", "classInt", "readr", "ggplot2", "here", "s2", "pastecs", "tmap", "vtable", "SpatialEpi", "svDialogs", "geepack")
 
 # load and install required packages
 package.check <- lapply(
   packages,
   FUN = function(x) {
     if (!require(x, character.only = TRUE)) {
-      install.packages(x, dependencies = TRUE)
+      install.packages(x, dependencies = TRUE, quietly=TRUE)
       library(x, character.only = TRUE)
     }
   }
@@ -133,7 +109,6 @@ acs <- filter(acs, !STATEFP %in% c("02", "15", "72"))
 
 # Join poverty data to disability data
 acs <- left_join(acs, acs_pov, by = "GEOID")
-rm(acs_pov)
 ```
 
 ## Save raw data
@@ -159,7 +134,7 @@ Calculate percentages for each sub-category of disability and remove raw census 
 
 ```{r Preprocess ACS data, message = F}
 # calculate percentages
-acs <- mutate(acs,
+acs_derived <- mutate(acs,
   dis_pct = S1810_C02_001E / S1810_C01_001E * 100,
   white_pct = S1810_C02_004E / S1810_C01_001E * 100,
   black_pct = S1810_C02_005E / S1810_C01_001E * 100,
@@ -182,96 +157,111 @@ acs <- mutate(acs,
   apov_pct = (C18130_005E + C18130_012E + C18130_019E) / C18130_001E * 100
 ) 
 
-# remove raw acs data
-# could also do this with contains("pct")
-acs <- acs %>% 
+# select only relevant geographic identifiers and derived percentages
+acs_derived <- acs_derived %>% 
   select(
-    -contains("S181"),
-    -contains("C181"),
-    -COUNTYNS,
-    -AFFGEOID,
-    -LSAD,
-    -ALAND,
-    -AWATER,
-    -NAME.y) %>% 
-  rename(county = NAME.x) %>% 
-  rename(county_st = NAME) %>% 
-  rename_with(tolower)
+    geoid = GEOID,
+    statefp = STATEFP,
+    county = NAME.x,
+    county_st = NAME,
+    contains("pct")
+  )
 ```
 
 ## Load COVID-19 data
 This data has been provided directly with the research compendium because it is no longer available online in the state in which it was downloaded on August 1, 2020.
+The data was provided by the original author, Jayajit Chakraborty.
 
 ```{r load covid data}
-covid <- read_sf(here("data", "raw", "public","gee","Aug1data","Aug1data.shp"))
+covid <- read_sf(here("data", "raw", "public","covidcase080120.gpkg"))
 covid <- select(covid,
-            FIPS, ST_Abbr,
-            pop = POP_ESTIMA,
-            cases = Confirmed,
-            x=X, y=Y)
+  fips = FIPS,
+  pop = POP_ESTIMA,
+  cases = Confirmed,
+  x=X, y=Y)
 covid$covid_rate <- covid$cases / covid$pop * 100000
 covid_table <- st_drop_geometry(covid)
 
+# It might be wise to calculate our own X and Y using centroids
+
 # Join poverty data to acs data
-covid_rate_table <- select(covid_table, FIPS, covid_rate)
-acs <- left_join(acs, covid_rate_table, by=c("geoid"="FIPS"))
-rm(covid_rate_table)
+covid_rate_table <- select(covid_table, fips, covid_rate)
+acs_covid <- left_join(acs_derived, covid_rate_table, by=c("geoid"="fips"))
+
 ```
+
+### Optionally, remove uneccesary variables
+
+```{r remove unecessary variables}
+rm(acs_pov, acs, acs_derived, covid_rate_table)
+```
+
 
 ## Map Covid Rates
 
 ```{r map covid rates}
-acs_covid$bins <- cut(acs_covid$rr_class, 
-                breaks=c(-Inf, 0,  1, 2, 3, 4, 5, Inf),
-                labels=c("NA", "<1","1.00-1.99","2.00-2.99","3.00-3.99","4.00-4.99",">5"))
 
-covid_rate_map <- ggplot() + 
-  geom_sf(data = acs_covid,
-          aes(fill = bins), size = .1) + 
-  scale_fill_brewer(palette = "YlOrBr")
-covid_rate_map
+# This is not a working correct map. Need to map 5
+# quintile classes of covid_rate to mach figure 1
+
+tm_shape(acs_covid) +
+  tm_polygons("covid_rate", 
+    title="COVID-19 Cases per 100,000",
+    style="quantile",
+    border.alpha = .2,
+    lwd = 0.2,
+    palette="YlOrBr"
+  )
+
 ```
 
 ## Map Disability Rates
 
 ```{r map disability rates}
 
-# Need to map disability rates here
-```
+tm_shape(acs_covid) +
+  tm_polygons("dis_pct", 
+    title="Percent with Disability",
+    style="quantile",
+    border.alpha = .2,
+    lwd = 0.2,
+    palette="YlOrBr"
+  )
 
-
-## Calculate Person's Correlation Coefficients
-
-```{r pearsons correlation}
-# helpful resource: https://rstudio-pubs-static.s3.amazonaws.com/240657_5157ff98e8204c358b2118fa69162e18.html
-
-pearsons_r <- acs %>%
-  select(where(is.numeric)) %>% 
-  st_drop_geometry() %>% 
-  cor(method="pearson", use="pairwise.complete.obs") %>% 
-  round(3) 
-pearsons_r <- pearsons_r[ , "covid_rate"]
-df = sum(!is.na(acs$dis_pct)) - 2
-
-# this estimation of t gives similar, but not identical, result to 
-# corr.test
-pearsons_t = abs(pearsons_r) / sqrt((1 - pearsons_r^2)/(df))
-
-# assuming two-tailed test or checked assumptions
-pearsons_p <- pt(pearsons_t, df, lower.tail = FALSE) %>% 
-  round(4)
-
-# might want to add these results as three columns of a data frame
-# and then remove the covid_rate row
 ```
 
 ## Create Table 1 Descriptive Statistics
 **This needs to be done!**
 
 ```{r descriptive statistics}
-# one feature (GEOID 35039) is missing poverty data
-acs[is.na(acs$bpov_pct), ]
+# one feature (geoid 35039) is missing poverty data
 
+filter(acs_covid, is.na(bpov_pct))
+
+```
+
+
+## Calculate Person's Correlation Coefficients
+
+```{r pearsons correlation}
+df = sum(!is.na(acs_covid$dis_pct)) - 2
+
+pearsons_r <- acs_covid %>%
+  select(where(is.numeric)) %>% 
+  st_drop_geometry() %>% 
+  cor(method="pearson", use="pairwise.complete.obs") %>% 
+  round(3) %>%
+  as.data.frame()  %>% 
+  select(rho = covid_rate) %>% 
+  rownames_to_column("variable") %>% 
+  filter(variable != "covid_rate") %>% 
+  mutate(t = abs(rho) / sqrt((1 - rho^2)/(df) ),
+    p = round(pt(t, df, lower.tail = FALSE), 4)
+  )
+
+pearsons_r
+# this estimation of t gives similar, but not identical, result to 
+# corr.test
 ```
 
 ## Kulldorf Spatial Scan Cluster Detection
@@ -285,6 +275,9 @@ Instead, load the scan results below.
 covid_geo <- covid_table %>% 
   select(x, y) %>%
   latlong2grid()
+# latlong2grid approximates an equidistant grid measured in kilometers
+# need to look more into the methods of this, but it surely is not as good
+# as a geodesic calculation. SaTScan uses spherical or ellipsoidal distance
 
 # calculate expected cases with one strata
 expected.cases <- expected(covid_table$pop, covid_table$cases , 1)
@@ -357,12 +350,12 @@ covid[covid$cluster==0, ]$rr_class <- 1
 
 # Map Relative Risk scores
 # Note that relative risk is > 1 only if the county was in a cluster
-library(tmap)
 tm_shape(covid) +
   tm_polygons("rr_class", 
     title="Local Relative Risk",
     border.alpha = .2,
-    lwd = 0.2
+    lwd = 0.2,
+    palette="YlOrBr"
   )
 
 paste(sum(covid$cluster==0 & covid$loc_rr >= 1),
@@ -379,18 +372,16 @@ rm(cases_sum, pop_sum)
 
 ```{r preprocess data for GEE model }
 covid_clusters <- covid %>% 
-  select(FIPS, cluster, loc_rr, rr_class) %>% 
+  select(fips, cluster, loc_rr, rr_class) %>% 
   st_drop_geometry
-
-acs_covid <- left_join(acs, covid_clusters, by = c("geoid"="FIPS"))
 
 # Filter out non-positive COVID rates and missing data
 # Create unique State - Relative Risk IDs by combining state code and rr_class
 # Sort by the cluster id's (a requirement of the gee function)
-gee_data <- acs_covid %>%
-  filter(covid_rate > 0) %>% 
+gee_data <- left_join(acs_covid, covid_clusters, by = c("geoid"="fips")) %>%
+  filter(covid_rate > 0 & !is.na(bpov_pct)) %>% 
   mutate(id = as.integer(statefp) * 10 + rr_class) %>% 
-  arrange(acs_covid, id)
+  arrange(id)
 
 rm(covid_clusters)
 ```
@@ -411,15 +402,15 @@ Optionally, you may load the preprocessed data from `data/raw/public/gee_data.gp
 gee_data <- st_read(here("data","derived","public","gee_data.gpkg"))
 ```
 
- 
-
-Need report on number & frequency of clusters
+# Report numer of unique clusters
 
 ```{r}
-# list the clusters and count # of counties in each
+cluster_summary <- gee_data %>% 
+  st_drop_geometry %>% 
+  count(id)
+paste(length(cluster_summary$n), "unique clusters")
+summary(cluster_summary$n)
 ```
-
-
 
 ## GEE Models
 
@@ -453,15 +444,18 @@ ethnicity_gee <- geeglm(covid_rate ~ non_hisp_white_pct + hisp_pct + non_hisp_no
                family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
                corstr = "exchangeable" # use exchangeable correlation matrix
 )
-ethnicity_gee
+summary(ethnicity_gee)
+QIC(ethnicity_gee)
+
 
 pov_gee <- geeglm(covid_rate ~ bpov_pct + apov_pct, # regression formula, dependent var first, then sequence of independent variables
                data = gee_data, # data frame
                id = id, # cluster IDs
                family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
-               corstr = "exchangeable" # use exchangeable correlation matrix
+               corstr = "exchangeable", # use exchangeable correlation matrix
 )
 summary(pov_gee)
+QIC(pov_gee)
 
 age_gee <- geeglm(covid_rate ~ pct_5_17 + pct_18_34 + pct_35_64 + pct_65_74 + pct_75, # regression formula, dependent var first, then sequence of independent variables
                data = gee_data, # data frame

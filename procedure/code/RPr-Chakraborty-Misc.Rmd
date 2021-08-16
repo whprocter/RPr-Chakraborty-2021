@@ -9,6 +9,47 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r choropleth map with ggplot2}
+acs_covid$bins <- cut(acs_covid$covid_rate, 
+                breaks=c(-Inf, 0,  1, 2, 3, 4, 5, Inf),
+                labels=c("NA", "<1","1.00-1.99","2.00-2.99","3.00-3.99","4.00-4.99",">5"))
+
+covid_rate_map <- ggplot() + 
+  geom_sf(data = acs_covid,
+          aes(fill = bins), size = .1) + 
+  scale_fill_brewer(palette = "YlOrBr")
+covid_rate_map
+```
+
+
+
+```{r setup, include = F}
+packages = c("tidycensus", "tidyverse", "downloader", "haven", "stars", "dplyr", "sf", "rdhs", "classInt", "readr", "ggplot2", "here", "s2", "pastecs", "cartography", "vtable", "SpatialEpi", "svDialogs", "geepack")
+setdiff(packages, rownames(installed.packages()))
+install.packages(setdiff(packages, rownames(installed.packages())), quietly=TRUE)
+
+library(tidycensus)
+library(tidyverse)
+library(downloader)
+library(haven)
+library(sf)
+library(stars)
+library(dplyr) # may not need this if you have tidyverse
+library(here)
+library(classInt)
+library(rdhs)
+library(readr)
+library(ggplot2)
+library(s2)
+library(pastecs)
+library(cartography)
+library(vtable)
+library(SpatialEpi)
+library(svDialogs)
+library(geepack)
+
+```
+
 
 ```{r attempting DCluster methods}
 # Note that DCluster loads MASS which as a SELECT function conflicting with dplyr

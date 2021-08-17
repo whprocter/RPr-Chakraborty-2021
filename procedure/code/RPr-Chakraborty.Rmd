@@ -146,15 +146,15 @@ acs_derived <- mutate(acs,
   hisp_pct = S1810_C02_012E / S1810_C01_001E * 100,
   non_hisp_non_white_pct = 
     (S1810_C02_001E - S1810_C02_012E - S1810_C02_011E) / S1810_C01_001E * 100,
+  bpov_pct = (C18130_004E + C18130_011E + C18130_018E) / C18130_001E * 100, 
+  apov_pct = (C18130_005E + C18130_012E + C18130_019E) / C18130_001E * 100,
   pct_5_17 = S1810_C02_014E / S1810_C01_001E * 100,
   pct_18_34 = S1810_C02_015E / S1810_C01_001E * 100,
   pct_35_64 = S1810_C02_016E / S1810_C01_001E * 100,
   pct_65_74 = S1810_C02_017E / S1810_C01_001E * 100,
   pct_75 = S1810_C02_018E / S1810_C01_001E * 100,
   male_pct = S1810_C02_002E / S1810_C01_001E * 100,
-  female_pct = S1810_C02_003E / S1810_C01_001E * 100,
-  bpov_pct = (C18130_004E + C18130_011E + C18130_018E) / C18130_001E * 100, 
-  apov_pct = (C18130_005E + C18130_012E + C18130_019E) / C18130_001E * 100
+  female_pct = S1810_C02_003E / S1810_C01_001E * 100
 ) 
 
 # select only relevant geographic identifiers and derived percentages
@@ -185,11 +185,17 @@ covid$covid_rate <- covid$cases / covid$pop * 100000
 covid_table <- st_drop_geometry(covid)
 
 # It might be wise to calculate our own X and Y using centroids
+```
 
+### Join COVID data to ACS data
+
+```{r join data and reorder columns}
 # Join poverty data to acs data
 covid_rate_table <- select(covid_table, fips, covid_rate)
 acs_covid <- left_join(acs_derived, covid_rate_table, by=c("geoid"="fips"))
 
+# move covid_rate prior to percentages
+acs_covid <- select(acs_covid, geoid, statefp, county, county_st, covid_rate, everything())
 ```
 
 ### Optionally, remove uneccesary variables
@@ -197,7 +203,6 @@ acs_covid <- left_join(acs_derived, covid_rate_table, by=c("geoid"="fips"))
 ```{r remove unecessary variables}
 rm(acs_pov, acs, acs_derived, covid_rate_table)
 ```
-
 
 ## Map Covid Rates
 
@@ -232,18 +237,46 @@ tm_shape(acs_covid) +
 
 ```
 
+## Missing Data
+
+All descriptive statistics match the original results with the exception of
+the minimum people with disability below poverty and people with disability
+above poverty percentages. There is one county with missing people with 
+disability poverty data, for with Chakraborty may have replaced missing data
+with zero-- a reasonable decision if data was suppressed due to small numbers.
+
+```{r}
+
+# county with missing data
+filter(acs_covid, is.na(bpov_pct))
+
+# replace NA with 0 for missing data
+acs_covid[is.na(acs_covid$bpov_pct), ]$bpov_pct <- 0
+acs_covid[is.na(acs_covid$apov_pct), ]$apov_pct <- 0
+
+```
+
 ## Create Table 1 Descriptive Statistics
 **This needs to be done!**
 
 ```{r descriptive statistics}
 # one feature (geoid 35039) is missing poverty data
 
-filter(acs_covid, is.na(bpov_pct))
+acs_covid_stats <- acs_covid %>% 
+  st_drop_geometry() %>% 
+  select(is.numeric) %>% 
+  stat.desc(norm=TRUE) %>% 
+  round(2) %>% 
+  t() %>% as.data.frame() %>% 
+  select(min, max, mean, SD = std.dev, ShapiroWilk = normtest.W, sw_p = normtest.p )
 
+acs_covid_stats
 ```
 
+## Calculate Pearson's Correlation Coefficients
 
-## Calculate Person's Correlation Coefficients
+These results are identical in direction and significance to Chakraborty's,
+but differ slightly in magnitude.
 
 ```{r pearsons correlation}
 df = sum(!is.na(acs_covid$dis_pct)) - 2
@@ -252,19 +285,45 @@ pearsons_r <- acs_covid %>%
   select(where(is.numeric)) %>% 
   st_drop_geometry() %>% 
   cor(method="pearson", use="pairwise.complete.obs") %>% 
+  as.data.frame() %>%
+  select(r = covid_rate) %>% 
+  mutate(
+    t = abs(r) / sqrt((1 - r^2)/(df) ),
+    p = pt(t, df, lower.tail = FALSE)
+    ) %>% 
   round(3) %>%
-  as.data.frame()  %>% 
-  select(rho = covid_rate) %>% 
   rownames_to_column("variable") %>% 
-  filter(variable != "covid_rate") %>% 
-  mutate(t = abs(rho) / sqrt((1 - rho^2)/(df) ),
-    p = round(pt(t, df, lower.tail = FALSE), 4)
-  )
+  filter(variable != "covid_rate")
 
 pearsons_r
+# this estimation of t gives similar, but not identical, result to corr.test
+```
+## Calculate Spearman's Correlation Coefficients
+
+This non-parametric correlation test is better for t
+
+```{r pearsons correlation}
+df = sum(!is.na(acs_covid$dis_pct)) - 2
+
+spearmans_rho <- acs_covid %>%
+  select(where(is.numeric)) %>% 
+  st_drop_geometry() %>% 
+  cor(method="spearman", use="pairwise.complete.obs") %>% 
+  as.data.frame() %>%
+  select(rho = covid_rate) %>% 
+  mutate(
+    t = abs(rho) / sqrt((1 - rho^2)/(df) ),
+    p = pt(t, df, lower.tail = FALSE)
+    ) %>% 
+  round(3) %>%
+  rownames_to_column("variable") %>% 
+  filter(variable != "covid_rate")
+
+spearmans_rho
 # this estimation of t gives similar, but not identical, result to 
 # corr.test
 ```
+
 
 ## Kulldorf Spatial Scan Cluster Detection
 
@@ -347,12 +406,27 @@ covid <- covid %>%
       (cut(rr_loc, c(-Inf,1,2,3,4,5,Inf), labels=FALSE) - 1) * cluster + 1
   ) %>% 
   st_transform(5070)
+```
 
+### How did the classification work?
+
+```{r}
 # Count frequency of each class of COVID risk
 covid %>% st_drop_geometry %>% count(rr_class)
 
+paste(sum(covid$cluster==0 & covid$rr_loc >= 1),
+  "counties lie outside of a cluster and have local relative risk > 1")
+
+# There's a relative risk score for both county & cluster (in SatScan)
+# This reproduction uses county-based relative risk scores based on
+# paragraph 4 of the methods section of the paper and Desjardins et al
+```
+## Map Relative Risk Scores
+
+Note that relative risk is > 1 only if the county was in a cluster
+
+```{r map relative risk scores}
 # Map Relative Risk scores
-# Note that relative risk is > 1 only if the county was in a cluster
 tm_shape(covid) +
   tm_polygons("rr_class", 
     title="Local Relative Risk",
@@ -361,13 +435,6 @@ tm_shape(covid) +
     palette="YlOrBr",
     style="cat"
   )
-
-paste(sum(covid$cluster==0 & covid$loc_rr >= 1),
-  "counties lie outside of a cluster and have local relative risk > 1")
-
-# There's a relative risk score for both county & cluster (in SatScan)
-# This reproduction uses county-based relative risk scores based on
-# paragraph 4 of the methods section of the paper and Desjardins et al
 ```
 
 ## Preprocess data for GEE modelling
@@ -381,7 +448,7 @@ covid_clusters <- covid %>%
 # Create unique State - Relative Risk IDs by combining state code and rr_class
 # Sort by the cluster id's (a requirement of the gee function)
 gee_data <- left_join(acs_covid, covid_clusters, by = c("geoid"="fips")) %>%
-  filter(covid_rate > 0 & !is.na(bpov_pct)) %>% 
+  filter(covid_rate > 0) %>% 
   mutate(id = as.integer(statefp) * 10 + rr_class) %>% 
   arrange(id)
 
@@ -427,7 +494,7 @@ Generalized Estimating Equation parameters:
 Useful Reference:
 https://data.library.virginia.edu/getting-started-with-generalized-estimating-equations/
 
-```{r gee model}
+```{r gee models}
 
 # it would be smarter to iterate over a list of models and their parameters
 # currently stuck on how to add GLM model results to a cell of a dataframe
@@ -438,10 +505,9 @@ race_gee <- geeglm(covid_rate ~ white_pct + black_pct + native_pct + asian_pct +
                family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
                corstr = "exchangeable" # use exchangeable correlation matrix
 )
-coef(summary(race_gee))
+
 # Wald and P calculated in summary only; 
 # coef() extracts coefficients table from the summary, same as $coefficients 
-QIC(race_gee)
 
 ethnicity_gee <- geeglm(covid_rate ~ non_hisp_white_pct + hisp_pct + non_hisp_non_white_pct, # regression formula, dependent var first, then sequence of independent variables
                data = gee_data, # data frame
@@ -449,9 +515,6 @@ ethnicity_gee <- geeglm(covid_rate ~ non_hisp_white_pct + hisp_pct + non_hisp_no
                family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
                corstr = "exchangeable" # use exchangeable correlation matrix
 )
-coef(summary(ethnicity_gee))
-QIC(ethnicity_gee)
-
 
 pov_gee <- geeglm(covid_rate ~ bpov_pct + apov_pct, # regression formula, dependent var first, then sequence of independent variables
                data = gee_data, # data frame
@@ -459,8 +522,6 @@ pov_gee <- geeglm(covid_rate ~ bpov_pct + apov_pct, # regression formula, depend
                family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
                corstr = "exchangeable", # use exchangeable correlation matrix
 )
-coef(summary(pov_gee))
-QIC(pov_gee)
 
 age_gee <- geeglm(covid_rate ~ pct_5_17 + pct_18_34 + pct_35_64 + pct_65_74 + pct_75, # regression formula, dependent var first, then sequence of independent variables
                data = gee_data, # data frame
@@ -468,8 +529,6 @@ age_gee <- geeglm(covid_rate ~ pct_5_17 + pct_18_34 + pct_35_64 + pct_65_74 + pc
                family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
                corstr = "exchangeable" # use exchangeable correlation matrix
 )
-coef(summary(age_gee))
-QIC(age_gee)
 
 sex_gee <- geeglm(covid_rate ~ male_pct + female_pct, # regression formula, dependent var first, then sequence of independent variables
                data = gee_data, # data frame
@@ -477,7 +536,33 @@ sex_gee <- geeglm(covid_rate ~ male_pct + female_pct, # regression formula, depe
                family = Gamma(link = "log"), # "gamma distribution with logarithmic link function"
                corstr = "exchangeable" # use exchangeable correlation matrix
 )
-coef(summary(sex_gee))
-QIC(sex_gee)
+
+coefficient_results <- rbind(coef(summary(race_gee)),
+  coef(summary(ethnicity_gee)),
+  coef(summary(pov_gee)),
+  coef(summary(age_gee)),
+  coef(summary(sex_gee))
+  ) %>% 
+  round(3)
+
+# if I'm doing this, I might a well be renaming them all.
+coefrows <- rownames(coefficient_results)
+coefrows[1] <- "Race Intercept"
+coefrows[7] <- "Ethnicity Intercept"
+coefrows[11] <- "Poverty Status Intercept"
+coefrows[14] <- "Age Intercept"
+coefrows[20] <- "Biological Sex Intercept"
+rownames(coefficient_results) <- coefrows
+coefficient_results
+
+QIC_results <- data.frame(race = QIC(race_gee),
+  ethnicity = QIC(ethnicity_gee),
+  poverty_status = QIC(pov_gee),
+  age = QIC(age_gee),
+  biological_sex = QIC(sex_gee)
+  ) %>% 
+  round(3)
+QIC_results
+
 ```
 

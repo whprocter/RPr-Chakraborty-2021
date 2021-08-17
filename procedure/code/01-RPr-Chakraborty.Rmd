@@ -52,7 +52,7 @@ Other software are not specified in the publication; however data files and comm
 
 
 
-```{r setup}
+```{r setup, message = FALSE, include = FALSE}
 # list of required packages
 # we could probably be listing them all here, making the previous block redundant.
 packages = c("tidycensus", "tidyverse", "downloader", "haven", "stars", "dplyr", "sf", "rdhs", "classInt", "readr", "ggplot2", "here", "s2", "pastecs", "tmap", "vtable", "SpatialEpi", "svDialogs", "geepack")
@@ -78,8 +78,9 @@ package_version <- read.delim(here("procedure","environment","r_environment.txt"
 
 ## Query American Communtity Survey Data
 This will require an API key for the census, which can be acquired easily here: [api.census.gov/data/key_signup.html](https://api.census.gov/data/key_signup.html)
+This query can take some time to run...
 
-```{r Load Data Files, message = F}
+```{r Load ACS Data, message = FALSE, eval = FALSE}
 # get API Key
 # we could store this in the raw/private or scratch folder and load if the
 # researcher has already entered it once
@@ -115,24 +116,24 @@ acs <- left_join(acs, acs_pov, by = "GEOID")
 
 Optionally, you may save the raw data to data/raw/public/acs.gpkg
 
-```{r Load downloaded data, message = F}
+```{r save ACS data, message = F, eval = FALSE}
 # Save downloaded acs data to acs.gpkg
-st_write(acs, here("data", "raw", "public", "acs.gpkg"), append=FALSE)
+write_sf(acs, here("data", "raw", "public", "acs.gpkg"))
 ```
 
 ## Load raw data
 
 Optionally, you may load the raw data and begin processing here
 
-```{r Load downloaded data, message = F}
-acs <- st_read(here("data", "raw", "public", "acs.gpkg"))
+```{r load ACS data, message = F}
+acs <- read_sf(here("data", "raw", "public", "acs.gpkg"))
 ```
 
 ## Preprocess ACS data
 
 Calculate percentages for each sub-category of disability and remove raw census data from the data frame
 
-```{r Preprocess ACS data, message = F}
+```{r Preprocess ACS data, message = FALSE}
 # calculate percentages
 acs_derived <- mutate(acs,
   dis_pct = S1810_C02_001E / S1810_C01_001E * 100,
@@ -198,12 +199,6 @@ acs_covid <- left_join(acs_derived, covid_rate_table, by=c("geoid"="fips"))
 acs_covid <- select(acs_covid, geoid, statefp, county, county_st, covid_rate, everything())
 ```
 
-### Optionally, remove uneccesary variables
-
-```{r remove unecessary variables}
-rm(acs_pov, acs, acs_derived, covid_rate_table)
-```
-
 ## Map Covid Rates
 
 ```{r map covid rates}
@@ -245,7 +240,7 @@ above poverty percentages. There is one county with missing people with
 disability poverty data, for with Chakraborty may have replaced missing data
 with zero-- a reasonable decision if data was suppressed due to small numbers.
 
-```{r}
+```{r missing data}
 
 # county with missing data
 filter(acs_covid, is.na(bpov_pct))
@@ -256,24 +251,21 @@ acs_covid[is.na(acs_covid$apov_pct), ]$apov_pct <- 0
 
 ```
 
-## Create Table 1 Descriptive Statistics
-**This needs to be done!**
+## Descriptive Statistics
 
 ```{r descriptive statistics}
-# one feature (geoid 35039) is missing poverty data
-
 acs_covid_stats <- acs_covid %>% 
   st_drop_geometry() %>% 
   select(is.numeric) %>% 
   stat.desc(norm=TRUE) %>% 
   round(2) %>% 
   t() %>% as.data.frame() %>% 
-  select(min, max, mean, SD = std.dev, ShapiroWilk = normtest.W, sw_p = normtest.p )
+  select(min, max, mean, SD = std.dev, ShapiroWilk = normtest.W, p = normtest.p)
 
 acs_covid_stats
 ```
 
-## Calculate Pearson's Correlation Coefficients
+## Calculate Pearson's R Correlation Coefficients
 
 These results are identical in direction and significance to Chakraborty's,
 but differ slightly in magnitude.
@@ -298,11 +290,12 @@ pearsons_r <- acs_covid %>%
 pearsons_r
 # this estimation of t gives similar, but not identical, result to corr.test
 ```
-## Calculate Spearman's Correlation Coefficients
+## Calculate Spearman's Rho Correlation Coefficients
 
-This non-parametric correlation test is better for t
+Try a non-parametric correlation test because variables do not have
+normal distributions (see Shapiro-Wilk test results above)
 
-```{r pearsons correlation}
+```{r spearmans correlation}
 df = sum(!is.na(acs_covid$dis_pct)) - 2
 
 spearmans_rho <- acs_covid %>%
@@ -324,15 +317,15 @@ spearmans_rho
 # corr.test
 ```
 
-
 ## Kulldorf Spatial Scan Cluster Detection
 
 Note that the statistic is a Monte Carlo simulation with 999 iterations.
 Therefore, if you wish to exactly reproduce the same results as our reproduction
 attempt, please **do not run this section**.
 Instead, load the scan results below.
+This code block can take more than 10-20 minutes to run.
 
-```{r SpatialEpi Kulldorff spatial scan}
+```{r SpatialEpi Kulldorff spatial scan, eval = FALSE}
 covid_geo <- covid_table %>% 
   select(x, y) %>%
   latlong2grid()
@@ -359,14 +352,14 @@ rm(covid_table, covid_geo, expected.cases)
 
 ## Save scan results
 
-```{r save spatial scan results}
+```{r save spatial scan results, eval = FALSE}
 saveRDS(covid_kulldorff,
   file=here("data","derived","public","covid_kulldorff.RDS"))
 ```
 
 ## Load scan results
 
-```{r save spatial scan results}
+```{r load spatial scan results}
 covid_kulldorff <- readRDS(here("data","derived","public","covid_kulldorff.RDS"))
 ```
 
@@ -410,12 +403,17 @@ covid <- covid %>%
 
 ### How did the classification work?
 
-```{r}
+```{r classification results}
 # Count frequency of each class of COVID risk
-covid %>% st_drop_geometry %>% count(rr_class)
+cat("Classes of risk and frequency of counties",
+  format(covid %>% st_drop_geometry %>% count(rr_class)), sep="\n")
 
-paste(sum(covid$cluster==0 & covid$rr_loc >= 1),
-  "counties lie outside of a cluster and have local relative risk > 1")
+cat("\n",
+    sum(covid$cluster==0 & covid$rr_loc >= 1),
+  " counties lie outside of a cluster, but have local relative risk > 1\n\n",
+  sum(covid$cluster==1 & covid$rr_loc < 1),
+  " counties lie inside of a cluster, but have a local relative risk < 1",
+  sep="") 
 
 # There's a relative risk score for both county & cluster (in SatScan)
 # This reproduction uses county-based relative risk scores based on
@@ -459,7 +457,7 @@ rm(covid_clusters)
 
 Optionally, you may save the preprocessed to `data/raw/public/gee_data.gpkg`
 
-```{r save preprocessed COVID cluster data}
+```{r save preprocessed COVID cluster data, eval = FALSE}
 write_sf(gee_data, here("data","derived","public","gee_data.gpkg"))
 ```
 
@@ -467,8 +465,8 @@ write_sf(gee_data, here("data","derived","public","gee_data.gpkg"))
 
 Optionally, you may load the preprocessed data from `data/raw/public/gee_data.gpkg`
 
-```{r load preprocessed COVID cluster data}
-gee_data <- st_read(here("data","derived","public","gee_data.gpkg"))
+```{r load preprocessed COVID cluster data, eval = FALSE}
+gee_data <- read_sf(here("data","derived","public","gee_data.gpkg"))
 ```
 
 # Report numer of unique clusters
@@ -477,7 +475,7 @@ gee_data <- st_read(here("data","derived","public","gee_data.gpkg"))
 cluster_summary <- gee_data %>% 
   st_drop_geometry %>% 
   count(id)
-paste(length(cluster_summary$n), "unique clusters")
+cat(length(cluster_summary$n), "unique clusters\n")
 summary(cluster_summary$n)
 ```
 
@@ -561,7 +559,10 @@ QIC_results <- data.frame(race = QIC(race_gee),
   age = QIC(age_gee),
   biological_sex = QIC(sex_gee)
   ) %>% 
-  round(3)
+  round(3) %>% 
+  t() %>%
+  as.data.frame() %>% 
+  select(QIC)
 QIC_results
 
 ```

@@ -72,10 +72,6 @@ package.check <- lapply(
 
 # save the R processing environment 
 writeLines(capture.output(sessionInfo()),here("procedure","environment","r_environment.txt"))
-
-# read in R processing environment
-# the data frame package_version provides info on the libraries used for this analysis when previewed in the console
-package_version <- read.delim(here("procedure","environment","r_environment.txt"))
 ```
 
 ## Query American Communtity Survey Data

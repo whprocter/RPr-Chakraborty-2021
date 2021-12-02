@@ -10,7 +10,6 @@ This study is a replication of:
 
 The replication study authors are:
 - [Joseph Holler](http://www.middlebury.edu/academics/geog/faculty/node/454160)
-- [Derrick Burt](https://derrickburt.github.io)
 - [Drew An-Pham](https://daptx.github.io/)
 - [Peter Kedron](https://sgsup.asu.edu/peter-kedron)
 

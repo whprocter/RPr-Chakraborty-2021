@@ -12,6 +12,7 @@ The replication study authors are:
 - [Joseph Holler](http://www.middlebury.edu/academics/geog/faculty/node/454160)
 - [Drew An-Pham](https://daptx.github.io/)
 - [Peter Kedron](https://sgsup.asu.edu/peter-kedron)
+- [Derrick Burt](https://derrickburt.github.io)
 
 ## Repository Documents
 

@@ -290,6 +290,7 @@ pearsons_r
 # this estimation of t gives similar, but not identical, result to corr.test
 # consider trying the rstatix package for this!
 ```
+
 ## Calculate Spearman's Rho Correlation Coefficients
 
 Try a non-parametric correlation test because variables do not have

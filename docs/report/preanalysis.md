@@ -198,8 +198,7 @@ As this is a parametric test, normality should be tested.
 A separate hypothesis is formulated for each sociodemographic disability characteristic.
 
 The generalized estimating equation models are used to test association between intra-categorical rates of disability and COVID-19 incidence rates while accounting for spatial clustering.
-Beta is the correlation coefficient.
-As specified by the author, "GEEs extend the generalized linear model to accommodate clustered data, in addition to relaxing several assumptions  of traditional regression (i.e., normality)".
+As specified by the author, "GEEs extend the generalized linear model to accommodate clustered data, in addition to relaxing several assumptions of traditional regression (i.e., normality)".
 Additionally, the author notes that "clusters of observations must be defined based on the assumption that observations within a cluster are correlated while observations from different clusters are independent."
 
 ### Inference criteria and robustness
@@ -211,7 +210,7 @@ The author of the original study seems to place more emphasis on the significanc
 Overall model fit was not checked.
 
 For the GEE, Beta coefficients with two tailed p-values for a Wald chi-square test (p<0.01; p<0.05) were used to test significance of all independent variables.
-The author of the original study seems to place more emphasis on the significance and direction of the coefficient than the magnitude.
+The author of the original study places more emphasis on the significance and direction of the coefficient than the magnitude.
 To check robustness, the author notes that GEEs "require the specification of an intra-cluster dependency correlation matrix. The 'exchangeable correlation matrix was selected for the results reported [here], since this specification yielded the best statistical fit based on the QIC model criterion".
 Further, the author describes: "for each GEE, the normal, gamma, and inverse Gaussian distributions with logarithmic and identity link functions were explored.
 The gamma distribution with logarithmic link function was chosen for all GEEs since this model specification provided the lowest QIC value."

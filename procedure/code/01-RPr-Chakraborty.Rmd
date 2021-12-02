@@ -56,8 +56,9 @@ Other software are not specified in the publication; however data files and comm
 
 ```{r setup, message = FALSE, include = FALSE}
 # list of required packages
-# we could probably be listing them all here, making the previous block redundant.
-packages = c("tidycensus", "tidyverse", "downloader", "haven", "stars", "dplyr", "sf", "rdhs", "classInt", "readr", "ggplot2", "here", "s2", "pastecs", "tmap", "vtable", "SpatialEpi", "svDialogs", "geepack")
+packages = c("tidycensus", "tidyverse", "downloader", "sf", "classInt", "readr",
+             "here", "s2", "pastecs", "tmap", "SpatialEpi", "svDialogs", 
+             "geepack")
 
 # load and install required packages
 package.check <- lapply(
@@ -71,7 +72,8 @@ package.check <- lapply(
 )
 
 # save the R processing environment 
-writeLines(capture.output(sessionInfo()),here("procedure","environment","r_environment.txt"))
+writeLines(capture.output(sessionInfo()),
+           here("procedure","environment","r_environment.txt"))
 ```
 
 ## Query American Communtity Survey Data
@@ -201,10 +203,6 @@ acs_covid <- select(acs_covid, geoid, statefp, county, county_st, covid_rate,
 ## Map Covid Rates
 
 ```{r map covid rates}
-
-# This is not a working correct map. Need to map 5
-# quintile classes of covid_rate to mach figure 1
-
 tm_shape(acs_covid) +
   tm_polygons("covid_rate", 
     title="COVID-19 Cases per 100,000",
@@ -213,7 +211,6 @@ tm_shape(acs_covid) +
     lwd = 0.2,
     palette="YlOrBr"
   )
-
 ```
 
 ## Map Disability Rates
@@ -233,11 +230,8 @@ tm_shape(acs_covid) +
 
 ## Missing Data
 
-All descriptive statistics match the original results with the exception of
-the minimum people with disability below poverty and people with disability
-above poverty percentages. There is one county with missing people with 
-disability poverty data, for with Chakraborty may have replaced missing data
-with zero-- a reasonable decision if data was suppressed due to small numbers.
+There is one county with missing disability and poverty data. Below, we replace
+the missing data with zeros, producing results identical to Chakraborty's.
 
 ```{r missing data}
 
@@ -432,7 +426,7 @@ tm_shape(covid) +
   tm_polygons("rr_class", 
     title="Local Relative Risk",
     border.alpha = .2,
-    lwd = 0.2,
+    lwd = 0.2, 
     palette="YlOrBr",
     style="cat"
   )

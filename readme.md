@@ -6,9 +6,10 @@ This study is a replication of:
 
 ## Abstract
 
-> The original paper is a national scale study of the relationship between COVID-19 incidence and disability characteristics (by demographic) in the United States. The paper aims to determine whether COVID-19 incidenc is more significant inn counties with larger proportions of socio-demographically disadvantaged people with disabilities, based on race, ethnicity, poverty status, and biological sex.
+> The original paper is a national scale study of the relationship between COVID-19 incidence and disability characteristics (by demographic) in the United States. The paper aims to determine whether COVID-19 incidence is more significant inn counties with larger proportions of socio-demographically disadvantaged people with disabilities, based on race, ethnicity, poverty status, and biological sex.
 
-The replication study authors are:
+## Authors
+
 - [Joseph Holler](http://www.middlebury.edu/academics/geog/faculty/node/454160)
 - [Drew An-Pham](https://daptx.github.io/)
 - [Peter Kedron](https://sgsup.asu.edu/peter-kedron)

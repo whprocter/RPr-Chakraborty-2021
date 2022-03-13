@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+preferred-citation:
+  type: generic
+  authors:
+  - family-names: "Holler"
+    given-names: "Joseph"
+    orcid: "https://orcid.org/0000-0002-2381-2699"
+  - family-names: "Kedron"
+    given-names: "Peter"
+    orcid: "https://orcid.org/0000-0002-1093-3416"
+  - family-names: "An-Pham"
+    given-names: "Drew"
+  - family-names: "Burt"
+    given-names: "Derrick"
+  title: "Reproduction of Chakraborty 2021 analysis of unequal distribution of COVID-19 for people with disabilities"
+  doi:
+  year: 2021

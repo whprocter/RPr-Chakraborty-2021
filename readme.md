@@ -1,4 +1,4 @@
-# Replication Study of Chakraborty 2021
+# Reproduction of Chakraborty 2021 analysis of unequal distribution of COVID-19 for people with disabilities
 
 This study is a replication of:
 

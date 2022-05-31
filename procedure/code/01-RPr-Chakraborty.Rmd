@@ -203,7 +203,7 @@ acs_covid <- select(acs_covid, geoid, statefp, county, county_st, covid_rate,
 ## Map Covid Rates
 
 ```{r map covid rates}
-tm_shape(acs_covid) +
+tm1 <- tm_shape(acs_covid) +
   tm_polygons("covid_rate", 
     title="COVID-19 Cases per 100,000",
     style="quantile",
@@ -211,13 +211,16 @@ tm_shape(acs_covid) +
     lwd = 0.2,
     palette="YlOrBr"
   )
+
+tmap_save(tm1, here("results", "figures", "covid_rates.png"))
+
 ```
 
 ## Map Disability Rates
 
 ```{r map disability rates}
 
-tm_shape(acs_covid) +
+tm2 <- tm_shape(acs_covid) +
   tm_polygons("dis_pct", 
     title="Percent with Disability",
     style="quantile",
@@ -225,6 +228,8 @@ tm_shape(acs_covid) +
     lwd = 0.2,
     palette="YlOrBr"
   )
+
+tmap_save(tm2, here("results", "figures", "disability_rates.png"))
 
 ```
 
@@ -422,7 +427,7 @@ Note that relative risk is > 1 only if the county was in a cluster
 
 ```{r map relative risk scores}
 # Map Relative Risk scores
-tm_shape(covid) +
+tm3 <- tm_shape(covid) +
   tm_polygons("rr_class", 
     title="Local Relative Risk",
     border.alpha = .2,
@@ -430,6 +435,8 @@ tm_shape(covid) +
     palette="YlOrBr",
     style="cat"
   )
+
+tmap_save(tm3, here("results", "figures", "rr_reproduction.png"))
 ```
 
 
@@ -447,7 +454,7 @@ covid_temp <- covid %>%
 
 ```{r map original relative risk scores}
 
-tm_shape(covid_temp) +
+tm4 <- tm_shape(covid_temp) +
   tm_polygons("rr_original", 
     title="Original Relative Risk",
     breaks =c(0,1,2,3,4,5,8),
@@ -458,6 +465,8 @@ tm_shape(covid_temp) +
 tm_shape(original_cluster) +
   tm_borders("red", lwd =.5) +
   tmap_options(check.and.fix = TRUE) 
+
+tmap_save(tm4, here("results", "figures", "rr_original.png"))
 
 ```
 
@@ -475,6 +484,28 @@ gee_data <- left_join(acs_covid, covid_clusters, by = c("geoid"="fips")) %>%
   filter(covid_rate > 0) %>% 
   mutate(id = as.integer(statefp) * 10 + rr_class) %>% 
   arrange(id)
+
+
+gee_data <- gee_data %>% 
+  mutate_all(~ifelse(is.na(.x),  mean(.x,na.rm = TRUE), .x)) %>% 
+  mutate(z_bpov_pct = scale(bpov_pct),
+         z_apov_pct = scale(apov_pct),
+         z_white_pct = scale(white_pct),
+         z_black_pct = scale(black_pct),
+         z_native_pct = scale(native_pct),
+         z_asian_pct = scale(asian_pct),
+         z_other_pct = scale(other_pct),
+         z_non_hisp_white_pct = scale(non_hisp_white_pct),
+         z_hisp_pct = scale(hisp_pct),
+         z_non_hisp_non_white_pct = scale(non_hisp_non_white_pct),
+         z_pct_5_17 = scale(pct_5_17),
+         z_pct_18_34 = scale(pct_18_34),
+         z_pct_35_64 = scale(pct_35_64),
+         z_pct_65_74 = scale(pct_65_74),
+         z_pct_75 = scale(pct_75),
+         z_male_pct = scale(male_pct),
+         z_female_pct = scale(female_pct))
+
 
 rm(covid_clusters)
 ```
@@ -526,7 +557,7 @@ https://data.library.virginia.edu/getting-started-with-generalized-estimating-eq
 # https://www.reddit.com/r/rstats/comments/p50mce/coding_a_loop_for_many_linear_regressions/
 
 race_gee <- geeglm(
-  covid_rate ~ white_pct + black_pct + native_pct + asian_pct + other_pct, 
+  covid_rate ~ z_white_pct + z_black_pct + z_native_pct + z_asian_pct + z_other_pct, 
   data = gee_data, # data frame
   id = id, # cluster IDs
   family = Gamma(link = "log"),
@@ -537,7 +568,7 @@ race_gee <- geeglm(
 # coef() extracts coefficients table from the summary, same as $coefficients 
 
 ethnicity_gee <- geeglm(
-  covid_rate ~ non_hisp_white_pct + hisp_pct + non_hisp_non_white_pct,
+  covid_rate ~ z_non_hisp_white_pct + z_hisp_pct + z_non_hisp_non_white_pct,
   data = gee_data, 
   id = id,
   family = Gamma(link = "log"),
@@ -545,7 +576,7 @@ ethnicity_gee <- geeglm(
 )
 
 pov_gee <- geeglm(
-  covid_rate ~ bpov_pct + apov_pct, 
+  covid_rate ~ z_bpov_pct + z_apov_pct, 
   data = gee_data, 
   id = id, 
   family = Gamma(link = "log"), 
@@ -553,7 +584,7 @@ pov_gee <- geeglm(
 )
 
 age_gee <- geeglm(
-  covid_rate ~ pct_5_17 + pct_18_34 + pct_35_64 + pct_65_74 + pct_75,
+  covid_rate ~ z_pct_5_17 + z_pct_18_34 + z_pct_35_64 + z_pct_65_74 + z_pct_75,
   data = gee_data,
   id = id,
   family = Gamma(link = "log"),
@@ -561,7 +592,7 @@ age_gee <- geeglm(
 )
 
 sex_gee <- geeglm(
-  covid_rate ~ male_pct + female_pct,
+  covid_rate ~ z_male_pct + z_female_pct,
   data = gee_data, 
   id = id,
   family = Gamma(link = "log"), 

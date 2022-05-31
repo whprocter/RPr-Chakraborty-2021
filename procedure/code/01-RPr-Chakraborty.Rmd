@@ -432,6 +432,35 @@ tm_shape(covid) +
   )
 ```
 
+
+```{r prepare original relative risk scores}
+
+original_cluster <- read_sf(here("data", "derived", "public","satscan", "sat_scan_compare.col.shp"))
+cluster_table <- st_drop_geometry(original_cluster)
+
+covid <- left_join(covid, cluster_table, by = c("fips" = "LOC_ID"))
+
+covid_temp <- covid %>% 
+  mutate(rr_original = if_else(is.na(REL_RISK), 0, REL_RISK))
+```
+
+
+```{r map original relative risk scores}
+
+tm_shape(covid_temp) +
+  tm_polygons("rr_original", 
+    title="Original Relative Risk",
+    breaks =c(0,1,2,3,4,5,8),
+    border.alpha = .2,
+    lwd = 0.2,
+    palette="YlOrBr"
+  ) + 
+tm_shape(original_cluster) +
+  tm_borders("red", lwd =.5) +
+  tmap_options(check.and.fix = TRUE) 
+
+```
+
 ## Preprocess data for GEE modelling
 
 ```{r preprocess data for GEE model }
@@ -466,7 +495,7 @@ Optionally, you may load the preprocessed data from `data/raw/public/gee_data.gp
 gee_data <- read_sf(here("data","derived","public","gee_data.gpkg"))
 ```
 
-# Report numer of unique clusters
+# Report number of unique clusters
 
 ```{r}
 cluster_summary <- gee_data %>% 

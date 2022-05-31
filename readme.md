@@ -6,7 +6,7 @@ This study is a replication of:
 
 ## Abstract
 
-> The original paper is a national scale study of the relationship between COVID-19 incidence and disability characteristics (by demographic) in the United States. The paper aims to determine whether COVID-19 incidence is more significant inn counties with larger proportions of socio-demographically disadvantaged people with disabilities, based on race, ethnicity, poverty status, and biological sex.
+> The original paper is a national scale study of the relationship between COVID-19 incidence and disability characteristics (by demographic) in the United States. The paper aims to determine whether COVID-19 incidence is more significant in counties with larger proportions of socio-demographically disadvantaged people with disabilities, based on race, ethnicity, poverty status, and biological sex.
 
 ## Authors
 

@@ -1,10 +1,14 @@
-file_path,file_name,format,sources,metadata,status,date_saved
-raw\public,covidcase080120.gpkg,Geopackage,raw\public\chakraborty\Aug1data\Aug1data.shp,,provided,8/11/2021
-raw\public,covidcase080120.csv,Comma-separated values,raw\public\chakraborty\Aug1data\Aug1data.shp,,provided,8/15/2021
-raw\public,acs.gpkg,Geopackage,TidyCensus Package call to ACS 2018 5-year,,provided; derived,8/15/2021
-raw\public,disability_raw.csv,Comma-separated values,ACS 2018 5-year,,provided,8/11/2021
-raw\public,poverty_raw.csv,Comma-separated values,ACS 2018 5-year,,provided,8/11/2021
-raw\public\chakraborty\Aug1data,Aug1data.shp,ESRI Shapefile,Chakraborty 2021 - author provided data from Johns Hopkins COVID dashboard,,provided,
-raw\public\chakraborty\,Aug1GEEdata.csv,Comma-separated values,Chakraborty 2021 - author provided data,,provided,
-raw\public\chakraborty\,SatScan_output.dbf,dBASE,Chakraborty 2021 - author provided data,,provided,
-raw\public\chakraborty\,SatScan_results.txt,Text,Chakraborty 2021 - author provided data,,provided,
+file_path,file_name,format,sources,metadata,status
+raw\public,covidcase080120.gpkg,Geopackage,raw\public\chakraborty\Aug1data\Aug1data.shp,,provided
+raw\public,covidcase080120.csv,Comma-separated values,raw\public\chakraborty\Aug1data\Aug1data.shp,,provided
+raw\public,acs.gpkg,Geopackage,TidyCensus Package call to ACS 2018 5-year,,provided; derived
+raw\public,disability_raw.csv,Comma-separated values,ACS 2018 5-year,,provided
+raw\public,poverty_raw.csv,Comma-separated values,ACS 2018 5-year,,provided
+raw\public\chakraborty\Aug1data,Aug1data.shp,ESRI Shapefile,Chakraborty 2021 - author provided data from Johns Hopkins COVID dashboard,,provided
+raw\public\chakraborty\,Aug1GEEdata.csv,Comma-separated values,Chakraborty 2021 - author provided data,,provided
+raw\public\chakraborty\,SatScan_output.dbf,dBASE,Chakraborty 2021 - author provided data,,provided
+raw\public\chakraborty\,SatScan_results.txt,Text,Chakraborty 2021 - author provided data,,provided
+derived\public,,,,,
+derived\public,,,,,
+derived\public,,,,,
+derived\public\satscan,,,,,provided

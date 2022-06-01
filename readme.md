@@ -14,17 +14,17 @@ This study is a replication of:
 - [Drew An-Pham](https://daptx.github.io/)
 - [Peter Kedron](https://sgsup.asu.edu/peter-kedron)
 - [Derrick Burt](https://derrickburt.github.io)
+- [Emily Zhou](https://emilyzhou112.github.io)
 
 ## Repository Documents
 
 > Link your reports, manuscripts, presentations, publication DOIs, preregistrations, etc. here. Delete this instruction and unused list items from your final repository. Adjust the file names and paths and add additional items as necessary.
 
+- OSF Project: https://doi.org/10.17605/OSF.IO/S5MTQ
 - Preregistration: https://osf.io/my_study
 - Publication: https://doi.org/my_study
 - Pre-analysis plan: [docs/report/preanalysis.pdf](docs/report/preanalysis.pdf)
 - Study report: [docs/report/report.pdf](docs/report/report.pdf)
-- Manuscript: [docs/manuscript/manuscript.pdf](docs/manuscript/manuscript.pdf)
-- Presentation: [docs/presentation/presentation.pdf](docs/presentation/presentation.pdf)
 
 ## Repository Contents
 

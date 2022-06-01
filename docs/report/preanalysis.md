@@ -62,6 +62,9 @@ There is no **randomization** in the original study.
 The study was originally conducted using SaTScan software (unspecified version) to implement the spatial scan statistic.
 Other software are not specified in the publication; however data files and communication with the author show that spatial analysis and mapping was conducted in ArcGIS and statistics were calculated in SPSS.
 
+Our understanding of the original study design and our plan for the reproduction analysis are visualized in the workflow diagram.
+![workflow](workflow.jpg)
+
 ## Sampling plan
 
 ### Existing data and data exploration

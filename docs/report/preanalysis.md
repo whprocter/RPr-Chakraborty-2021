@@ -25,7 +25,7 @@ In this reproduction, we will attempt to identically reproduce all of the result
 This will include the map of county level distribution of COVID-19 incidence rates (Fig. 1), the summary statistics for disability and sociodemographic variables and bivariate correlations with county-level COVID-19 incidence rate (Table 1), and the GEE models for predicting COVID-19 county-level incidence rate (Table 2).
 A successful reproduction should be able to generate identical results as published by Chakraborty (2021).
 
-The replication study data and code will be made available in a GitHub repository to the greatest extent that licensing and file sizes permit.
+The reproduction study data and code will be made available in a GitHub repository to the greatest extent that licensing and file sizes permit.
 The repository will be made public at [github.com/HEGSRR/RPr-Chakraborty2021](https://github.com/HEGSRR/RPr-Chakraborty2021).
 To the greatest extent possible, the reproduction will be implemented with R markdown using packages geepack for the generalized estimating equation and SpatialEpi for the spatial scan statistics.
 

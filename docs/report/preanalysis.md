@@ -5,7 +5,7 @@ Derrick Burt, Department of Geography, Middlebury College, Middlebury VT 05753
 Drew An-Pham, Department of Geography, Middlebury College, Middlebury VT 05753  
 Peter Kedron, School of Geographical Sciences and Urban Planning, Arizona State University, Tempe AZ 85281  
 
-Version 1.0 | Created Jul 7, 2021 | Last Updated Jul 26, 2021
+Version 1.1 | Created Jul 7, 2021 | Last Updated June 1, 2022
 
 ## Abstract
 
@@ -27,7 +27,7 @@ A successful reproduction should be able to generate identical results as publis
 
 The replication study data and code will be made available in a GitHub repository to the greatest extent that licensing and file sizes permit.
 The repository will be made public at [github.com/HEGSRR/RPr-Chakraborty2021](https://github.com/HEGSRR/RPr-Chakraborty2021).
-To the greatest extent possible, the reproduction will be implemented with (3.7.6) Jupyter Notebooks for implementation on the [CyberGISX platform](https://cybergisxhub.cigi.illinois.edu/) with Python (3.7.6) Jupyter Notebooks.
+To the greatest extent possible, the reproduction will be implemented with R markdown using packages geepack for the generalized estimating equation and SpatialEpi for the spatial scan statistics.
 
 Chakraborty, J. 2021. Social inequities in the distribution of COVID-19: An intra-categorical analysis of people with disabilities in the U.S. *Disability and Health Journal* **14**:1-5. DOI:[10.1016/j.dhjo.2020.101007](https://doi.org/10.1016/j.dhjo.2020.101007)
 
@@ -38,11 +38,11 @@ COVID-19; Disability; Intersectionality; Race/ethnicity; Poverty; Reproducibilit
 ## Study design
 
 The reproduction study will try to implement the original study as closely as possible to reproduce the map of county level distribution of COVID-19 incidence rate, the summary statistics and bivariate correlation for disability characteristics and COVID-19 incidence, and the generalized estimating equations.
-Our two confirmatory hypotheses are that we will be able to exactly reproduce Chakraborty's results as presented in table 1 and table 2 of Chakraborty (2021). Stated as null hypotheses:
+Our two confirmatory hypotheses are that we will be able to exactly reproduce Chakraborty's results as presented in figure 1, table 1, and table 2 of Chakraborty (2021). Stated as null hypotheses:
 
 > H1: There is a less than perfect match between Chakraborty's bivariate correlation coefficient for each disability/sociodemographic variable and COVID-19 incidence rate and our bivariate correlation coefficient for each disability/sociodemographic variable and COVID-19 incidence rate.
 
-> H2: There is a less than perfect match between Chakraborty's beta coefficient for the GEE of each disability/sociodemographic variable an statistics and our beta coefficient for the GEE of each disability/sociodemographic variable.
+> H2: There is a less than perfect match between Chakraborty's beta coefficient for the GEE of each disability/sociodemographic variable and our beta coefficient for the GEE of each disability/sociodemographic variable.
 
 There are multiple models being tested within each of the two hypotheses. That is, H1 and H2 both encompass five models, including one for each dimension of socio-demographics: race, ethnicity, poverty status, age, and biological sex.
 
@@ -66,16 +66,14 @@ Other software are not specified in the publication; however data files and comm
 
 ### Existing data and data exploration
 
-This registration is based upon a thorough reading of the original research article and an understanding of Census data.
+This registration is based upon a thorough reading of the original research article, searching and calculating summary statistics for American Community Survey data, accessing the Johns Hopkins Coronavirus Resource Center, and acquiring some additional information and data from the original author, Jay Chakraborty.
+Specifically, Chakraborty informed us of the American Community Survey data table names used in the study (S1810 for demographic categories and disability status and C18130 for poverty status and disability status), provided Johns Hopkins county-level Coronavirus data downloaded on August 1, 2020, outputs from SaTScan spatial clustering analysis, and inputs for the GEE models.
+The data provided by the author is not available in an online repository, but we will include the data in our research compendium with permission of the author.
 
-At the time of registration, we have accessed data from the Census, Johns Hopkins, and the original author.
-We have only examined data variable names and metadata.
-We have not conducted any analysis with the data, including calculation of summary statistics.
-We have designed this reproduction study based exclusively on the methodology described in the original paper and on metadata for secondary data sources.
-
-Although the raw data from the original study is not available in an online repository, we received COVID-19 incidence rate data from the author.
+In our reproduction attempt, we will use publicly available American Community Survey data downloaded directly from the Census API using the tidycensus package for R.
+We will use Johns Hopkins Coronavirus data provided by the author because it is not possible to download that dynamic dataset in an archived form as it existed on August 1, 2020.
 Johns Hopkins still provides aggregated COVID-19 incidence rate data, but does not publicly provide archived data identical to those used in the original study.
-The disability and sociodemographic data is publicly available through the American Community Survey data tables on the Census Bureau website.
+In preparing this preanalysis plan, we have only accessed data, viewed metadata, calculated summary statistics, and corresponded with the original author as described above.
 
 ### Data collection and spatial sampling
 
@@ -127,6 +125,10 @@ percent w disability: Other race | S1810_C03_009E
 percent w disability: Non-Hispanic White | S1810_C03_0011E
 percent w disability: Hispanic | S1810_C03_012E
 percent w disability: Non-Hispanic non-White | (S1810_C02_001E - S1810_C02_011E - S1810_C02_012E) / (S1810_C01_001E - S1810_C01_011E - S1810_C01_012E) * 100
+percent w disability: Other race | S1810_C03_009E
+**Poverty** |
+percent w disability: Below poverty level | (C18130_004E + C18130_011E + C18130_018E) / C18130_001E * 100
+percent w disability: Above poverty level | (C18130_005E + C18130_012E + C18130_019E) / C18130_001E * 100
 **Age** |
 percent w disability: 5-17 | S1810_C03_014E
 percent w disability: 18-34 | S1810_C03_015E
@@ -145,22 +147,24 @@ All of the disability and sociodemographic variables are provided in the format 
 Before conducting the GEE, all independent variables are normalized into z-scores.
 
 For the GEE, two different clustering scores are assigned to each county.
-The first clustering score is just a categorical variable determined by the counties state.
+The first clustering score is just a categorical variable determined by the counties' state.
 The second clustering score is a relative risk score calculated by identifying spatial clusters from a spatial scan statistic based on the Poisson Model.
+We calculate the clusters using the spatial scan statistics package. We then calculate the relative risk score for each county using the formula: (rate of cases within the cluster) / (rate of cases outside the cluster). This is then classified into six categories based on the estimated relative risk values (<1.0, 1.00-1.99, 2.00-2.99, 3.00-3.99, 4.00-4.99, and 5.0 or more). The data is combined with the American Community Survey data to be used as input to the GEE models.
 
 #### Geographic transformations
 
 Although there are no explicit geographic transformations in this experiment, the variable transformations that occur during the SaTScan procedure are geographic in nature: they assign values based on spatial clustering of COVID-19 risk, which are subsequently used to define clusters in the GEE models.
 
-Having looked at the SATSCAN outputs from the original study, our best guess is that the author might have calculated centroids for each county before running the GEE, using a geographic coordinate system.
+Having looked at the SaTScan outputs from the original study, our best guess is that the author might have calculated centroids for each county before running the GEE, using a geographic coordinate system.
 
 ## Analyses
 
 
 ### Geographical characteristics
 
-The **coordinate reference system** is not specified in the methodology. Without having performed the GEE clustering analysis before, we cannot say for sure whether this.
-It seems, however, because the output coordinates are measured in in latitude and longitude, that the author used a geographic coordinate system to perform a spherical distance calculation within SaTScan.
+The **coordinate reference system** is not specified in the methodology.
+Census data is provided in the NAD1983 Geographic Coordinate System.
+We assume that the analysis was also conducted the NAD1983 Geographic Coordinate System because the SaTScan can perform a spherical distance calculation using latitude and longitude.
 
 The **spatial extent** of the study were the contiguous 49 United States (including the District of Columbia).
 
@@ -169,7 +173,7 @@ The **spatial scale** and **unit of analysis** of the study is are U.S. counties
 **Edge effects** will not be accounted for in the analysis.
 
 This analysis does create **spatial subgroups** based on **spatial clustering**.
-The purpose of this grouping is to control for **spatial heterogeneity** between regions (defined as states) and different case rate intensity during the pandemic.
+The purpose of this grouping is to control for **spatial heterogeneity** between regions (defined as states) and spatial correlation within regions.
 There are criteria for two different types of spatial clustering; we address these in the attribute variable transformation section.
 
 This analysis does not measure or account for any **first order spatial effects**, **second order spatial effects**, or **spatial anisotropies**.
@@ -224,7 +228,7 @@ There is no need for a **contingency plan** in this study.
 
 ### Planned differences from the original study
 
-We plan to implement the analysis to the greatest extent possible in Python Jupyter notebooks on CyberGISX and in R / RStudio, whereas the original study was conducted using ArcGIS (Desktop v 10.7), SPSS, and SaTScan (v9.6).
+We plan to implement the analysis to the greatest extent possible in R / RStudio, using the geepack for the generalized estimating equation and SpatialEpi for the spatial scan statistics, whereas the original study was conducted using ArcGIS (Desktop v 10.7), SPSS, and SaTScan (v9.6).
 
 We will plan to check the normality of our distribution of our independent variables before correlations. If they are not normal, we may choose to calculate the bivariate correlation using a Spearman's Rho.
 

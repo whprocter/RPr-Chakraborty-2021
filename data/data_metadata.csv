@@ -1,7 +1,7 @@
 file_path,file_name,format,sources,metadata,status
 raw\public,covidcase080120.gpkg,Geopackage,raw\public\chakraborty\Aug1data\Aug1data.shp,,provided
 raw\public,covidcase080120.csv,Comma-separated values,raw\public\chakraborty\Aug1data\Aug1data.shp,,provided
-raw\public,acs.gpkg,Geopackage,TidyCensus Package call to ACS 2018 5-year,,provided; derived
+raw\public,acs.gpkg,Geopackage,TidyCensus Package call to ACS 2018 5-year,"data\metadata\ACSST5Y2020.S1810_metadata.csv, ACSDT5Y2020.C18130_metadata.csv",provided; derived
 raw\public,disability_raw.csv,Comma-separated values,ACS 2018 5-year,,provided
 raw\public,poverty_raw.csv,Comma-separated values,ACS 2018 5-year,,provided
 raw\public\chakraborty\Aug1data,Aug1data.shp,ESRI Shapefile,Chakraborty 2021 - author provided data from Johns Hopkins COVID dashboard,,provided
@@ -14,5 +14,5 @@ derived\public\satscan,sat_scan_test.txt,text,SaTScan spatial scan for COVID-19 
 derived\public\satscan,case,space-delimited text,SaTScan Input: COVID-19 Incidence : county IDs and cases,,provided
 derived\public\satscan,Coordinates.geo,space-delimited text,SaTScan Input: COVID-19 Incidence : county centroids,,provided
 derived\public\satscan,Population.geo,space-delimited text,SaTScan Input: COVID-19 Incidence : county populations,,provided
-derived\public,covid_kulldorff.RDS,,,,
-derived\public,gee_data.gpkg,,,,
+derived\public,covid_kulldorff.RDS,r data file ,data generated in R markdown,This is an R datafile generated using the SpatialEpi package that contains list of clusters,derived 
+derived\public,gee_data.gpkg,Geopackage,data generated in R markdown,data\metadata\gee.csv,derived 

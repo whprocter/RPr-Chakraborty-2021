@@ -1,0 +1,25 @@
+Variable Name,Explanation
+statefp,state code
+county,name of the county
+covid_rate,covid incidence rate 
+cluster,1 if the country falls in to a cluster and 0 otherwise
+rr_loc,relative risk score
+rr_class,relative risk score classified into six categories 
+id,unique state - relative risk ids created by combining state code and rr_class
+z_bpov_pct,standaridzed percentage of dsiability below poverty level 
+z_apov_pct,standaridzed percentage of dsiability above poverty level 
+z_white_pct,standaridzed percentage of dsiability who are white 
+z_black_pct,standaridzed percentage of dsiability who are black
+z_native_pct,standaridzed percentage of dsiability who are native American
+z_asian_pct,standaridzed percentage of dsiability who are asian
+z_other_pct,standaridzed percentage of dsiability who are other races
+z_non_hisp_white_pct,standaridzed percentage of dsiability who are non-hispanic white
+z_hisp_pct,standaridzed percentage of dsiability who are hispanic
+z_non_hisp_non_white_pct,standaridzed percentage of dsiability who are non-hispanic and non-white
+z_pct_5_17,standaridzed percentage of dsiability who are between 5 and 17 years old
+z_pct_18_34,standaridzed percentage of dsiability who are between 18 and 34 years old
+z_pct_35_64,standaridzed percentage of dsiability who are between 35 and 64 years old
+z_pct_65_74,standaridzed percentage of dsiability who are between 65 and 74 years old
+z_pct_75,standaridzed percentage of dsiability who are above 75
+z_male_pct,standaridzed percentage of dsiability who are male
+z_female_pct,standaridzed percentage of dsiability who are female

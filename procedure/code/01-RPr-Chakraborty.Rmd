@@ -447,22 +447,6 @@ cat("\n",
 
 Note that relative risk is > 1 only if the county was in a cluster
 
-```{r map relative risk scores}
-
-# Map Relative Risk scores
-tm3 <- tm_shape(covid) +
-  tm_polygons("rr_class", 
-    title="Local Relative Risk",
-    border.alpha = .2,
-    lwd = 0.2, 
-    palette="YlOrBr",
-    style="cat"
-  )
-
-tmap_save(tm3, here("results", "figures", "rr_reproduction.png"))
-```
-
-
 ```{r prepare original relative risk scores}
 
 original_cluster <- read_sf(here("data", "derived", "public","satscan", "sat_scan_compare.col.shp"))
@@ -491,6 +475,22 @@ tm_shape(original_cluster) +
 
 tmap_save(tm4, here("results", "figures", "rr_original.png"))
 
+```
+
+
+```{r map relative risk scores}
+
+# Map Relative Risk scores
+tm3 <- tm_shape(covid) +
+  tm_polygons("rr_class", 
+    title="Local Relative Risk",
+    border.alpha = .2,
+    lwd = 0.2, 
+    palette="YlOrBr",
+    style="cat"
+  )
+
+tmap_save(tm3, here("results", "figures", "rr_reproduction.png"))
 ```
 
 ## Preprocess data for GEE modelling

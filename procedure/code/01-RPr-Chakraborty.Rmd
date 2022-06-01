@@ -9,7 +9,7 @@ Joseph Holler, Department of Geography, Middlebury College, Middlebury VT 05753
 Drew An-Pham, Department of Geography, Middlebury College, Middlebury VT 05753 Derrick Burt, Department of Geography, Middlebury College, Middlebury VT 05753
 Peter Kedron, School of Geographical Sciences and Urban Planning, Arizona State University, Tempe AZ 85281 
 
-Version 1.0 | Created Jul 7, 2021 | Last Updated August 14, 2021
+Version 1.1 | Created Jul 7, 2021 | Last Updated June 1, 2022
 
 # Abstract
 
@@ -19,7 +19,7 @@ This reproduction study is motivated by expanding the potential impact of Chakra
 
 In this reproduction, we will attempt to identically reproduce all of the results from the original study. This will include the map of county level distribution of COVID-19 incidence rates (Fig. 1), the summary statistics for disability and sociodemographic variables and bivariate correlations with county-level COVID-19 incidence rate (Table 1), and the GEE models for predicting COVID-19 county-level incidence rate (Table 2). A successful reproduction should be able to generate identical results as published by Chakraborty (2021).
 
-The replication study data and code will be made available in a GitHub repository to the greatest extent that licensing and file sizes permit. The repository will be made public at [github.com/HEGSRR/RPr-Chakraborty2021](). To the greatest extent possible, the reproduction will be implemented with (3.7.6) Jupyter Notebooks for implementation on the CyberGISX platform with Python (3.7.6) Jupyter Notebooks.
+The replication study data and code will be made available in a GitHub repository to the greatest extent that licensing and file sizes permit. The repository will be made public at [github.com/HEGSRR/RPr-Chakraborty2021](). 
 
 Chakraborty, J. 2021. Social inequities in the distribution of COVID-19: An intra-categorical analysis of people with disabilities in the U.S. Disability and Health Journal 14:1-5. DOI:[10.1016/j.dhjo.2020.101007]()
 
@@ -32,7 +32,7 @@ Our two confirmatory hypotheses are that we will be able to exactly reproduce Ch
 
 > H1: There is a less than perfect match between Chakraborty's bivariate correlation coefficient for each disability/sociodemographic variable and COVID-19 incidence rate and our bivariate correlation coefficient for each disability/sociodemographic variable and COVID-19 incidence rate.
 
-> H2: There is a less than perfect match between Chakraborty's beta coefficient for the GEE of each disability/sociodemographic variable an statistics and our beta coefficient for the GEE of each disability/sociodemographic variable.
+> H2: There is a less than perfect match between Chakraborty's beta coefficient for the GEE of each disability/sociodemographic variable and our beta coefficient for the GEE of each disability/sociodemographic variable.
 
 There are multiple models being tested within each of the two hypotheses. That is, H1 and H2 both encompass five models, including one for each dimension of socio-demographics: race, ethnicity, poverty status, age, and biological sex.
 
@@ -77,6 +77,7 @@ writeLines(capture.output(sessionInfo()),
 ```
 
 ## Query American Communtity Survey Data
+
 This will require an API key for the census, which can be acquired easily here: [api.census.gov/data/key_signup.html](https://api.census.gov/data/key_signup.html)
 This query can take some time to run...
 
@@ -105,12 +106,22 @@ acs_pov <- get_acs(geography = "county",
   cache_table = TRUE
 )
 
+
+```
+
+### Filtering and joining the ACS data
+This accomplishes the step 1 and 3 of the workflow diagram
+
+```{r}
+
 # Remove Alaska, Hawaii & Puerto Rico
 acs <- filter(acs, !STATEFP %in% c("02", "15", "72"))
 
 # Join poverty data to disability data
 acs <- left_join(acs, acs_pov, by = "GEOID")
+
 ```
+
 
 ## Save raw data
 
@@ -130,6 +141,7 @@ acs <- read_sf(here("data", "raw", "public", "acs.gpkg"))
 ```
 
 ## Preprocess ACS data
+This accomplishes the step 4 the workflow diagram
 
 Calculate percentages for each sub-category of disability and remove raw census data from the data frame
 
@@ -172,6 +184,8 @@ acs_derived <- acs_derived %>%
 ```
 
 ## Load COVID-19 data
+This accomplishes the step 2 of the workflow diagram
+
 This data has been provided directly with the research compendium because it is no longer available online in the state in which it was downloaded on August 1, 2020.
 The data was provided by the original author, Jayajit Chakraborty.
 
@@ -189,6 +203,7 @@ covid_table <- st_drop_geometry(covid)
 ```
 
 ### Join COVID data to ACS data
+This accomplishes the step 5 of the workflow diagram
 
 ```{r join data and reorder columns}
 # Join poverty data to acs data
@@ -203,6 +218,7 @@ acs_covid <- select(acs_covid, geoid, statefp, county, county_st, covid_rate,
 ## Map Covid Rates
 
 ```{r map covid rates}
+
 tm1 <- tm_shape(acs_covid) +
   tm_polygons("covid_rate", 
     title="COVID-19 Cases per 100,000",
@@ -318,6 +334,7 @@ spearmans_rho
 ```
 
 ## Kulldorf Spatial Scan Cluster Detection
+This accomplishes the step 6 of the workflow diagram
 
 Note that the statistic is a Monte Carlo simulation with 999 iterations.
 Therefore, if you wish to exactly reproduce the same results as our reproduction
@@ -353,19 +370,24 @@ rm(covid_table, covid_geo, expected.cases)
 ## Save scan results
 
 ```{r save spatial scan results, eval = FALSE}
+
 saveRDS(covid_kulldorff,
   file=here("data","derived","public","covid_kulldorff.RDS"))
+
 ```
 
 ## Load scan results
 
 ```{r load spatial scan results}
+
 covid_kulldorff <- readRDS(
   here("data","derived","public","covid_kulldorff.RDS")
   )
+
 ```
 
 ## Summarize spatial scan clusters by county
+This accomplishes the step 7 and 8 of the workflow diagram
 
 Summarize the results of the Kulldorff spatial scan cluster detection by county
 Code each county `0` if it is not in a cluster and `1` if it is in a cluster.
@@ -426,6 +448,7 @@ cat("\n",
 Note that relative risk is > 1 only if the county was in a cluster
 
 ```{r map relative risk scores}
+
 # Map Relative Risk scores
 tm3 <- tm_shape(covid) +
   tm_polygons("rr_class", 
@@ -471,8 +494,10 @@ tmap_save(tm4, here("results", "figures", "rr_original.png"))
 ```
 
 ## Preprocess data for GEE modelling
+This accomplishes the step 9 and 10 of the workflow diagram
 
 ```{r preprocess data for GEE model }
+
 covid_clusters <- covid %>% 
   select(fips, cluster, rr_loc, rr_class) %>% 
   st_drop_geometry
@@ -514,7 +539,9 @@ rm(covid_clusters)
 Optionally, you may save the preprocessed to `data/raw/public/gee_data.gpkg`
 
 ```{r save preprocessed COVID cluster data, eval = FALSE}
+
 write_sf(gee_data, here("data","derived","public","gee_data.gpkg"))
+
 ```
 
 ## Load preprocessed GEE input data
@@ -522,20 +549,25 @@ write_sf(gee_data, here("data","derived","public","gee_data.gpkg"))
 Optionally, you may load the preprocessed data from `data/raw/public/gee_data.gpkg`
 
 ```{r load preprocessed COVID cluster data, eval = FALSE}
+
 gee_data <- read_sf(here("data","derived","public","gee_data.gpkg"))
+
 ```
 
 # Report number of unique clusters
 
 ```{r}
+
 cluster_summary <- gee_data %>% 
   st_drop_geometry %>% 
   count(id)
 cat(length(cluster_summary$n), "unique clusters\n")
 summary(cluster_summary$n)
+
 ```
 
 ## GEE Models
+This accomplishes the step 11 of the workflow diagram
 
 Generalized Estimating Equation parameters:
 
@@ -631,4 +663,5 @@ QIC_results <- data.frame(race = QIC(race_gee),
 QIC_results
 
 ```
+
 

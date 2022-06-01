@@ -8,7 +8,11 @@ raw\public\chakraborty\Aug1data,Aug1data.shp,ESRI Shapefile,Chakraborty 2021 - a
 raw\public\chakraborty\,Aug1GEEdata.csv,Comma-separated values,Chakraborty 2021 - author provided data,,provided
 raw\public\chakraborty\,SatScan_output.dbf,dBASE,Chakraborty 2021 - author provided data,,provided
 raw\public\chakraborty\,SatScan_results.txt,Text,Chakraborty 2021 - author provided data,,provided
-derived\public,,,,,
-derived\public,,,,,
-derived\public,,,,,
-derived\public\satscan,,,,,provided
+derived\public\satscan,sat_scan_compare.gis.shp,ESRI Shapefile,SaTScan spatial scan for COVID-19 clusters - counties in clusters,,provided
+derived\public\satscan,sat_scan_compare.col.shp,ESRI Shapefile,SaTScan spatial scan for COVID-19 clusters - cluster centers and radii,,provided
+derived\public\satscan,sat_scan_test.txt,text,SaTScan spatial scan for COVID-19 clusters - output report,,provided
+derived\public\satscan,case,space-delimited text,SaTScan Input: COVID-19 Incidence : county IDs and cases,,provided
+derived\public\satscan,Coordinates.geo,space-delimited text,SaTScan Input: COVID-19 Incidence : county centroids,,provided
+derived\public\satscan,Population.geo,space-delimited text,SaTScan Input: COVID-19 Incidence : county populations,,provided
+derived\public,covid_kulldorff.RDS,,,,
+derived\public,gee_data.gpkg,,,,

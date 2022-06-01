@@ -365,7 +365,6 @@ covid_kulldorff <- readRDS(
   )
 ```
 
-
 ## Summarize spatial scan clusters by county
 
 Summarize the results of the Kulldorff spatial scan cluster detection by county
@@ -421,6 +420,7 @@ cat("\n",
 # This reproduction uses county-based relative risk scores based on
 # paragraph 4 of the methods section of the paper and Desjardins et al
 ```
+
 ## Map Relative Risk Scores
 
 Note that relative risk is > 1 only if the county was in a cluster
@@ -487,7 +487,6 @@ gee_data <- left_join(acs_covid, covid_clusters, by = c("geoid"="fips")) %>%
 
 
 gee_data <- gee_data %>% 
-  mutate_all(~ifelse(is.na(.x),  mean(.x,na.rm = TRUE), .x)) %>% 
   mutate(z_bpov_pct = scale(bpov_pct),
          z_apov_pct = scale(apov_pct),
          z_white_pct = scale(white_pct),

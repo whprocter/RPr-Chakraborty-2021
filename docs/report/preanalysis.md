@@ -1,4 +1,4 @@
-# Pre-Registration of Rpr-Reproduction of Social Inequities in the distribution of COVID-19: An intra-categorical analysis of people with disabilities in the U.S.
+# Preanalysis Plan for Rpr-Chakraborty-2021: Reproduction of Social Inequities in the distribution of COVID-19: An intra-categorical analysis of people with disabilities in the U.S.
 
 Joseph Holler, Department of Geography, Middlebury College, Middlebury VT 05753  
 Derrick Burt, Department of Geography, Middlebury College, Middlebury VT 05753  
@@ -7,6 +7,8 @@ Peter Kedron, School of Geographical Sciences and Urban Planning, Arizona State 
 Junyi Zhou, Department of Geography, Middlebury College, Middlebury VT 05753  
 
 Version 1.1 | Created Jul 7, 2021 | Last Updated June 2, 2022
+
+Reproduction of: Chakraborty, J. 2021. Social inequities in the distribution of COVID-19: An intra-categorical analysis of people with disabilities in the U.S. *Disability and Health Journal* **14**:1-5. DOI:[10.1016/j.dhjo.2020.101007](https://doi.org/10.1016/j.dhjo.2020.101007)
 
 ## Abstract
 
@@ -29,8 +31,6 @@ A successful reproduction should be able to generate identical results as publis
 The reproduction study data and code will be made available in a GitHub repository to the greatest extent that licensing and file sizes permit.
 The repository will be made public at [github.com/HEGSRR/RPr-Chakraborty2021](https://github.com/HEGSRR/RPr-Chakraborty2021).
 To the greatest extent possible, the reproduction will be implemented with R markdown using packages geepack for the generalized estimating equation and SpatialEpi for the spatial scan statistics.
-
-Chakraborty, J. 2021. Social inequities in the distribution of COVID-19: An intra-categorical analysis of people with disabilities in the U.S. *Disability and Health Journal* **14**:1-5. DOI:[10.1016/j.dhjo.2020.101007](https://doi.org/10.1016/j.dhjo.2020.101007)
 
 ### Keywords
 

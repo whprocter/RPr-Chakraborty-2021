@@ -4,7 +4,7 @@ raw\public,covidcase080120.csv,Comma-separated values,raw\public\chakraborty\Aug
 raw\public,acs.gpkg,Geopackage,TidyCensus Package call to ACS 2018 5-year,"ACSST5Y2020.S1810_metadata.csv, ACSDT5Y2020.C18130_metadata.csv",provided; derived
 raw\public,disability_raw.csv,Comma-separated values,ACS 2018 5-year,,provided
 raw\public,poverty_raw.csv,Comma-separated values,ACS 2018 5-year,,provided
-raw\public\chakraborty\Aug1data,Aug1data.shp,ESRI Shapefile,Chakraborty 2021 - author provided data from Johns Hopkins COVID dashboard,,provided
+raw\public\chakraborty\Aug1data,Aug1data.shp,ESRI Shapefile,Chakraborty 2021 - author provided data from Johns Hopkins COVID dashboard,COVID-19-CSSE-JohnsHopkins.md,provided
 raw\public\chakraborty\,Aug1GEEdata.csv,Comma-separated values,Chakraborty 2021 - author provided data,,provided
 raw\public\chakraborty\,SatScan_output.dbf,dBASE,Chakraborty 2021 - author provided data,,provided
 raw\public\chakraborty\,SatScan_results.txt,Text,Chakraborty 2021 - author provided data,,provided

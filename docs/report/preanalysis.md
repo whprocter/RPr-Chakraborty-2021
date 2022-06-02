@@ -4,8 +4,9 @@ Joseph Holler, Department of Geography, Middlebury College, Middlebury VT 05753
 Derrick Burt, Department of Geography, Middlebury College, Middlebury VT 05753  
 Drew An-Pham, Department of Geography, Middlebury College, Middlebury VT 05753  
 Peter Kedron, School of Geographical Sciences and Urban Planning, Arizona State University, Tempe AZ 85281  
+Junyi Zhou, Department of Geography, Middlebury College, Middlebury VT 05753  
 
-Version 1.1 | Created Jul 7, 2021 | Last Updated June 1, 2022
+Version 1.1 | Created Jul 7, 2021 | Last Updated June 2, 2022
 
 ## Abstract
 
@@ -76,7 +77,9 @@ The data provided by the author is not available in an online repository, but we
 In our reproduction attempt, we will use publicly available American Community Survey data downloaded directly from the Census API using the tidycensus package for R.
 We will use Johns Hopkins Coronavirus data provided by the author because it is not possible to download that dynamic dataset in an archived form as it existed on August 1, 2020.
 Johns Hopkins still provides aggregated COVID-19 incidence rate data, but does not publicly provide archived data identical to those used in the original study.
-In preparing this preanalysis plan, we have only accessed data, viewed metadata, calculated summary statistics, and corresponded with the original author as described above.
+This pre-analysis plan is based on information from the original paper, correspondence with the original author (as described above), viewing metadata and data sources provided by the author and the U.S. Census, and calculating summary statistics.  
+
+*Disclaimer*: For demonstration purposes, we are registering this plan *after* running the full analysis in R-studio, based upon our documented plan and knowledge of the study prior to completing the analysis.
 
 ### Data collection and spatial sampling
 
@@ -109,11 +112,13 @@ Their table code from the ACS data has been included in this documentation
 
 ##### COVID-19 incidence rate
 
-- cases per 100,000 people
+COVID-19 Incidence is calculated as the number of known cases per 100,000 people, based upon the Johns Hopkins University COVID-19 Resource Center database.
 
 ##### Persons with disabilities
 
 The American Community Survey (ACS) variables used in the study are outlined below.
+
+*Table 1: Disability Subgroup Variables*
 
 Variable Name in Study | ACS Variable name
 --- | ---
@@ -145,14 +150,19 @@ percent w disability: female | S1810_C03_003E
 #### Attribute variable transformations
 
 The COVID-19 incidence rate is normalized at the county-level per 100,000 people.
-All of the disability and sociodemographic variables are provided in the format that they are used, as a percentage of "people with disabilities in each subgroup by the total civilian non-institutionalized population relevant to the variable category" (Chakraborty 2011).
+Most of the disability and sociodemographic variables are provided in the format that they are used, as a percentage of "people with disabilities in each subgroup by the total civilian non-institutionalized population relevant to the variable category" (Chakraborty 2011).
+Non-Hispanic non-White, Below poverty level and Above poverty level are calculated as shown in Table 1 above.
 
 Before conducting the GEE, all independent variables are normalized into z-scores.
 
 For the GEE, two different clustering scores are assigned to each county.
-The first clustering score is just a categorical variable determined by the counties' state.
-The second clustering score is a relative risk score calculated by identifying spatial clusters from a spatial scan statistic based on the Poisson Model.
-We calculate the clusters using the spatial scan statistics package. We then calculate the relative risk score for each county using the formula: (rate of cases within the cluster) / (rate of cases outside the cluster). This is then classified into six categories based on the estimated relative risk values (<1.0, 1.00-1.99, 2.00-2.99, 3.00-3.99, 4.00-4.99, and 5.0 or more). The data is combined with the American Community Survey data to be used as input to the GEE models.
+The first clustering ID is just a categorical variable determined by the counties' state.
+The second clustering ID is a relative risk score calculated by identifying spatial clusters from a spatial scan statistic based on the Poisson Model.
+We will calculate the clusters using the SpatialEpi package in R.
+We then calculate the relative risk score for each county using the formula: ``(rate of cases within the cluster) / (rate of cases outside the cluster)``.
+The relative risk score is then classified into six categories based on the estimated relative risk values (<1.0, 1.00-1.99, 2.00-2.99, 3.00-3.99, 4.00-4.99, and 5.0 or more).
+The first clustering ID (State) and second clustering score (Classified Relative Risk) are combined to form IDs for each unique combination of state and relative risk class.
+The clustering ID's will then be joined with the American Community Survey data on disability subgroups to be used as input to the GEE models.
 
 #### Geographic transformations
 
@@ -204,23 +214,19 @@ The county-level Pearson's rho correlation coefficient is used to test associati
 As this is a parametric test, normality should be tested.
 A separate hypothesis is formulated for each sociodemographic disability characteristic.
 
-The generalized estimating equation models are used to test association between intra-categorical rates of disability and COVID-19 incidence rates while accounting for spatial clustering.
+The generalized estimating equation (GEE) models are used to test association between intra-categorical rates of disability and COVID-19 incidence rates while accounting for spatial clustering.
 As specified by the author, "GEEs extend the generalized linear model to accommodate clustered data, in addition to relaxing several assumptions of traditional regression (i.e., normality)".
 Additionally, the author notes that "clusters of observations must be defined based on the assumption that observations within a cluster are correlated while observations from different clusters are independent."
+Following Chakraborty, all five GEE models will be specified with exchangeable correlation matrices, gamma distributions, and logarithmic link function.
+These specifications were chosen after testing each alternative and choosing the models with the best quasilikelihood under the independence model criterion (QIC).
 
 ### Inference criteria and robustness
 
-To make inferences, p-values and correlation coefficients are checked.
+Bivariate inference will be assessed with correlation coefficients and p-values.
 
-For the bivariate correlation, Pearson's rho coefficients with two-tailed p-values (p<0.01; p<0.05) were used to test significance for all independent variables.
-The author of the original study seems to place more emphasis on the significance and direction of the coefficient than the magnitude.
-Overall model fit was not checked.
-
-For the GEE, Beta coefficients with two tailed p-values for a Wald chi-square test (p<0.01; p<0.05) were used to test significance of all independent variables.
-The author of the original study places more emphasis on the significance and direction of the coefficient than the magnitude.
-To check robustness, the author notes that GEEs "require the specification of an intra-cluster dependency correlation matrix. The 'exchangeable correlation matrix was selected for the results reported [here], since this specification yielded the best statistical fit based on the QIC model criterion".
-Further, the author describes: "for each GEE, the normal, gamma, and inverse Gaussian distributions with logarithmic and identity link functions were explored.
-The gamma distribution with logarithmic link function was chosen for all GEEs since this model specification provided the lowest QIC value."
+Multivariate inference will not be made because GEE models provide estimated coefficients for the independent variables and these are best interpreted as exploratory estimates.
+Model fit will be assessed with QIC.
+Statistical significance of independent variable coefficients will be tested with Wald Chi Square and assessed for the 0.01 and 0.05 confidence levels.
 
 ### Exploratory analyses and contingency planning
 
@@ -231,16 +237,22 @@ There is no need for a **contingency plan** in this study.
 
 ### Planned differences from the original study
 
-We plan to implement the analysis to the greatest extent possible in R / RStudio, using the geepack for the generalized estimating equation and SpatialEpi for the spatial scan statistics, whereas the original study was conducted using ArcGIS (Desktop v 10.7), SPSS, and SaTScan (v9.6).
+We plan to implement the analysis to the greatest extent possible in R / RStudio, using the geepack package for the generalized estimating equation and SpatialEpi package for the spatial scan statistics, whereas the original study was conducted using ArcGIS (Desktop v 10.7), SPSS, and SaTScan (v9.6).
 
 We will plan to check the normality of our distribution of our independent variables before correlations. If they are not normal, we may choose to calculate the bivariate correlation using a Spearman's Rho.
 
 ### Evaluating the reproduction results
 
-Before comparing results from our reproduction of the statistical models, we plan to compare summary statistics for all of our dependent and independent variables to those of the original study to confirm we are using the same inputs.
+Before comparing results from our reproduction of the statistical models, we plan to compare summary statistics for all of our independent variables to those of the original study to confirm we are using the same inputs.
+We will compare the summary statistics (in table 1) and geographic distribution (in figure 1) of the dependent variable, COVID-19 incidence.
+
+Considering that we will use a different computational environment from the original authors, we will compare the bivariate correlation coefficients and significance levels expecting extremely similar coefficients and p-values.
+
+Considering that both the computational environment and some analytical decisions will vary in our reproduction of the clusters for GEE modeling, we will compare the coefficients and significance levels with expectation that the direction and significance level will be the identical, but magnitudes and Chi Square values may vary.
 
 In order to test the results for both our bivariate correlation and GEE, we plan to construct tables (or matrices) that show the difference between our correlation coefficients and the original study's correlation coefficients.
 If there are any non-zeroes, we will investigate further.
+
 We will consider the reproduction an exact reproduction only if we can create identical coefficients for the Pearson's Rho bivariate tests of table 1 and the GEE models of table 2.
 We will consider the reproduction to be approximate if we find coefficients with the same direction and significance levels as the original study.
 We will consider the reproduction to have at least partially failed if we find coefficients with different directions or significance levels.

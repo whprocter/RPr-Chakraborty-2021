@@ -112,7 +112,7 @@ acs_pov <- get_acs(geography = "county",
 ### Filtering and joining the ACS data
 This accomplishes the step 1 and 3 of the workflow diagram
 
-```{r}
+```{r filter and join acs data, message = FALSE, eval = FALSE}
 
 # Remove Alaska, Hawaii & Puerto Rico
 acs <- filter(acs, !STATEFP %in% c("02", "15", "72"))

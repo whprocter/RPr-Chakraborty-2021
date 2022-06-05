@@ -21,10 +21,11 @@ This study is a replication of:
 > Link your reports, manuscripts, presentations, publication DOIs, preregistrations, etc. here. Delete this instruction and unused list items from your final repository. Adjust the file names and paths and add additional items as necessary.
 
 - OSF Project: https://doi.org/10.17605/OSF.IO/S5MTQ
-- Preregistration: https://osf.io/my_study
-- Publication: https://doi.org/my_study
+- Preregistration: https://doi.org/10.17605/OSF.IO/MJXHD
+- Publication: t.b.d.
 - Pre-analysis plan: [docs/report/preanalysis.pdf](docs/report/preanalysis.pdf)
 - Study report: [docs/report/report.pdf](docs/report/report.pdf)
+- Computed R Markdown notebook: [docs/report/01-RPr-Chakraborty.pdf](docs/report/01-RPr-Chakraborty.pdf) or [docs/report/01-RPr-Chakraborty.html](docs/report/01-RPr-Chakraborty.html)
 
 ## Repository Contents
 
@@ -32,5 +33,6 @@ The contents of this repository are outlined in three tables:
 - Data: [data/data_metadata.csv](data/data_metadata.csv)
 - Procedures: [procedure/procedure_metadata.csv](procedure/procedure_metadata.csv)
 - Results: [results/results_metadata.csv](results/results_metadata.csv)
+- Processing Environment: [procedure/environment/r_environment.txt](procedure/environment/r_environment.txt)
 
 The [template_readme.md](template_readme.md) file contains more information on structure and rationale of this research template repository, as well as important references and licenses.

@@ -228,6 +228,9 @@ tm1 <- tm_shape(acs_covid) +
     palette="YlOrBr"
   )
 
+tm1
+
+tmap_options(show.messages = FALSE)
 tmap_save(tm1, here("results", "figures", "covid_rates.png"))
 
 ```
@@ -244,6 +247,8 @@ tm2 <- tm_shape(acs_covid) +
     lwd = 0.2,
     palette="YlOrBr"
   )
+
+tm2
 
 tmap_save(tm2, here("results", "figures", "disability_rates.png"))
 
@@ -270,7 +275,7 @@ acs_covid[is.na(acs_covid$apov_pct), ]$apov_pct <- 0
 ```{r descriptive statistics}
 acs_covid_stats <- acs_covid %>% 
   st_drop_geometry() %>% 
-  select(is.numeric) %>% 
+  select(where(is.numeric)) %>% 
   stat.desc(norm=TRUE) %>% 
   round(2) %>% 
   t() %>% as.data.frame() %>% 
@@ -376,13 +381,19 @@ saveRDS(covid_kulldorff,
 
 ```
 
-## Load scan results
+## Optionally, load scan results
 
 ```{r load spatial scan results}
 
 covid_kulldorff <- readRDS(
   here("data","derived","public","covid_kulldorff.RDS")
   )
+
+print("Most likely cluster:")
+
+covid_kulldorff$most.likely.cluster
+
+print(paste0("Secondary clusters: ", length(covid_kulldorff$secondary.clusters)))
 
 ```
 
@@ -473,6 +484,8 @@ tm_shape(original_cluster) +
   tm_borders("red", lwd =.5) +
   tmap_options(check.and.fix = TRUE) 
 
+tm4
+
 tmap_save(tm4, here("results", "figures", "rr_original.png"))
 
 ```
@@ -489,6 +502,8 @@ tm3 <- tm_shape(covid) +
     palette="YlOrBr",
     style="cat"
   )
+
+tm3
 
 tmap_save(tm3, here("results", "figures", "rr_reproduction.png"))
 ```
@@ -554,7 +569,7 @@ gee_data <- read_sf(here("data","derived","public","gee_data.gpkg"))
 
 ```
 
-# Report number of unique clusters
+# Report number of unique clusters and histogram of counties per cluster
 
 ```{r}
 
@@ -563,6 +578,7 @@ cluster_summary <- gee_data %>%
   count(id)
 cat(length(cluster_summary$n), "unique clusters\n")
 summary(cluster_summary$n)
+hist(cluster_summary$n) # improve labels for this graph
 
 ```
 

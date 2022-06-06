@@ -256,10 +256,13 @@ We will consider the reproduction to have at least partially failed if we find c
 
 ## Unplanned deviations
 
+One county was unexpectedly missing disability and poverty data: Rio Arriba County, New Mexico.
+We replaced the missing values with zeroes and, with this missing data treatment, confirmed that our descriptive statistics matched the original publication.
+
 In our pre-analysis plan, we planned to test the independent variables for normality prior to using the Pearson's r correlation coefficient for bivariate tests of correlation between the independent variables and COVID-19 incidence rates.
 Most of the independent variables do have non-normal distributions, therefore our reproduction has used the nonparametric Spearman's rank correlation coefficient for bivariate tests of correlation between the independent variables and COVID-19 incidence rates.
 
-The original study did not directly report details for the results of the spatial scan statistic for COVID-19 clusters beyond the number of clusters detected.
+The original study did not directly report details for the results of the Kulldorff spatial scan statistic for COVID-19 clusters beyond the number of clusters detected.
 In order to better understand the spatial scan statistic and to compare our reproduction with the SpatialEpi package to the original study using SaTScan software, we also ran the spatial scan statistic in SaTScan.
 SaTScan produced three outputs:
 - text file report of each cluster

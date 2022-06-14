@@ -7,9 +7,10 @@ output:
 
 Joseph Holler, Department of Geography, Middlebury College, Middlebury VT 05753
 Drew An-Pham, Department of Geography, Middlebury College, Middlebury VT 05753 Derrick Burt, Department of Geography, Middlebury College, Middlebury VT 05753
+Junyi Zhou, Department of Geography, Middlebury College, Middlebury VT 05753 
 Peter Kedron, School of Geographical Sciences and Urban Planning, Arizona State University, Tempe AZ 85281 
 
-Version 1.1 | Created Jul 7, 2021 | Last Updated June 1, 2022
+Version 1.2 | Created Jul 7, 2021 | Last Updated June 14, 2022
 
 # Abstract
 
@@ -55,25 +56,31 @@ Other software are not specified in the publication; however data files and comm
 
 
 ```{r setup, message = FALSE, include = FALSE}
+
 # list of required packages
-packages = c("tidycensus", "tidyverse", "downloader", "sf", "classInt", "readr",
-             "here", "s2", "pastecs", "tmap", "SpatialEpi", "svDialogs", 
-             "geepack")
+packages <- c(
+  "tidycensus", "tidyverse", "downloader", "sf", "classInt", "readr",
+  "here", "s2", "pastecs", "tmap", "SpatialEpi", "svDialogs",
+  "geepack"
+)
 
 # load and install required packages
 package.check <- lapply(
   packages,
   FUN = function(x) {
     if (!require(x, character.only = TRUE)) {
-      install.packages(x, dependencies = TRUE, quietly=TRUE)
+      install.packages(x, dependencies = TRUE, quietly = TRUE)
       library(x, character.only = TRUE)
     }
   }
 )
 
-# save the R processing environment 
-writeLines(capture.output(sessionInfo()),
-           here("procedure","environment","r_environment.txt"))
+# save the R processing environment
+writeLines(
+  capture.output(sessionInfo()),
+  here("procedure", "environment", "r_environment.txt")
+)
+
 ```
 
 ## Query American Communtity Survey Data
@@ -82,24 +89,31 @@ This will require an API key for the census, which can be acquired easily here: 
 This query can take some time to run...
 
 ```{r Load ACS Data, message = FALSE, eval = FALSE}
+
 # get API Key
 # we could store this in the raw/private or scratch folder and load if the
 # researcher has already entered it once
-census_api_key(dlgInput("Enter a Census API Key", 
-  Sys.getenv("CENSUS_API_KEY"))$res,
-  overwrite = TRUE)
+census_api_key(dlgInput(
+  "Enter a Census API Key",
+  Sys.getenv("CENSUS_API_KEY")
+)$res,
+overwrite = TRUE
+)
 
 # Query disability demographic data with geographic boundaries
-acs <- get_acs(geography = "county",
+acs <- get_acs(
+  geography = "county",
   table = "S1810",
   year = 2018,
   output = "wide",
   cache_table = TRUE,
   geometry = TRUE,
-  keep_geo_vars = TRUE) 
+  keep_geo_vars = TRUE
+)
 
 # Query poverty and disability data
-acs_pov <- get_acs(geography = "county",
+acs_pov <- get_acs(
+  geography = "county",
   table = "C18130",
   year = 2018,
   output = "wide",
@@ -128,8 +142,10 @@ acs <- left_join(acs, acs_pov, by = "GEOID")
 Optionally, you may save the raw data to data/raw/public/acs.gpkg
 
 ```{r save ACS data, message = F, eval = FALSE}
+
 # Save downloaded acs data to acs.gpkg
 write_sf(acs, here("data", "raw", "public", "acs.gpkg"))
+
 ```
 
 ## Load raw data
@@ -137,7 +153,9 @@ write_sf(acs, here("data", "raw", "public", "acs.gpkg"))
 Optionally, you may load the raw data and begin processing here
 
 ```{r load ACS data, message = F}
+
 acs <- read_sf(here("data", "raw", "public", "acs.gpkg"))
+
 ```
 
 ## Preprocess ACS data
@@ -146,6 +164,7 @@ This accomplishes the step 4 the workflow diagram
 Calculate percentages for each sub-category of disability and remove raw census data from the data frame
 
 ```{r Preprocess ACS data, message = FALSE}
+
 # calculate percentages
 acs_derived <- mutate(acs,
   dis_pct = S1810_C02_001E / S1810_C01_001E * 100,
@@ -153,13 +172,13 @@ acs_derived <- mutate(acs,
   black_pct = S1810_C02_005E / S1810_C01_001E * 100,
   native_pct = S1810_C02_006E / S1810_C01_001E * 100,
   asian_pct = S1810_C02_007E / S1810_C01_001E * 100,
-  other_pct = 
-    (S1810_C02_008E + S1810_C02_009E + S1810_C02_010E)/S1810_C01_001E *100,
+  other_pct =
+    (S1810_C02_008E + S1810_C02_009E + S1810_C02_010E) / S1810_C01_001E * 100,
   non_hisp_white_pct = S1810_C02_011E / S1810_C01_001E * 100,
   hisp_pct = S1810_C02_012E / S1810_C01_001E * 100,
-  non_hisp_non_white_pct = 
+  non_hisp_non_white_pct =
     (S1810_C02_001E - S1810_C02_012E - S1810_C02_011E) / S1810_C01_001E * 100,
-  bpov_pct = (C18130_004E + C18130_011E + C18130_018E) / C18130_001E * 100, 
+  bpov_pct = (C18130_004E + C18130_011E + C18130_018E) / C18130_001E * 100,
   apov_pct = (C18130_005E + C18130_012E + C18130_019E) / C18130_001E * 100,
   pct_5_17 = S1810_C02_014E / S1810_C01_001E * 100,
   pct_18_34 = S1810_C02_015E / S1810_C01_001E * 100,
@@ -168,19 +187,20 @@ acs_derived <- mutate(acs,
   pct_75 = S1810_C02_018E / S1810_C01_001E * 100,
   male_pct = S1810_C02_002E / S1810_C01_001E * 100,
   female_pct = S1810_C02_003E / S1810_C01_001E * 100
-) 
+)
 
 # select only relevant geographic identifiers and derived percentages
 # and transform to USA Contiguous Albers Equal Area Conic projection
-acs_derived <- acs_derived %>% 
+acs_derived <- acs_derived %>%
   select(
     geoid = GEOID,
     statefp = STATEFP,
     county = NAME.x,
     county_st = NAME,
     contains("pct")
-  ) %>% 
+  ) %>%
   st_transform(5070)
+
 ```
 
 ## Load COVID-19 data
@@ -190,29 +210,36 @@ This data has been provided directly with the research compendium because it is 
 The data was provided by the original author, Jayajit Chakraborty.
 
 ```{r load covid data}
-covid <- read_sf(here("data", "raw", "public","covidcase080120.gpkg"))
+
+covid <- read_sf(here("data", "raw", "public", "covidcase080120.gpkg"))
 covid <- select(covid,
   fips = FIPS,
   pop = POP_ESTIMA,
   cases = Confirmed,
-  x=X, y=Y)
+  x = X, y = Y
+)
 covid$covid_rate <- covid$cases / covid$pop * 100000
 covid_table <- st_drop_geometry(covid)
 
 # It might be wise to calculate our own X and Y using centroids
+
 ```
 
 ### Join COVID data to ACS data
 This accomplishes the step 5 of the workflow diagram
 
 ```{r join data and reorder columns}
+
 # Join poverty data to acs data
 covid_rate_table <- select(covid_table, fips, covid_rate)
-acs_covid <- left_join(acs_derived, covid_rate_table, by=c("geoid"="fips"))
+acs_covid <- left_join(acs_derived, covid_rate_table, by = c("geoid" = "fips"))
 
 # move covid_rate prior to percentages
-acs_covid <- select(acs_covid, geoid, statefp, county, county_st, covid_rate,
-  everything())
+acs_covid <- select(
+  acs_covid, geoid, statefp, county, county_st, covid_rate,
+  everything()
+)
+
 ```
 
 ## Map Covid Rates
@@ -220,12 +247,12 @@ acs_covid <- select(acs_covid, geoid, statefp, county, county_st, covid_rate,
 ```{r map covid rates}
 
 tm1 <- tm_shape(acs_covid) +
-  tm_polygons("covid_rate", 
-    title="COVID-19 Cases per 100,000",
-    style="quantile",
+  tm_polygons("covid_rate",
+    title = "COVID-19 Cases per 100,000",
+    style = "quantile",
     border.alpha = .2,
     lwd = 0.2,
-    palette="YlOrBr"
+    palette = "YlOrBr"
   )
 
 tm1
@@ -240,12 +267,12 @@ tmap_save(tm1, here("results", "figures", "covid_rates.png"))
 ```{r map disability rates}
 
 tm2 <- tm_shape(acs_covid) +
-  tm_polygons("dis_pct", 
-    title="Percent with Disability",
-    style="quantile",
+  tm_polygons("dis_pct",
+    title = "Percent with Disability",
+    style = "quantile",
     border.alpha = .2,
     lwd = 0.2,
-    palette="YlOrBr"
+    palette = "YlOrBr"
   )
 
 tm2
@@ -273,15 +300,18 @@ acs_covid[is.na(acs_covid$apov_pct), ]$apov_pct <- 0
 ## Descriptive Statistics
 
 ```{r descriptive statistics}
-acs_covid_stats <- acs_covid %>% 
-  st_drop_geometry() %>% 
-  select(where(is.numeric)) %>% 
-  stat.desc(norm=TRUE) %>% 
-  round(2) %>% 
-  t() %>% as.data.frame() %>% 
+
+acs_covid_stats <- acs_covid %>%
+  st_drop_geometry() %>%
+  select(where(is.numeric)) %>%
+  stat.desc(norm = TRUE) %>%
+  round(2) %>%
+  t() %>%
+  as.data.frame() %>%
   select(min, max, mean, SD = std.dev, ShapiroWilk = normtest.W, p = normtest.p)
 
 acs_covid_stats
+
 ```
 
 ## Calculate Pearson's R Correlation Coefficients
@@ -290,25 +320,27 @@ These results are identical in direction and significance to Chakraborty's,
 but differ slightly in magnitude.
 
 ```{r pearsons correlation}
-df = sum(!is.na(acs_covid$dis_pct)) - 2
+
+df <- sum(!is.na(acs_covid$dis_pct)) - 2
 
 pearsons_r <- acs_covid %>%
-  select(where(is.numeric)) %>% 
-  st_drop_geometry() %>% 
-  cor(method="pearson", use="pairwise.complete.obs") %>% 
+  select(where(is.numeric)) %>%
+  st_drop_geometry() %>%
+  cor(method = "pearson", use = "pairwise.complete.obs") %>%
   as.data.frame() %>%
-  select(r = covid_rate) %>% 
+  select(r = covid_rate) %>%
   mutate(
-    t = abs(r) / sqrt((1 - r^2)/(df) ),
+    t = abs(r) / sqrt((1 - r^2) / (df)),
     p = pt(t, df, lower.tail = FALSE)
-    ) %>% 
+  ) %>%
   round(3) %>%
-  rownames_to_column("variable") %>% 
+  rownames_to_column("variable") %>%
   filter(variable != "covid_rate")
 
 pearsons_r
 # this estimation of t gives similar, but not identical, result to corr.test
 # consider trying the rstatix package for this!
+
 ```
 
 ## Calculate Spearman's Rho Correlation Coefficients
@@ -319,23 +351,25 @@ The direction of several of the variables changes with the non-parametric
 test.
 
 ```{r spearmans correlation}
-df = sum(!is.na(acs_covid$dis_pct)) - 2
+
+df <- sum(!is.na(acs_covid$dis_pct)) - 2
 
 spearmans_rho <- acs_covid %>%
-  select(where(is.numeric)) %>% 
-  st_drop_geometry() %>% 
-  cor(method="spearman", use="pairwise.complete.obs") %>% 
+  select(where(is.numeric)) %>%
+  st_drop_geometry() %>%
+  cor(method = "spearman", use = "pairwise.complete.obs") %>%
   as.data.frame() %>%
-  select(rho = covid_rate) %>% 
+  select(rho = covid_rate) %>%
   mutate(
-    t = abs(rho) / sqrt((1 - rho^2)/(df) ),
+    t = abs(rho) / sqrt((1 - rho^2) / (df)),
     p = pt(t, df, lower.tail = FALSE)
-    ) %>% 
+  ) %>%
   round(3) %>%
-  rownames_to_column("variable") %>% 
+  rownames_to_column("variable") %>%
   filter(variable != "covid_rate")
 
 spearmans_rho
+
 ```
 
 ## Kulldorf Spatial Scan Cluster Detection
@@ -348,7 +382,8 @@ Instead, load the scan results below.
 This code block can take more than 10-20 minutes to run.
 
 ```{r SpatialEpi Kulldorff spatial scan, eval = FALSE}
-covid_geo <- covid_table %>% 
+
+covid_geo <- covid_table %>%
   select(x, y) %>%
   latlong2grid()
 # latlong2grid approximates an equidistant grid measured in kilometers
@@ -356,20 +391,22 @@ covid_geo <- covid_table %>%
 # as a geodesic calculation. SaTScan uses spherical or ellipsoidal distance
 
 # calculate expected cases with one strata
-expected.cases <- expected(covid_table$pop, covid_table$cases , 1)
+expected.cases <- expected(covid_table$pop, covid_table$cases, 1)
 
 # Kulldorff spatial scan statistic
-covid_kulldorff <- kulldorff(geo=covid_geo,
-                             cases=covid_table$cases,
-                             population=covid_table$pop,
-                             expected.cases=expected.cases,
-                             pop.upper.bound=0.5,
-                             n.simulations=999,
-                             alpha.level=0.05,
-                             plot=TRUE
+covid_kulldorff <- kulldorff(
+  geo = covid_geo,
+  cases = covid_table$cases,
+  population = covid_table$pop,
+  expected.cases = expected.cases,
+  pop.upper.bound = 0.5,
+  n.simulations = 999,
+  alpha.level = 0.05,
+  plot = TRUE
 )
 
 rm(covid_table, covid_geo, expected.cases)
+
 ```
 
 ## Save scan results
@@ -377,7 +414,8 @@ rm(covid_table, covid_geo, expected.cases)
 ```{r save spatial scan results, eval = FALSE}
 
 saveRDS(covid_kulldorff,
-  file=here("data","derived","public","covid_kulldorff.RDS"))
+  file = here("data", "derived", "public", "covid_kulldorff.RDS")
+)
 
 ```
 
@@ -386,8 +424,8 @@ saveRDS(covid_kulldorff,
 ```{r load spatial scan results}
 
 covid_kulldorff <- readRDS(
-  here("data","derived","public","covid_kulldorff.RDS")
-  )
+  here("data", "derived", "public", "covid_kulldorff.RDS")
+)
 
 print("Most likely cluster:")
 
@@ -404,6 +442,7 @@ Summarize the results of the Kulldorff spatial scan cluster detection by county
 Code each county `0` if it is not in a cluster and `1` if it is in a cluster.
 
 ```{r summarize Kulldorff results}
+
 # Get counties in most significant cluster
 # Note that the ID numbers are row numbers
 clusters <- covid_kulldorff$most.likely.cluster$location.IDs.included
@@ -433,11 +472,13 @@ covid <- covid %>%
       (cut(rr_loc, c(-Inf,1,2,3,4,5,Inf), labels=FALSE) - 1) * cluster + 1
   ) %>% 
   st_transform(5070)
+
 ```
 
 ### How did the classification work?
 
 ```{r classification results}
+
 # Count frequency of each class of COVID risk
 cat("Classes of risk and frequency of counties",
   format(covid %>% st_drop_geometry %>% count(rr_class)), sep="\n")
@@ -452,6 +493,7 @@ cat("\n",
 # There's a relative risk score for both county & cluster (in SatScan)
 # This reproduction uses county-based relative risk scores based on
 # paragraph 4 of the methods section of the paper and Desjardins et al
+
 ```
 
 ## Map Relative Risk Scores
@@ -460,29 +502,30 @@ Note that relative risk is > 1 only if the county was in a cluster
 
 ```{r prepare original relative risk scores}
 
-original_cluster <- read_sf(here("data", "derived", "public","satscan", "sat_scan_compare.col.shp"))
+original_cluster <- read_sf(here("data", "derived", "public", "satscan", "sat_scan_compare.col.shp"))
 cluster_table <- st_drop_geometry(original_cluster)
 
 covid <- left_join(covid, cluster_table, by = c("fips" = "LOC_ID"))
 
-covid_temp <- covid %>% 
+covid_temp <- covid %>%
   mutate(rr_original = if_else(is.na(REL_RISK), 0, REL_RISK))
+
 ```
 
 
 ```{r map original relative risk scores}
 
 tm4 <- tm_shape(covid_temp) +
-  tm_polygons("rr_original", 
-    title="Original Relative Risk",
-    breaks =c(0,1,2,3,4,5,8),
+  tm_polygons("rr_original",
+    title = "Original Relative Risk",
+    breaks = c(0, 1, 2, 3, 4, 5, 8),
     border.alpha = .2,
     lwd = 0.2,
-    palette="YlOrBr"
-  ) + 
-tm_shape(original_cluster) +
-  tm_borders("red", lwd =.5) +
-  tmap_options(check.and.fix = TRUE) 
+    palette = "YlOrBr"
+  ) +
+  tm_shape(original_cluster) +
+  tm_borders("red", lwd = .5) +
+  tmap_options(check.and.fix = TRUE)
 
 tm4
 
@@ -495,17 +538,18 @@ tmap_save(tm4, here("results", "figures", "rr_original.png"))
 
 # Map Relative Risk scores
 tm3 <- tm_shape(covid) +
-  tm_polygons("rr_class", 
-    title="Local Relative Risk",
+  tm_polygons("rr_class",
+    title = "Local Relative Risk",
     border.alpha = .2,
-    lwd = 0.2, 
-    palette="YlOrBr",
-    style="cat"
+    lwd = 0.2,
+    palette = "YlOrBr",
+    style = "cat"
   )
 
 tm3
 
 tmap_save(tm3, here("results", "figures", "rr_reproduction.png"))
+
 ```
 
 ## Preprocess data for GEE modelling
@@ -513,40 +557,43 @@ This accomplishes the step 9 and 10 of the workflow diagram
 
 ```{r preprocess data for GEE model }
 
-covid_clusters <- covid %>% 
-  select(fips, cluster, rr_loc, rr_class) %>% 
-  st_drop_geometry
+covid_clusters <- covid %>%
+  select(fips, cluster, rr_loc, rr_class) %>%
+  st_drop_geometry()
 
 # Filter out non-positive COVID rates and missing data
 # Create unique State - Relative Risk IDs by combining state code and rr_class
 # Sort by the cluster id's (a requirement of the gee function)
-gee_data <- left_join(acs_covid, covid_clusters, by = c("geoid"="fips")) %>%
-  filter(covid_rate > 0) %>% 
-  mutate(id = as.integer(statefp) * 10 + rr_class) %>% 
+gee_data <- left_join(acs_covid, covid_clusters, by = c("geoid" = "fips")) %>%
+  filter(covid_rate > 0) %>%
+  mutate(id = as.integer(statefp) * 10 + rr_class) %>%
   arrange(id)
 
 
-gee_data <- gee_data %>% 
-  mutate(z_bpov_pct = scale(bpov_pct),
-         z_apov_pct = scale(apov_pct),
-         z_white_pct = scale(white_pct),
-         z_black_pct = scale(black_pct),
-         z_native_pct = scale(native_pct),
-         z_asian_pct = scale(asian_pct),
-         z_other_pct = scale(other_pct),
-         z_non_hisp_white_pct = scale(non_hisp_white_pct),
-         z_hisp_pct = scale(hisp_pct),
-         z_non_hisp_non_white_pct = scale(non_hisp_non_white_pct),
-         z_pct_5_17 = scale(pct_5_17),
-         z_pct_18_34 = scale(pct_18_34),
-         z_pct_35_64 = scale(pct_35_64),
-         z_pct_65_74 = scale(pct_65_74),
-         z_pct_75 = scale(pct_75),
-         z_male_pct = scale(male_pct),
-         z_female_pct = scale(female_pct))
+gee_data <- gee_data %>%
+  mutate(
+    z_bpov_pct = scale(bpov_pct),
+    z_apov_pct = scale(apov_pct),
+    z_white_pct = scale(white_pct),
+    z_black_pct = scale(black_pct),
+    z_native_pct = scale(native_pct),
+    z_asian_pct = scale(asian_pct),
+    z_other_pct = scale(other_pct),
+    z_non_hisp_white_pct = scale(non_hisp_white_pct),
+    z_hisp_pct = scale(hisp_pct),
+    z_non_hisp_non_white_pct = scale(non_hisp_non_white_pct),
+    z_pct_5_17 = scale(pct_5_17),
+    z_pct_18_34 = scale(pct_18_34),
+    z_pct_35_64 = scale(pct_35_64),
+    z_pct_65_74 = scale(pct_65_74),
+    z_pct_75 = scale(pct_75),
+    z_male_pct = scale(male_pct),
+    z_female_pct = scale(female_pct)
+  )
 
 
 rm(covid_clusters)
+
 ```
 
 ## Save preprocessed GEE data inputs
@@ -555,7 +602,7 @@ Optionally, you may save the preprocessed to `data/raw/public/gee_data.gpkg`
 
 ```{r save preprocessed COVID cluster data, eval = FALSE}
 
-write_sf(gee_data, here("data","derived","public","gee_data.gpkg"))
+write_sf(gee_data, here("data", "derived", "public", "gee_data.gpkg"))
 
 ```
 
@@ -565,16 +612,16 @@ Optionally, you may load the preprocessed data from `data/raw/public/gee_data.gp
 
 ```{r load preprocessed COVID cluster data, eval = FALSE}
 
-gee_data <- read_sf(here("data","derived","public","gee_data.gpkg"))
+gee_data <- read_sf(here("data", "derived", "public", "gee_data.gpkg"))
 
 ```
 
 # Report number of unique clusters and histogram of counties per cluster
 
-```{r}
+```{r report unique clusters}
 
-cluster_summary <- gee_data %>% 
-  st_drop_geometry %>% 
+cluster_summary <- gee_data %>%
+  st_drop_geometry() %>%
   count(id)
 cat(length(cluster_summary$n), "unique clusters\n")
 summary(cluster_summary$n)
@@ -604,29 +651,29 @@ https://data.library.virginia.edu/getting-started-with-generalized-estimating-eq
 # https://www.reddit.com/r/rstats/comments/p50mce/coding_a_loop_for_many_linear_regressions/
 
 race_gee <- geeglm(
-  covid_rate ~ z_white_pct + z_black_pct + z_native_pct + z_asian_pct + z_other_pct, 
+  covid_rate ~ z_white_pct + z_black_pct + z_native_pct + z_asian_pct + z_other_pct,
   data = gee_data, # data frame
   id = id, # cluster IDs
   family = Gamma(link = "log"),
   corstr = "exchangeable"
 )
 
-# Wald and P calculated in summary only; 
-# coef() extracts coefficients table from the summary, same as $coefficients 
+# Wald and P calculated in summary only;
+# coef() extracts coefficients table from the summary, same as $coefficients
 
 ethnicity_gee <- geeglm(
   covid_rate ~ z_non_hisp_white_pct + z_hisp_pct + z_non_hisp_non_white_pct,
-  data = gee_data, 
+  data = gee_data,
   id = id,
   family = Gamma(link = "log"),
   corstr = "exchangeable"
 )
 
 pov_gee <- geeglm(
-  covid_rate ~ z_bpov_pct + z_apov_pct, 
-  data = gee_data, 
-  id = id, 
-  family = Gamma(link = "log"), 
+  covid_rate ~ z_bpov_pct + z_apov_pct,
+  data = gee_data,
+  id = id,
+  family = Gamma(link = "log"),
   corstr = "exchangeable",
 )
 
@@ -640,19 +687,20 @@ age_gee <- geeglm(
 
 sex_gee <- geeglm(
   covid_rate ~ z_male_pct + z_female_pct,
-  data = gee_data, 
+  data = gee_data,
   id = id,
-  family = Gamma(link = "log"), 
+  family = Gamma(link = "log"),
   corstr = "exchangeable"
 )
 
 # summarize model coefficients
-coefficient_results <- rbind(coef(summary(race_gee)),
+coefficient_results <- rbind(
+  coef(summary(race_gee)),
   coef(summary(ethnicity_gee)),
   coef(summary(pov_gee)),
   coef(summary(age_gee)),
   coef(summary(sex_gee))
-  ) %>% 
+) %>%
   round(3)
 
 # disambiguate intercepts
@@ -666,15 +714,16 @@ rownames(coefficient_results) <- coefrows
 coefficient_results
 
 # summarize model QICs
-QIC_results <- data.frame(race = QIC(race_gee),
+QIC_results <- data.frame(
+  race = QIC(race_gee),
   ethnicity = QIC(ethnicity_gee),
   poverty_status = QIC(pov_gee),
   age = QIC(age_gee),
   biological_sex = QIC(sex_gee)
-  ) %>% 
-  round(3) %>% 
+) %>%
+  round(3) %>%
   t() %>%
-  as.data.frame() %>% 
+  as.data.frame() %>%
   select(QIC)
 QIC_results
 

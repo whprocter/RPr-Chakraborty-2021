@@ -60,8 +60,9 @@ There is no **randomization** in the original study.
 The study was originally conducted using SaTScan software (unspecified version) to implement the spatial scan statistic.
 Other software are not specified in the publication; however data files and communication with the author show that spatial analysis and mapping was conducted in ArcGIS and statistics were calculated in SPSS.
 
-Our understanding of the original study design and our plan for the reproduction analysis are visualized in the workflow diagram.
+Our understanding of the original study design and our plan for the reproduction analysis are visualized in the workflow diagram (Figure 1).
 ![workflow](workflow.jpg)
+*Figure 1*
 
 ## Sampling plan
 
@@ -284,7 +285,7 @@ Therefore, we also created maps visualizing disability rates by county, spatial 
 
 ## Reproduction result
 
-The first part of our reproduction analysis was to visualize the spatial distribution of COVID-19 cases per 100,000 in the US (Figure 2). The reproduction result closely resembled that of the original study.
+The **first part** of our reproduction analysis was to visualize the spatial distribution of COVID-19 cases per 100,000 in the US (Figure 2). The reproduction result closely resembled that of the original study.
 
 ![tmap1](../../results/figures/covid_rates.png)
 *Figure 2*
@@ -294,8 +295,8 @@ In addition, we proceeded to create a map that illustrated the percentages of po
 ![tmap2](../..//results/figures/disability_rates.png)
 *Figure 3*
 
-The second part of our reproduction analysis focused on computing the summary statistics for variables analyzed and the bivariate correlations with county COVID-19 incidence rates.
-Our summary statistics and the Pearson's correlation coefficient were consistent with that of Chakraborty's, but slightly differ in magnitude (which might be due to the different ways of computing statistics in different computational environments).
+The **second part** of our reproduction analysis focused on computing the summary statistics for variables analyzed and the bivariate correlations with county COVID-19 incidence rates.
+Our summary statistics and the Pearson's correlation coefficient were consistent with that of Chakraborty's, but slightly differ in magnitude.
 Since the Pearson's correlation should only be used on variables with normal distribution, we then calculated the Spearman's Rho correlation coefficient (Table 1).
 There seems to be more changes to the result in terms of their magnitude and direction.
 For example, while the Pearson’s correlation coefficient shows a weak positive relationship between “COVID-19 incidence rate” and “Percentages with disability that are Native American” and “Percentages with disability that are female”, these turned into a weak negative relationship in Spearman’s correlation coefficient.
@@ -331,11 +332,10 @@ Although Chakraborty does not illustrate the classified relative risk of COVID-1
 ![tmap3](../../results/figures/rr_reproduction.png)
 *Figure 5: Relative risk score of reproduction analysis*
 
-In the third part of our reproduction analysis, we implemented the GEE model (Table 2).
+In the **third part** of our reproduction analysis, we implemented the GEE model (Table 2).
 The results of our reproduction study are mostly consistent with that of from Chakraborty’s, with slight differences in the magnitude of correlation coefficients.
 The significance of some of the results also changed:
 the percent of Hispanics with disability changed from being significant to non-significant whereas the percentage of disabilities between 18-34 and 35-64 changed from being non-significant to significant.
-This is in part due to one revision we have made to the Chakraborty’s work.
 
 *Table 2*: Globalized Estimating Equation Model Outputs
 
@@ -367,7 +367,35 @@ This is in part due to one revision we have made to the Chakraborty’s work.
 
 ## Discussion
 
-Writing discussion in summer 2022.
+The choropleth map we made in the **first part** of the reproduction analysis closely resembles that of the original study.
+Both maps reveal that COVID-19 cases are distributed unevenly across space. In particular, cases are more prevalent in the southern part of the country and in more urbanized counties along the coasts.
+This includes states such as Florida, Alabama, Georgia, and New Mexico, as well as several counties in New York and California.
+As an improvement to this part of the analysis, we proceed to visualize the spatial distribution of the percentages of population with disability in each county.
+Doing so complements Chakraborty’s treatment of the census data, in which he went straight into the bivariate analyses instead of examining the characteristics of these data first.
+The map shows that many counties in the northeast, northwest corner of the country as well as in the south obtain a relatively higher percentages of disability population.
+
+The summary statistics for the **second part** of the reproduction analysis matches perfectly with that of the original study.
+The Pearson’s correlation coefficient we calculated, though differ slightly in magnitude, closely resembles the original result.
+The difference in magnitude might be due to the different ways of computing statistics in different computational environments. Nevertheless, our results validate Chakraborty’s results by displaying a relatively weak but significantly negative correlation between COVID-19 incidence and the overall disability percentages in the country.
+COVID-19 incidence is also found to be higher in counties where there are higher percentages of people who are Black, Asian, Hispanic, non-Hispanic non-White, below poverty, and aged 5-34 years.
+While executing the reproduction analysis, we recognize one of the shortcomings of Chakraborty’s approach where he used Pearson’s correlation on variables that are non-normally distributed.
+We therefore revise this error by calculating the Spearman’s correlation coefficient.
+The results indicate that biological sex might not be an influential factor contributing to higher COVID-19 incidence rate, but racial minority groups are indeed more severely affected by the pandemic.
+
+Prior to the running the GEE model, we visualized and compared the classified relative risk of COVID-19 clusters using Chakraborty’s original approach and our own approach respectively.
+While Chakraborty only calculated the relative risk score for the center of each cluster, we calculated it for each county in the cluster.
+The maps reveal that our approach better visualize the intra-cluster variation of COVID-19 risk.
+The original classification scheme does show that counties in the south and southwest are exposed to higher COVID-19 risk, but it largely underestimates the risk of individual counties within but not at the center of each cluster.
+
+In the **third part** of our reproduction analysis, the results from running the GEE model are mostly consistent with Chakraborty’s. 
+Because of the revision we have made to Chakraborty’s approach in terms of calculating the relative risk score, the significance of some variables also changed.
+Yet, in general, we support Chakraborty’s conclusion that controlling for spatial clustering, although the overall disability percentage is negatively associated with confirmed COVID-19 cases, intra-categorical analysis reveals that socio-demographically disadvantaged PwDs are significantly over-represented in counties with higher COVID-19 incidence.
+Our results found that PwDs who are Black, Asian, Native American, below poverty, age 5-34 years, and female are more likely to reside in counties with higher COVID-19 incidence.
+
+In short, though some of our results are different from Chakraborty’s because of the adoption of different analytical method and the use of different computational environment, it still suggests that PwDs are experiencing a multiple jeopardy based on the convergence of their disability, racial/ethnic minority, and poverty status.
+This illustrates that socio-demographically disadvantaged PwDs are likely to suffer increased infection risks and additional life burdens in this unprecedented time.
+Further attention within public health research and public policy planning is therefore necessary to ensure the well-being of these population.  
+
 
 ## References
 

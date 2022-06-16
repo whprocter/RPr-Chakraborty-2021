@@ -1,11 +1,12 @@
 # Rpr-Reproduction of Social Inequities in the distribution of COVID-19: An intra-categorical analysis of people with disabilities in the U.S.
 
 Joseph Holler, Department of Geography, Middlebury College, Middlebury VT 05753  
-Derrick Burt, Department of Geography, Middlebury College, Middlebury VT 05753  
+Junyi Zhou, Department of Geography, Middlebury College, Middlebury VT 05753  
 Drew An-Pham, Department of Geography, Middlebury College, Middlebury VT 05753  
+Derrick Burt, Department of Geography, Middlebury College, Middlebury VT 05753  
 Peter Kedron, School of Geographical Sciences and Urban Planning, Arizona State University, Tempe AZ 85281  
 
-Version 1.1 | Created Jul 7, 2021 | Last Updated June 1, 2022
+Version 1.1 | Created Jul 7, 2021 | Last Updated June 16, 2022
 
 ## Abstract
 

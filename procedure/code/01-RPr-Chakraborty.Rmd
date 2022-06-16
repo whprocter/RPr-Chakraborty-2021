@@ -445,21 +445,26 @@ Code each county `0` if it is not in a cluster and `1` if it is in a cluster.
 
 # Get counties in most significant cluster
 # Note that the ID numbers are row numbers
-clusters <- covid_kulldorff$most.likely.cluster$location.IDs.included
+clusters <- covid_kulldorff$most.likely.cluster$location.IDs.included 
+# NEED TO DO: transform clusters into a dataframe with two columns: clusterID and countyID
 
 # Get list of secondary clusters
 secondary <- covid_kulldorff$secondary.clusters
 
 # Get counties from each secondary cluster
 for (i in secondary) {
+  # NEED TO DO: transform each list of countyIDs into a dataframe with two columns: clusterID and countyID, before appending those rows to clusters
   clusters <- c(clusters, i$location.IDs.included)
 }
+
+# NEED TO DO: calculate relative risk for each cluster (rr_cluster), using dyplr to group by clusterID; then ungroup and group by COUNTYID to summarize the greatest relative risk for each county
 
 # Create blank column "cluster" with 0's
 covid$cluster <- 0
 
 # Change cluster to 1 for any county identified in any cluster
 covid[clusters, ]$cluster <- 1
+
 
 # Calculate and Classify Local Relative Risk
 # cut() classifies rr_loc from 1 to 6
@@ -472,6 +477,8 @@ covid <- covid %>%
       (cut(rr_loc, c(-Inf,1,2,3,4,5,Inf), labels=FALSE) - 1) * cluster + 1
   ) %>% 
   st_transform(5070)
+
+# NEED TO DO: calculate rr_class using newly caculated rr_cluster rather than rr_loc
 
 ```
 

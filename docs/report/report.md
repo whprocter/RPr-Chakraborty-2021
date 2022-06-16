@@ -261,7 +261,7 @@ One county was unexpectedly missing disability and poverty data: Rio Arriba Coun
 We replaced the missing values with zeroes and, with this missing data treatment, confirmed that our descriptive statistics matched the original publication.
 
 In our pre-analysis plan, we planned to test the independent variables for normality prior to using the Pearson's r correlation coefficient for bivariate tests of correlation between the independent variables and COVID-19 incidence rates.
-Most of the independent variables do have non-normal distributions, therefore our reproduction has used the nonparametric Spearman's rank correlation coefficient for bivariate tests of correlation between the independent variables and COVID-19 incidence rates.
+Most of the independent variables have non-normal distributions; and therefore our reproduction has used the nonparametric Spearman's rank correlation coefficient for bivariate tests of correlation between the independent variables and COVID-19 incidence rates.
 
 The original study did not directly report details for the results of the Kulldorff spatial scan statistic for COVID-19 clusters beyond the number of clusters detected.
 In order to better understand the spatial scan statistic and to compare our reproduction with the SpatialEpi package to the original study using SaTScan software, we also ran the spatial scan statistic in SaTScan.
@@ -270,15 +270,16 @@ SaTScan produced three outputs:
 - vector layer of circle polygons with the center and radius of each cluster, ID of the county at the center of the cluster, and a relative risk score for the cluster. The layer contained one feature for each cluster, identifying only the county at the center of the cluster.
 - vector layer of points of the centroids of each county in any cluster, including a unique cluster ID, relative risk score of the cluster, and relative risk score of the location (the county).
 
-Comparing our results to the original publication, data files provided by the author, and the number of clusters for GEE models, we discovered that the original study *most likely* conceptualized COVID-19 clusters as the cluster-based relative risk of the county at the center of the cluster.
-Counties inside of a cluster but not at its center were excluded in the original study.
+We compared our results to the original publication, data files provided by the author, and the number of clusters for GEE models.
+We discovered that the original study most likely conceptualized COVID-19 clusters as the cluster-based relative risk of the county at the center of the cluster.
+Counties inside of a cluster but not at its center were excluded in the original study, and assigned the lowest risk category.
 Additionally, the SpatialEpi package did not calculate relative risk.
 
 Therefore, we changed our conceptualization of COVID-19 clusters to include all counties within any cluster.
 We created a list of all county IDs in clusters derived from the SpatialEpi output and joined this information to the complete geographic layer of counties.
 We then calculated a local relative risk score for each county in a cluster and classified the risk score from 1 to 6.
-This method left null data for all of the counties outside of a cluster.
-We inspected the original author's GEE input data to determine how to classify these counties, and accordingly assigned them to the 1 class.
+This method left `null` data for all of the counties outside of a cluster.
+We inspected the original author's GEE input data to determine how to classify these counties, and accordingly assigned them to the `1` class.
 
 While reproducing the study, we decided that additional data visualizations would improve our understanding of the spatial patterns and relationships in the study.
 Therefore, we also created maps visualizing disability rates by county, spatial clusters of COVID-19 incidence according to the spatial scan statistic, and of the original and reproduced relative risk categories.
@@ -296,10 +297,10 @@ In addition, we proceeded to create a map that illustrated the percentages of po
 *Figure 3*
 
 The **second part** of our reproduction analysis focused on computing the summary statistics for variables analyzed and the bivariate correlations with county COVID-19 incidence rates.
-Our summary statistics and the Pearson's correlation coefficient were consistent with that of Chakraborty's, but slightly differ in magnitude.
-Since the Pearson's correlation should only be used on variables with normal distribution, we then calculated the Spearman's Rho correlation coefficient (Table 1).
+Our summary statistics and Pearson's correlation coefficients were consistent with those of Chakraborty's, but differ slightly in magnitude.
+Since the Pearson's correlation should only be used on variables with normal distribution, we calculated the Spearman's Rho correlation coefficient (Table 1).
 There seems to be more changes to the result in terms of their magnitude and direction.
-For example, while the Pearson’s correlation coefficient shows a weak positive relationship between “COVID-19 incidence rate” and “Percentages with disability that are Native American” and “Percentages with disability that are female”, these turned into a weak negative relationship in Spearman’s correlation coefficient.
+For example, while the Pearson's correlation coefficient shows a weak positive relationship between "COVID-19 incidence rate" and "Percentages with disability that are Native American" and "Percentages with disability that are female", these turned into weak negative relationships in Spearman's correlation coefficient.
 
 *Table 1*: Spearman's Ranked Correlation Coefficient between COVID-19 Incidence and Disability Subgroups
 
@@ -333,7 +334,7 @@ Although Chakraborty does not illustrate the classified relative risk of COVID-1
 *Figure 5: Relative risk score of reproduction analysis*
 
 In the **third part** of our reproduction analysis, we implemented the GEE model (Table 2).
-The results of our reproduction study are mostly consistent with that of from Chakraborty’s, with slight differences in the magnitude of correlation coefficients.
+The results of our reproduction study are mostly consistent with that of from Chakraborty's, with slight differences in the magnitude of correlation coefficients.
 The significance of some of the results also changed:
 the percent of Hispanics with disability changed from being significant to non-significant whereas the percentage of disabilities between 18-34 and 35-64 changed from being non-significant to significant.
 
@@ -367,35 +368,44 @@ the percent of Hispanics with disability changed from being significant to non-s
 
 ## Discussion
 
-The choropleth map we made in the **first part** of the reproduction analysis closely resembles that of the original study.
-Both maps reveal that COVID-19 cases are distributed unevenly across space. In particular, cases are more prevalent in the southern part of the country and in more urbanized counties along the coasts.
-This includes states such as Florida, Alabama, Georgia, and New Mexico, as well as several counties in New York and California.
-As an improvement to this part of the analysis, we proceed to visualize the spatial distribution of the percentages of population with disability in each county.
-Doing so complements Chakraborty’s treatment of the census data, in which he went straight into the bivariate analyses instead of examining the characteristics of these data first.
+Our reproduction of the original study was partially successful, leading to similar, but inexact results for most analyses.
+
+The choropleth map we made in the **first part** of the reproduction analysis closely resembles that of the original study, confirming the equivalence of our dependent variable with that of the original study.
+Both maps revealed that COVID-19 cases were distributed unevenly across space.
+In particular, cases were more prevalent in the southern part of the country, in the metropolitan areas of the northeast, Chicago, and California, and in some rural areas, including eastern Washington, New Mexico, and Iowa.
+As an improvement to this part of the analysis, we visualized the spatial distribution of the percentages of population with disability in each county.
+Doing so complements Chakraborty's treatment of the census data, in which he went straight into the bivariate analyses instead of examining the characteristics of these data first.
 The map shows that many counties in the northeast, northwest corner of the country as well as in the south obtain a relatively higher percentages of disability population.
 
-The summary statistics for the **second part** of the reproduction analysis matches perfectly with that of the original study.
-The Pearson’s correlation coefficient we calculated, though differ slightly in magnitude, closely resembles the original result.
-The difference in magnitude might be due to the different ways of computing statistics in different computational environments. Nevertheless, our results validate Chakraborty’s results by displaying a relatively weak but significantly negative correlation between COVID-19 incidence and the overall disability percentages in the country.
-COVID-19 incidence is also found to be higher in counties where there are higher percentages of people who are Black, Asian, Hispanic, non-Hispanic non-White, below poverty, and aged 5-34 years.
-While executing the reproduction analysis, we recognize one of the shortcomings of Chakraborty’s approach where he used Pearson’s correlation on variables that are non-normally distributed.
-We therefore revise this error by calculating the Spearman’s correlation coefficient.
-The results indicate that biological sex might not be an influential factor contributing to higher COVID-19 incidence rate, but racial minority groups are indeed more severely affected by the pandemic.
+The summary statistics for the **second part** of the reproduction analysis matched perfectly with those of the original study.
+The Pearson's correlation coefficient closely resembled the original result, indicating a successful but inexact reproduction.
+The differences in magnitude could be attributed to differences in the computational environments.
+Nevertheless, our results validated Chakraborty's results by displaying a relatively weak but significantly negative correlation between COVID-19 incidence and the overall disability percentages in the country.
+COVID-19 incidence was also found to be higher in counties where there are higher percentages of people who are Black, Asian, Hispanic, non-Hispanic non-White, below poverty, and aged 5-34 years.
+While executing the reproduction analysis, we recognize one of the shortcomings of Chakraborty's approach where he used Pearson's correlation on variables that are non-normally distributed.
+We therefore revise this error by calculating the Spearman's correlation coefficient.
+The results indicate that biological sex might not be correlated with COVID-19 incidence rates, but other demographic factors of minority status were significantly correlated with higher COVID-19 rates at the county level.
 
-Prior to the running the GEE model, we visualized and compared the classified relative risk of COVID-19 clusters using Chakraborty’s original approach and our own approach respectively.
+Prior to the running the GEE model, we visualized and compared the classified relative risk of COVID-19 clusters using Chakraborty's original approach and our own approach respectively.
 While Chakraborty only calculated the relative risk score for the center of each cluster, we calculated it for each county in the cluster.
-The maps reveal that our approach better visualize the intra-cluster variation of COVID-19 risk.
-The original classification scheme does show that counties in the south and southwest are exposed to higher COVID-19 risk, but it largely underestimates the risk of individual counties within but not at the center of each cluster.
+The maps reveal that our approach more comprehensively represented the intra-cluster variation of COVID-19 risk.
+The original study appears to have classified all counties in COVID-19 clusters as low-risk except for the county at the center of each cluster.
+This difference is greater for the larger clusters, e.g. those of in the south.
 
-In the **third part** of our reproduction analysis, the results from running the GEE model are mostly consistent with Chakraborty’s. 
-Because of the revision we have made to Chakraborty’s approach in terms of calculating the relative risk score, the significance of some variables also changed.
-Yet, in general, we support Chakraborty’s conclusion that controlling for spatial clustering, although the overall disability percentage is negatively associated with confirmed COVID-19 cases, intra-categorical analysis reveals that socio-demographically disadvantaged PwDs are significantly over-represented in counties with higher COVID-19 incidence.
-Our results found that PwDs who are Black, Asian, Native American, below poverty, age 5-34 years, and female are more likely to reside in counties with higher COVID-19 incidence.
+In the **third part** of our reproduction analysis, the results from each the 5 GEE models were mostly consistent with Chakraborty's.
+We found that 13 of 17 independent variables matched the direction and significance levels of the original study.
 
-In short, though some of our results are different from Chakraborty’s because of the adoption of different analytical method and the use of different computational environment, it still suggests that PwDs are experiencing a multiple jeopardy based on the convergence of their disability, racial/ethnic minority, and poverty status.
-This illustrates that socio-demographically disadvantaged PwDs are likely to suffer increased infection risks and additional life burdens in this unprecedented time.
-Further attention within public health research and public policy planning is therefore necessary to ensure the well-being of these population.  
+We confirmed support for Chakraborty's conclusion that controlling for spatial clustering, although the overall disability percentage is negatively associated with confirmed COVID-19 cases, intra-categorical analysis reveals that socio-demographically disadvantaged PwDs were significantly over-represented in counties with higher COVID-19 incidence.
+We found the same direction for each independent variable of intra-categorical disability and COVID-19 incidence.
+However, we found weaker significance levels for the Black category and the Hispanic or Latino category.
+We found stronger significance levels for the 18-34 and 35-64 age categories.
+Differences in our results can be attributable to our different approach to classifying relative risk scores and our different computational environments.
+Closer inspection of the clusters for the GEE models revealed a highly skewed distribution of cluster sizes, with most clusters containing very few counties and a few clusters containing 50 or more counties.
+The combination of very differing cluster sizes and use of a clustering criteria related to the dependent variable warrant further analysis with alternative approaches to controlling for spatial dependence.
 
+In sum, although some of our results differed from Chakraborty's because of the adoption of different analytical methods and the use of different computational environments, our still suggests that PwDs are experiencing multiple jeopardy based on the convergence of their disability, racial/ethnic minority, and poverty status.
+However, we reiterate Chakraborty's cautious interpretation of the results, which were based on aggregate statistics at the county level and on statistical methods which produce approximate estimates, not inferences.
+Further work is needed to reliably infer relationships between minority PwDs and COVID-19 morbidity and mortality, especially at finer geographic scales.
 
 ## References
 

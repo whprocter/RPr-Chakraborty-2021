@@ -1,0 +1,1123 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--Record created using version 2.0.7 of the USGS Metadata Wizard tool. (https://github.com/usgs/fort-pymdwizard)-->
+<metadata>
+  <idinfo>
+    <citation>
+      <citeinfo>
+        <origin>Center for System Science in Engineering at Johns Hopkins University</origin>
+        <pubdate>20200801</pubdate>
+        <title>County Level COVID-19 Incidence Rate</title>
+        <geoform>vector digital data</geoform>
+        <onlink>https://github.com/CSSEGISandData/COVID-19</onlink>
+        <lworkcit>
+          <citeinfo>
+            <origin>Center for System Science in Engineering at Johns Hopkins University</origin>
+            <pubdate>20200122</pubdate>
+            <title>An interactive web-based dashboard to track COVID-19 in real time</title>
+            <geoform>vector digital data</geoform>
+            <othercit>Dong E, Du H, Gardner L. An interactive web-based dashboard to track COVID-19 in real time. Lancet Inf Dis. 20(5):533-534. doi: 10.1016/S1473-3099(20)30120-1"</othercit>
+            <onlink>https://github.com/CSSEGISandData/COVID-19.</onlink>
+          </citeinfo>
+        </lworkcit>
+      </citeinfo>
+    </citation>
+    <descript>
+      <abstract>This is the data repository for the 2019 Novel Coronavirus Visual Dashboard operated by the Johns Hopkins University Center for Systems Science and Engineering (JHU CSSE)</abstract>
+      <purpose>We are using the dataset to study whether COVID-19 incidence is more significant in counties with larger proportions of socio-demographically disadvantaged people with disabilities, based on race, ethnicity, poverty status, and biological sex, controlling for spatial clusters. </purpose>
+    </descript>
+    <timeperd>
+      <timeinfo>
+        <rngdates>
+          <begdate>20200122</begdate>
+          <enddate>20200801</enddate>
+        </rngdates>
+      </timeinfo>
+      <current>ground condition</current>
+    </timeperd>
+    <status>
+      <progress>Complete</progress>
+      <update>None planned</update>
+    </status>
+    <spdom>
+      <bounding>
+        <westbc>-124.7387</westbc>
+        <eastbc>-66.9501</eastbc>
+        <northbc>49.3844</northbc>
+        <southbc>24.5211</southbc>
+      </bounding>
+    </spdom>
+    <keywords>
+      <theme>
+        <themekt>ISO 19115 Topic Category</themekt>
+        <themekey>biota</themekey>
+      </theme>
+      <theme>
+        <themekt>None</themekt>
+        <themekey/>
+      </theme>
+    </keywords>
+    <accconst>The data is open access under the Creative Commons Attribution 4.0 International (CC BY 4.0) by the Johns Hopkins University on behalf of its Center for Systems Science in Engineering. Copyright Johns Hopkins University 2020.</accconst>
+    <useconst>Anyone who use the data need to provide credit by citing “Johns Hopkins University” or “Johns Hopkins Centers for Civic Impact.” All data, mapping and analysis (website, copyright 2020 Johns Hopkins University, all rights reserved) is provided to the public strictly for educational and academic research purposes.</useconst>
+    <ptcontac>
+      <cntinfo>
+        <cntorgp>
+          <cntorg>Center for System Science and Engineering at Johns Hopkins University</cntorg>
+        </cntorgp>
+        <cntaddr>
+          <addrtype>mailing and physical</addrtype>
+          <address>3400 North Charles Street</address>
+          <city>Baltimore</city>
+          <state>MD</state>
+          <postal>21218</postal>
+          <country>US</country>
+        </cntaddr>
+        <cntvoice>4439979009</cntvoice>
+        <cntemail>jhusystems@gmail.com</cntemail>
+      </cntinfo>
+    </ptcontac>
+    <datacred>The dataset was originally downloaded and provided to us by Jay Chakraborty </datacred>
+  </idinfo>
+  <dataqual>
+    <attracc>
+      <attraccr>We created a map visualizing the COVID-19 incidence rate as well as the summary statistics of COVID rate (min, max, standard deviation, and mean) and we compared our result to Chakraborty's original results. </attraccr>
+    </attracc>
+    <logic>We have checked for the relevance of the dataset and only include the two columns that are relevant to our analysis: COVID-19 cases and population. </logic>
+    <complete>The dataset only includes data on the contiguous states</complete>
+    <lineage>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>Johns Hopkins Center for Civic Impact and Center for Systems Science and Engineering </origin>
+            <pubdate>20200801</pubdate>
+            <title>County Level COVID-19 Incidence Rate</title>
+            <geoform>vector digital data</geoform>
+            <onlink>https://github.com/CSSEGISandData/COVID-19</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>Digital and/or Hardcopy</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>20200122</begdate>
+              <enddate>20200801</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr/>
+        </srctime>
+        <srccitea>COVID-19 Data by CSSE at JHU</srccitea>
+        <srccontr>Johns Hopkins Centers for Systems Science and Engineering </srccontr>
+      </srcinfo>
+      <procstep>
+        <procdesc>The dataset is provided by Chakraborty and preprocessed in the RStudio for analysis. 
+We selected columns that are relevant to our analysis. They are POP_ESTIMA and Confirmed, which we then renamed to pop and cases respectively.
+We calculated the COVID rate by dividing cases with the total population. 
+Finally, we dropped the geometry of the dataset. </procdesc>
+        <srcused>COVID-19 Dashboard (US) by Center for System Science and Engineering at Johns Hopkins University</srcused>
+        <procdate>20220616</procdate>
+        <proccont>
+          <cntinfo>
+            <cntperp>
+              <cntper>Jospeh Holler </cntper>
+              <cntorg>Middlebury College</cntorg>
+            </cntperp>
+            <cntpos>Assisstant Professor of Geography</cntpos>
+            <cntaddr>
+              <addrtype>mailing and physical</addrtype>
+              <address>McCardell Bicentennial Hall 634</address>
+              <city>Middlebury</city>
+              <state>VT</state>
+              <postal>05753</postal>
+              <country>US</country>
+            </cntaddr>
+            <cntvoice>8024435992</cntvoice>
+            <cntemail>josephh@middlebury.edu</cntemail>
+          </cntinfo>
+        </proccont>
+      </procstep>
+    </lineage>
+  </dataqual>
+  <spdoinfo>
+    <direct>Vector</direct>
+    <ptvctinf>
+      <sdtsterm>
+        <sdtstype>G-polygon</sdtstype>
+        <ptvctcnt>3108</ptvctcnt>
+      </sdtsterm>
+    </ptvctinf>
+  </spdoinfo>
+  <spref>
+    <horizsys>
+      <planar>
+        <mapproj>
+          <mapprojn>Mercator_1SP</mapprojn>
+          <mapprojp>
+            <stdparll>0.0</stdparll>
+            <stdparll>0.0</stdparll>
+            <longcm>0.0</longcm>
+            <latprjo>0.0</latprjo>
+            <feast>0.0</feast>
+            <fnorth>0.0</fnorth>
+          </mapprojp>
+        </mapproj>
+        <planci>
+          <plance>coordinate pair</plance>
+          <coordrep>
+            <absres>0.6096</absres>
+            <ordres>0.6096</ordres>
+          </coordrep>
+          <plandu>meters</plandu>
+        </planci>
+      </planar>
+      <geodetic>
+        <horizdn>WGS_1984</horizdn>
+        <ellips>WGS 84</ellips>
+        <semiaxis>6378137.0</semiaxis>
+        <denflat>298.257223563</denflat>
+      </geodetic>
+    </horizsys>
+  </spref>
+  <eainfo>
+    <detailed>
+      <enttyp>
+        <enttypl>covidcases.shp Attribute Table</enttypl>
+        <enttypd>Table containing attribute information associated with the data set.</enttypd>
+        <enttypds>Producer Defined</enttypds>
+      </enttyp>
+      <attr>
+        <attrlabl>FID</attrlabl>
+        <attrdef>Internal feature number.</attrdef>
+        <attrdefs>ESRI</attrdefs>
+        <attrdomv>
+          <udom>Sequential unique whole numbers that are automatically generated.</udom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Shape</attrlabl>
+        <attrdef>Feature geometry.</attrdef>
+        <attrdefs>ESRI</attrdefs>
+        <attrdomv><udom>Shape type.</udom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>fid</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>1.0</rdommin>
+            <rdommax>3108.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>OBJECTID</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>1.0</rdommin>
+            <rdommax>3142.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Countyname</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><udom/>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>ST_Name</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><udom/>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>ST_Abbr</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><udom/>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>ST_ID</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><udom/>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>FIPS</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><udom/>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>FatalityRa</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>25.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Confirmedb</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>14257.17</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>DeathsbyPo</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>407.2831816</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>PCTPOVALL_</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>2.6</rdommin>
+            <rdommax>54.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Unemployme</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>1.3</rdommin>
+            <rdommax>18.1</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Med_HH_Inc</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>43.8602</rdommin>
+            <rdommax>263.5735</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>State_Fata</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>8.8978116844</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+  <attrlabl>DateChecke</attrlabl><attrdef/><attrdefs>Producer Defined</attrdefs><attrdomv>
+    <edom>
+      <edomv>08/01/2020 01:12:09</edomv>
+      <edomvd>
+      </edomvd>
+      <edomvds>Producer defined</edomvds>
+    </edom>
+  </attrdomv>
+</attr>
+      <attr>
+  <attrlabl>EM_type</attrlabl><attrdef/><attrdefs>Producer Defined</attrdefs><attrdomv>
+    <edom>
+      <edomv>Govt Ordered Community Quarantine</edomv>
+      <edomvd>
+      </edomvd>
+      <edomvds>Producer defined</edomvds>
+    </edom>
+  </attrdomv>
+  <attrdomv>
+    <edom>
+      <edomv>Govt Directed Social Distancing</edomv>
+      <edomvd>
+      </edomvd>
+      <edomvds>Producer defined</edomvds>
+    </edom>
+  </attrdomv>
+</attr>
+      <attr>
+        <attrlabl>EM_date</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><udom/>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>EM_notes</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><udom/>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>url</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><udom/>
+        </attrdomv>
+      </attr>
+      <attr>
+  <attrlabl>Thumbnail</attrlabl><attrdef/><attrdefs>Producer Defined</attrdefs><attrdomv>
+    <edom>
+      <edomv>https://coronavirus.jhu.edu/static/media/dashboard_infographic_thumbnail.png</edomv>
+      <edomvd>
+      </edomvd>
+      <edomvds>Producer defined</edomvds>
+    </edom>
+  </attrdomv>
+</attr>
+      <attr>
+        <attrlabl>Confirmed</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>188541.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Deaths</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>5949.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Age_85</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>180184.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Age_80_84</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>163770.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Age_75_79</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>220930.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Age_70_74</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>306675.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Age_65_69</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>427718.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Beds_Licen</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>23579.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Beds_Staff</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>22419.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Beds_ICU</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>2352.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Ventilator</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>523.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>POP_ESTIMA</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>152.0</rdommin>
+            <rdommax>10105518.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>POVALL_201</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>5.0</rdommin>
+            <rdommax>1409155.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Unemployed</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>4.0</rdommin>
+            <rdommax>239829.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Median_Hou</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>25385.0</rdommin>
+            <rdommax>140382.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Recovered</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>0.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Active</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>0.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>State_Conf</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>500556.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>State_Deat</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>32689.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>State_Reco</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>0.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>State_Test</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>53299.0</rdommin>
+            <rdommax>7811041.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>AgedPop</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>1299277.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>NewCases</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>-5.0</rdommin>
+            <rdommax>2546.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>NewDeaths</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>-10.0</rdommin>
+            <rdommax>96.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>TotalPop</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>102.0</rdommin>
+            <rdommax>10098052.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>NonHispWhP</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>72.0</rdommin>
+            <rdommax>2659052.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>BlackPop</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>1213706.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>AmIndop</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>67454.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>AsianPop</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>1451560.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>PacIslPop</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>24821.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>OtherPop</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>44832.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>TwoMorPop</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>223280.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>HispPop</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>4893603.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Wh_Alone</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>99.0</rdommin>
+            <rdommax>5186859.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Bk_Alone</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>1230494.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>AI_Alone</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>82699.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>As_Alone</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>1469968.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>NH_Alone</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>27929.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>SO_Alone</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>2121102.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Two_More</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>397680.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Not_Hisp</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>102.0</rdommin>
+            <rdommax>10098052.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Age_Less15</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>24.0</rdommin>
+            <rdommax>1859244.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Age_15_24</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>3.0</rdommin>
+            <rdommax>1393319.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Age_25_34</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>11.0</rdommin>
+            <rdommax>1609935.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Age_Over75</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>3.0</rdommin>
+            <rdommax>564884.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Agetotal</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>102.0</rdommin>
+            <rdommax>10098052.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>NonHisp</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>73.0</rdommin>
+            <rdommax>5204449.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Age_35_64</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>39.0</rdommin>
+            <rdommax>3936277.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Age_65_74</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>18.0</rdommin>
+            <rdommax>734393.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Day_1</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>-5.0</rdommin>
+            <rdommax>2546.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Day_2</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>-621.0</rdommin>
+            <rdommax>2773.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Day_3</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>-47.0</rdommin>
+            <rdommax>4814.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Day_4</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>-10.0</rdommin>
+            <rdommax>3037.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Day_5</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>-11.0</rdommin>
+            <rdommax>2560.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Day_6</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>-21.0</rdommin>
+            <rdommax>2901.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Day_7</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>-20.0</rdommin>
+            <rdommax>3424.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Day_8</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>-177.0</rdommin>
+            <rdommax>3362.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Day_9</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>-54.0</rdommin>
+            <rdommax>2723.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Day_10</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>-164.0</rdommin>
+            <rdommax>3109.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Day_11</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>-21.0</rdommin>
+            <rdommax>2980.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Day_12</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>-11.0</rdommin>
+            <rdommax>3128.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Day_13</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>-40.0</rdommin>
+            <rdommax>3212.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Day_14</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>-29.0</rdommin>
+            <rdommax>3159.0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Shape__Are</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>8763937.66797</rdommin>
+            <rdommax>78651946302.7</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Shape__Len</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>15636.7834132</rdommin>
+            <rdommax>2663772.32858</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>X</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>-124.15664</rdommin>
+            <rdommax>-67.63712</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Y</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>25.43552</rdommin>
+            <rdommax>48.82556</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>FIPSJ</attrlabl>
+        <attrdef/>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv><rdom>
+            <rdommin>1001</rdommin>
+            <rdommax>56045</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+    </detailed>
+    <overview>
+      <eaover>While there are 88 variables in this dataset, only two are relevant to our reproduction analysis: POP_ESTIMA and Confirmed. The former one means the total population in each county and the latter one means the number of cases in each county. We renamed them into pop and cases as we process the data. 
+</eaover>
+      <eadetcit/>
+    </overview>
+  </eainfo>
+  <distinfo>
+    <distrib>
+      <cntinfo>
+        <cntorgp>
+          <cntorg>Center for System Science and Engineering at Johns Hopkins University</cntorg>
+        </cntorgp>
+        <cntaddr>
+          <addrtype>mailing and physical</addrtype>
+          <address>3400 North Charles Street</address>
+          <city>Baltimore</city>
+          <state>MD</state>
+          <postal>21218</postal>
+          <country>US</country>
+        </cntaddr>
+        <cntvoice>4439979009</cntvoice>
+        <cntemail>jhusystems@gmail.com</cntemail>
+      </cntinfo>
+    </distrib>
+    <distliab>Anyone who use the data need to provide credit by citing “Johns Hopkins University” or “Johns Hopkins Centers for Civic Impact.” All data, mapping and analysis (website, copyright 2020 Johns Hopkins University, all rights reserved) is provided to the public strictly for educational and academic research purposes.</distliab>
+    <stdorder>
+      <digform><digtinfo>
+          <formname>Digital Data</formname>
+        </digtinfo>
+        <digtopt><onlinopt><computer><networka><networkr>https://github.com/CSSEGISandData/COVID-19</networkr></networka></computer></onlinopt></digtopt></digform>
+      <fees>None</fees>
+    </stdorder>
+  </distinfo>
+  <metainfo>
+    <metd>20220617</metd>
+    <metc>
+      <cntinfo>
+        <cntperp>
+          <cntper>Jospeh Holler</cntper>
+          <cntorg>Middlebury College</cntorg>
+        </cntperp>
+        <cntpos>Assisstant Professor of Geography</cntpos>
+        <cntaddr>
+          <addrtype>mailing and physical</addrtype>
+          <address>McCardell Bicentennial Hall 634</address>
+          <city>Middlebury</city>
+          <state>VT</state>
+          <postal>05753</postal>
+          <country>US</country>
+        </cntaddr>
+        <cntvoice>8024435992</cntvoice>
+        <cntemail>josephh@middlebury.edu</cntemail>
+      </cntinfo>
+    </metc>
+    <metstdn>FGDC Content Standard for Digital Geospatial Metadata</metstdn>
+    <metstdv>FGDC-STD-001-1998</metstdv>
+  </metainfo>
+</metadata>

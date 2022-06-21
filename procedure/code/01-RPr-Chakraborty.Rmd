@@ -10,7 +10,7 @@ Drew An-Pham, Department of Geography, Middlebury College, Middlebury VT 05753 D
 Junyi Zhou, Department of Geography, Middlebury College, Middlebury VT 05753 
 Peter Kedron, School of Geographical Sciences and Urban Planning, Arizona State University, Tempe AZ 85281 
 
-Version 1.2 | Created Jul 7, 2021 | Last Updated June 14, 2022
+Version 1.3 | Created Jul 7, 2021 | Last Updated June 21, 2022
 
 # Abstract
 
@@ -438,8 +438,76 @@ print(paste0("Secondary clusters: ", length(covid_kulldorff$secondary.clusters))
 ## Summarize spatial scan clusters by county
 This accomplishes the step 7 and 8 of the workflow diagram
 
+Summarize the results of the Kulldorff spatial scan cluster detection by cluster
+
+```{r summarize Kulldorff results by cluster}
+
+# Get a list of primary clusters
+primary <- covid_kulldorff$most.likely.cluster$location.IDs.included
+cluster_risk <- covid_table[primary, c(1, 2, 3)] # extract countyID, population and cases  based on location id
+cluster_risk$clusterID <- 0 # create clusterID column
+
+# Get a list of secondary clusters
+secondary <- covid_kulldorff$secondary.clusters
+id <- 1 # initialize clusterID
+
+for (i in secondary) {
+  secondary_temp <- covid_table[i$location.IDs.included, c(1, 2, 3)] 
+  secondary_temp$clusterID <- id
+  cluster_risk <- rbind(cluster_risk, secondary_temp) # appending to primary cluster dataframe
+  id <- id + 1 # each cluster gets a new id
+}
+
+# Calculate total pop and cases for all counties in the US
+total_pop <- sum(covid_table$pop) 
+total_cases <- sum(covid_table$cases)
+
+# Calculate and classify cluster-based relative risk
+cluster_risk <- cluster_risk %>% 
+  group_by(clusterID) %>%
+  mutate(
+    rr_cluster =
+      (sum(cases) / sum(pop)) / ((total_cases - sum(cases)) / (total_pop - sum(pop))),
+    cluster_class =
+      (cut(rr_cluster, c(-Inf, 1, 2, 3, 4, 5, Inf), labels = FALSE))
+  )
+
+covid <- left_join(covid, cluster_risk
+                   %>% dplyr::select(fips, clusterID, rr_cluster, cluster_class),by = "fips")
+
+covid <- covid %>% 
+  mutate(cluster_class = ifelse(is.na(cluster_class), 1, cluster_class))
+
+```
+
 Summarize the results of the Kulldorff spatial scan cluster detection by county
 Code each county `0` if it is not in a cluster and `1` if it is in a cluster.
+
+```{r summarize Kulldorff results by county}
+
+clusters <- covid_kulldorff$most.likely.cluster$location.IDs.included 
+for (i in secondary) {
+  clusters <- c(clusters, i$location.IDs.included)
+}
+
+# Create blank column "cluster" with 0's
+covid$cluster <- 0
+# Change cluster to 1 for any county identified in any cluster
+covid[clusters, ]$cluster <- 1
+
+# Calculate and classify Local relative risk
+# * cluster forces counties outside of clusters to be assigned to class 0
+covid <- covid %>% 
+  mutate( 
+    rr_loc = 
+      (cases / pop) / ((sum(covid$cases) - cases) / (sum(covid$pop) - pop)),
+    loc_class = 
+      (cut(rr_loc, c(-Inf,1,2,3,4,5,Inf), labels=FALSE) - 1) * cluster + 1
+  ) %>% 
+  st_transform(5070)
+
+```
+
 
 ```{r summarize Kulldorff results}
 
@@ -482,13 +550,14 @@ covid <- covid %>%
 
 ```
 
+
 ### How did the classification work?
 
 ```{r classification results}
 
 # Count frequency of each class of COVID risk
-cat("Classes of risk and frequency of counties",
-  format(covid %>% st_drop_geometry %>% count(rr_class)), sep="\n")
+cat("Classes of local risk and frequency of counties",
+  format(covid %>% st_drop_geometry %>% count(loc_class)), sep="\n")
 
 cat("\n",
     sum(covid$cluster==0 & covid$rr_loc >= 1),
@@ -501,6 +570,12 @@ cat("\n",
 # This reproduction uses county-based relative risk scores based on
 # paragraph 4 of the methods section of the paper and Desjardins et al
 
+```
+
+
+```{r}
+cat("Classes of cluster risk and frequency of counties",
+  format(covid %>% st_drop_geometry %>% count(cluster_class)), sep="\n")
 ```
 
 ## Map Relative Risk Scores
@@ -541,11 +616,29 @@ tmap_save(tm4, here("results", "figures", "rr_original.png"))
 ```
 
 
-```{r map relative risk scores}
+```{r map cluster based relative risk scores}
 
-# Map Relative Risk scores
+tm5 <- tm_shape(covid) +
+  tm_polygons("cluster_class",
+    title = "Relative Risk by Cluster",
+    border.alpha = .2,
+    lwd = 0.2,
+    palette = "YlOrBr",
+    style = "cat"
+  )
+
+tm5
+
+tmap_save(tm5, here("results", "figures", "rr_reproduction_cluster.png"))
+
+```
+
+
+```{r map local relative risk score}
+
+# Map Local Relative Risk scores
 tm3 <- tm_shape(covid) +
-  tm_polygons("rr_class",
+  tm_polygons("loc_class",
     title = "Local Relative Risk",
     border.alpha = .2,
     lwd = 0.2,
@@ -554,10 +647,11 @@ tm3 <- tm_shape(covid) +
   )
 
 tm3
+tmap_save(tm3, here("results", "figures", "rr_reproduction_loc.png"))
 
-tmap_save(tm3, here("results", "figures", "rr_reproduction.png"))
 
 ```
+
 
 ## Preprocess data for GEE modelling
 This accomplishes the step 9 and 10 of the workflow diagram
@@ -565,7 +659,7 @@ This accomplishes the step 9 and 10 of the workflow diagram
 ```{r preprocess data for GEE model }
 
 covid_clusters <- covid %>%
-  select(fips, cluster, rr_loc, rr_class) %>%
+  select(fips, clusterID, rr_cluster, cluster_class) %>% # change to loc_class if calculate local rr
   st_drop_geometry()
 
 # Filter out non-positive COVID rates and missing data
@@ -573,7 +667,7 @@ covid_clusters <- covid %>%
 # Sort by the cluster id's (a requirement of the gee function)
 gee_data <- left_join(acs_covid, covid_clusters, by = c("geoid" = "fips")) %>%
   filter(covid_rate > 0) %>%
-  mutate(id = as.integer(statefp) * 10 + rr_class) %>%
+  mutate(id = as.integer(statefp) * 10 + cluster_class) %>%
   arrange(id)
 
 

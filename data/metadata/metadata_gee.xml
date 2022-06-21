@@ -237,32 +237,28 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
         <attrlabl>geoid</attrlabl>
         <attrdef>Unique object identifier </attrdef>
         <attrdefs>Producer Defined</attrdefs>
-        <attrdomv>
-          <udom/>
+        <attrdomv><udom/>
         </attrdomv>
       </attr>
       <attr>
         <attrlabl>statefp</attrlabl>
         <attrdef>state code</attrdef>
         <attrdefs>Producer Defined</attrdefs>
-        <attrdomv>
-          <udom/>
+        <attrdomv><udom/>
         </attrdomv>
       </attr>
       <attr>
         <attrlabl>county</attrlabl>
         <attrdef>name of the county</attrdef>
         <attrdefs>Producer Defined</attrdefs>
-        <attrdomv>
-          <udom/>
+        <attrdomv><udom/>
         </attrdomv>
       </attr>
       <attr>
         <attrlabl>county_st</attrlabl>
         <attrdef>state and county combination</attrdef>
         <attrdefs>Producer Defined</attrdefs>
-        <attrdomv>
-          <udom/>
+        <attrdomv><udom/>
         </attrdomv>
       </attr>
       <attr>
@@ -456,7 +452,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
         </attrdomv>
       </attr>
       <attr>
-  <attrlabl>cluster</attrlabl><attrdef>COVID-19 Cluster</attrdef><attrdefs>Producer Defined</attrdefs><attrdomv>
+  <attrlabl>clusterID</attrlabl><attrdef>Unique id for each COVID-19 cluster</attrdef><attrdefs>Producer Defined</attrdefs><attrdomv>
     <edom>
       <edomv>1</edomv>
       <edomvd>the county falls into a cluster</edomvd>
@@ -472,17 +468,18 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
   </attrdomv>
 </attr>
       <attr>
-        <attrlabl>rr_loc</attrlabl>
-        <attrdef>Relative risk score</attrdef>
+        <attrlabl>rr_cluster</attrlabl>
+        <attrdef>Cluster based relative risk score</attrdef>
         <attrdefs>Producer Defined</attrdefs>
-        <attrdomv><rdom>
+        <attrdomv>
+          <rdom>
             <rdommin>0.012944473613313</rdommin>
             <rdommax>10.338687905847932</rdommax>
           </rdom>
         </attrdomv>
       </attr>
       <attr>
-        <attrlabl>rr_class</attrlabl>
+        <attrlabl>cluster_class</attrlabl>
         <attrdef>Relative risk score classified into six categories</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv>
@@ -491,9 +488,10 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>id</attrlabl>
-        <attrdef>Unique state-relative risk score ids created by combining state code and rr_class</attrdef>
+        <attrdef>Unique state-relative risk score ids created by combining state code and cluster_class</attrdef>
         <attrdefs>Producer Defined</attrdefs>
-        <attrdomv><udom/>
+        <attrdomv>
+          <udom/>
         </attrdomv>
       </attr>
       <attr>

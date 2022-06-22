@@ -49,12 +49,20 @@
     <keywords>
       <theme>
         <themekt>ISO 19115 Topic Category</themekt>
-        <themekey>biota</themekey>
+        <themekey>health</themekey>
       </theme>
       <theme>
         <themekt>None</themekt>
         <themekey/>
       </theme>
+      <place>
+        <placekt>None</placekt>
+        <placekey>COVID-19</placekey>
+      </place>
+      <place>
+        <placekt>Common geographic areas</placekt>
+        <placekey>United States</placekey>
+      </place>
     </keywords>
     <accconst>The data is open access under the Creative Commons Attribution 4.0 International (CC BY 4.0) by the Johns Hopkins University on behalf of its Center for Systems Science in Engineering. Copyright Johns Hopkins University 2020.</accconst>
     <useconst>Anyone who use the data need to provide credit by citing “Johns Hopkins University” or “Johns Hopkins Centers for Civic Impact.” All data, mapping and analysis (website, copyright 2020 Johns Hopkins University, all rights reserved) is provided to the public strictly for educational and academic research purposes.</useconst>
@@ -248,9 +256,10 @@ Finally, we dropped the geometry of the dataset. </procdesc>
       </attr>
       <attr>
         <attrlabl>FIPS</attrlabl>
-        <attrdef/>
+        <attrdef>Unique identifier for counties, composed of the state ID and county ID</attrdef>
         <attrdefs>Producer Defined</attrdefs>
-        <attrdomv><udom/>
+        <attrdomv>
+          <udom/>
         </attrdomv>
       </attr>
       <attr>
@@ -267,7 +276,8 @@ Finally, we dropped the geometry of the dataset. </procdesc>
         <attrlabl>Confirmedb</attrlabl>
         <attrdef/>
         <attrdefs>Producer Defined</attrdefs>
-        <attrdomv><rdom>
+        <attrdomv>
+          <rdom>
             <rdommin>0.0</rdommin>
             <rdommax>14257.17</rdommax>
           </rdom>
@@ -384,11 +394,13 @@ Finally, we dropped the geometry of the dataset. </procdesc>
 </attr>
       <attr>
         <attrlabl>Confirmed</attrlabl>
-        <attrdef/>
+        <attrdef>Total confirmed cases</attrdef>
         <attrdefs>Producer Defined</attrdefs>
-        <attrdomv><rdom>
+        <attrdomv>
+          <rdom>
             <rdommin>0.0</rdommin>
             <rdommax>188541.0</rdommax>
+            <attrunit>count of cases</attrunit>
           </rdom>
         </attrdomv>
       </attr>
@@ -624,9 +636,10 @@ Finally, we dropped the geometry of the dataset. </procdesc>
       </attr>
       <attr>
         <attrlabl>TotalPop</attrlabl>
-        <attrdef/>
+        <attrdef>Total Population</attrdef>
         <attrdefs>Producer Defined</attrdefs>
-        <attrdomv><rdom>
+        <attrdomv>
+          <rdom>
             <rdommin>102.0</rdommin>
             <rdommax>10098052.0</rdommax>
           </rdom>
@@ -676,7 +689,8 @@ Finally, we dropped the geometry of the dataset. </procdesc>
         <attrlabl>PacIslPop</attrlabl>
         <attrdef/>
         <attrdefs>Producer Defined</attrdefs>
-        <attrdomv><rdom>
+        <attrdomv>
+          <rdom>
             <rdommin>0.0</rdommin>
             <rdommax>24821.0</rdommax>
           </rdom>

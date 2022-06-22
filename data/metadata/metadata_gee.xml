@@ -1,5 +1,4 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!--Record created using version 2.0.7 of the USGS Metadata Wizard tool. (https://github.com/usgs/fort-pymdwizard)-->
 <metadata>
   <idinfo>
     <citation>
@@ -22,7 +21,7 @@
       </citeinfo>
     </citation>
     <descript>
-      <abstract>This dataset contains the processed data used for generalized estimating equation modeling in our reproduction analysis. </abstract>
+      <abstract>This dataset contains the processed dependent data on COVID-19 incidence, spatial clustering data (state and COVID-19 cluster relative risk), and independent variables (demographic sub-categories of people with disability), used for generalized estimating equation modeling in our reproduction analysis. </abstract>
       <purpose>The data in this dataset is used in the generalized estimating equation modeling in order to understand whether COVID-19 incidence is more significant in counties with larger proportions of socio-demographically disadvantaged people with disabilities, based on race, ethnicity, poverty status, and biological sex, controlling for spatial clusters. </purpose>
     </descript>
     <timeperd>
@@ -48,12 +47,22 @@
     <keywords>
       <theme>
         <themekt>ISO 19115 Topic Category</themekt>
-        <themekey>biota</themekey>
+        <themekey>health</themekey>
+        <themekey>society</themekey>
       </theme>
       <theme>
         <themekt>None</themekt>
         <themekey/>
       </theme>
+      <place>
+        <placekt>None</placekt>
+        <placekey>COVID-19</placekey>
+        <placekey>Disability</placekey>
+      </place>
+      <place>
+        <placekt>Common geographic areas</placekt>
+        <placekey>United States</placekey>
+      </place>
     </keywords>
     <accconst>This data set is open access under the BSD 3-Clause License</accconst>
     <useconst>Users are free to use the dataset but redistribution of the dataset must retain the copyright notice under the  BSD 3-Clause License and the work should be properly cited as: Holler, J., Kedron, P., An-Pham, D., Burt, D., &amp; Zhou, J. (2022, June 16). Reproduction of Chakraborty 2021 Distribution of COVID-19 and intra-categorical analysis of people with disabilities. https://doi.org/10.17605/OSF.IO/S5MTQ </useconst>
@@ -82,9 +91,8 @@
     <attracc>
       <attraccr>We run the generalized estimating equation model with the data and computed the coefficient and p-value, which we then compared them to the original result in the paper to check for accuracy. </attraccr>
     </attracc>
-    <logic>We have checked for data omissions and relevance. We have filtered our non-positive COVID-19 rates and missing data in this dataset before running the model. Please refer to our Rmakrdown for more information. </logic>
-    <complete>The dataset only includes data on the contiguous states and on counties with positive COVID-19 rates and complete disability/poverty data.
-</complete>
+    <logic>We have checked for data omissions and relevance. We have filtered out non-positive COVID-19 rates and missing data in this dataset before running the model. Please refer to our Rmakrdown for more information. </logic>
+    <complete>The dataset only includes data on the contiguous states and on counties with positive COVID-19 rates and complete disability/poverty data. The data only contains cases of COVID-19 confirmed by local authorities, and the completeness and quality testing and reporting of cases has varied over space and time during the pandemic.</complete>
     <lineage>
       <srcinfo>
         <srccite>
@@ -132,11 +140,11 @@
         <srccontr>US Census Bureau</srccontr>
       </srcinfo>
       <procstep>
-        <procdesc>The dataset is generated in Rmarkdown from Aug1data.shp and acs.gpkg. Please refer to data\raw\public and data\raw\public\chakraborty for more information on the these files. 
-When processing the data, we first join the COVID-19 data with our processed census data. 
+        <procdesc>The dataset is generated in Rmarkdown from covidcase080120.gpkg and acs.gpkg. Please refer to data\raw\public and data\raw\public\chakraborty for more information on the these files.
+When processing the data, we first join the COVID-19 data with our processed census data.
 We then run the Kulldorf Spatial Scan Statistics using the SpatialEpi package to determine the spatial cluster based on the number of cases.
-After that, we summarized the spatial scan clusters by county, calculated the relative risk score, and standardized our independent variables. 
-Please refer to our Rmarkdown for more information on the processing steps</procdesc>
+After that, we summarized the spatial scan clusters by county, calculated the relative risk score, and standardized our independent variables.
+Please refer to our Rmarkdown code (01-RPr-Chakraborty.Rmd) for more information on the processing steps</procdesc>
         <srcused>2014-2018 ACS 5-year Estimates</srcused>
         <srcused>COVID-19 Dashboard (US) by Center for System Science and Engineering at Johns Hopkins University</srcused>
         <procdate>20220616</procdate>
@@ -204,7 +212,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
   <eainfo>
     <detailed>
       <enttyp>
-        <enttypl>gee.shp Attribute Table</enttypl>
+        <enttypl>gee.gpkg Attribute Table</enttypl>
         <enttypd>Table containing attribute information associated with the data set.</enttypd>
         <enttypds>Producer Defined</enttypds>
       </enttyp>
@@ -235,9 +243,10 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>geoid</attrlabl>
-        <attrdef>Unique object identifier </attrdef>
+        <attrdef>Unique object identifier, equivalent to the FIPS codes for the state and county</attrdef>
         <attrdefs>Producer Defined</attrdefs>
-        <attrdomv><udom/>
+        <attrdomv>
+          <udom/>
         </attrdomv>
       </attr>
       <attr>
@@ -283,7 +292,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>white_pct</attrlabl>
-        <attrdef>Percentage of disability who are White</attrdef>
+        <attrdef>Percentage of people who have a disability and are White</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>0.852193350097793</rdommin>
@@ -293,7 +302,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>black_pct</attrlabl>
-        <attrdef>Percentage of disability who are Black</attrdef>
+        <attrdef>Percentage of people who have a disability and are Black</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>0.0</rdommin>
@@ -303,7 +312,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>native_pct</attrlabl>
-        <attrdef>Percentage of disability who are Native American</attrdef>
+        <attrdef>Percentage of people who have a disability and are Native American</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>0.0</rdommin>
@@ -313,7 +322,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>asian_pct</attrlabl>
-        <attrdef>Percentage of disability who are Asian</attrdef>
+        <attrdef>Percentage of people who have a disability and are Asian</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>0.0</rdommin>
@@ -323,7 +332,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>other_pct</attrlabl>
-        <attrdef>Percentage of disability who are other races</attrdef>
+        <attrdef>Percentage of people who have a disability and are other races</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>0.0</rdommin>
@@ -343,7 +352,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>hisp_pct</attrlabl>
-        <attrdef>Percentage of disability who are hispanic</attrdef>
+        <attrdef>Percentage of people who have a disability and are hispanic</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>0.0</rdommin>
@@ -353,9 +362,10 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>non_hisp_non_white_pct</attrlabl>
-        <attrdef>Percentage of disability whoa re non-hispanic and non-white</attrdef>
+        <attrdef>Percentage of people who have a disability and are non-hispanic and non-white</attrdef>
         <attrdefs>Producer Defined</attrdefs>
-        <attrdomv><rdom>
+        <attrdomv>
+          <rdom>
             <rdommin>0.0</rdommin>
             <rdommax>20.9293991159957</rdommax>
           </rdom>
@@ -363,7 +373,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>bpov_pct</attrlabl>
-        <attrdef>Percentage of disability who are below poverty</attrdef>
+        <attrdef>Percentage of people who have a disability and are below poverty</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>0.0</rdommin>
@@ -373,7 +383,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>apov_pct</attrlabl>
-        <attrdef>Percentage of disability who are above poverty</attrdef>
+        <attrdef>Percentage of people who have a disability and are above poverty</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>0.0</rdommin>
@@ -383,7 +393,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>pct_5_17</attrlabl>
-        <attrdef>Percentage of disability who are between 5 and 17</attrdef>
+        <attrdef>Percentage of people who have a disability and are between 5 and 17</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>0.0</rdommin>
@@ -393,7 +403,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>pct_18_34</attrlabl>
-        <attrdef>Percentage of disability who are between 18 and 34</attrdef>
+        <attrdef>Percentage of people who have a disability and are between 18 and 34</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>0.0</rdommin>
@@ -403,7 +413,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>pct_35_64</attrlabl>
-        <attrdef>Percentage of disability who are between 35 and 64</attrdef>
+        <attrdef>Percentage of people who have a disability and are between 35 and 64</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>1.118881118881119</rdommin>
@@ -413,7 +423,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>pct_65_74</attrlabl>
-        <attrdef>Percentage of disability who are between 65 and 74</attrdef>
+        <attrdef>Percentage of people who have a disability and are between 65 and 74</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>0.0</rdommin>
@@ -423,7 +433,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>pct_75</attrlabl>
-        <attrdef>Percentage of disability who are above 75</attrdef>
+        <attrdef>Percentage of people who have a disability and are above 75</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>0.60882800608828</rdommin>
@@ -433,7 +443,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>male_pct</attrlabl>
-        <attrdef>Percentage of disability who are male</attrdef>
+        <attrdef>Percentage of people who have a disability and are male</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>1.299907149489322</rdommin>
@@ -443,7 +453,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>female_pct</attrlabl>
-        <attrdef>Percentage of disability who are female</attrdef>
+        <attrdef>Percentage of people who have a disability and are female</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>1.907478883481568</rdommin>
@@ -471,8 +481,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
         <attrlabl>rr_cluster</attrlabl>
         <attrdef>Cluster based relative risk score</attrdef>
         <attrdefs>Producer Defined</attrdefs>
-        <attrdomv>
-          <rdom>
+        <attrdomv><rdom>
             <rdommin>0.012944473613313</rdommin>
             <rdommax>10.338687905847932</rdommax>
           </rdom>
@@ -482,16 +491,14 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
         <attrlabl>cluster_class</attrlabl>
         <attrdef>Relative risk score classified into six categories</attrdef>
         <attrdefs>Producer Defined</attrdefs>
-        <attrdomv>
-          <udom/>
+        <attrdomv><udom/>
         </attrdomv>
       </attr>
       <attr>
         <attrlabl>id</attrlabl>
         <attrdef>Unique state-relative risk score ids created by combining state code and cluster_class</attrdef>
         <attrdefs>Producer Defined</attrdefs>
-        <attrdomv>
-          <udom/>
+        <attrdomv><udom/>
         </attrdomv>
       </attr>
       <attr>
@@ -516,7 +523,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>z_white_pct</attrlabl>
-        <attrdef>Standardized percentage of disability who are white</attrdef>
+        <attrdef>Standardized Percentage of people who have a disability and are white</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>-2.738156160462077</rdommin>
@@ -526,7 +533,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>z_black_pct</attrlabl>
-        <attrdef>Standardized percentage of disability who are black</attrdef>
+        <attrdef>Standardized Percentage of people who have a disability and are black</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>-0.562677447480715</rdommin>
@@ -536,7 +543,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>z_native_pct</attrlabl>
-        <attrdef>Standardized percentage of disability who are native American</attrdef>
+        <attrdef>Standardized Percentage of people who have a disability and are native American</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>-0.300224648081442</rdommin>
@@ -546,7 +553,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>z_asian_pct</attrlabl>
-        <attrdef>Standardized percentage of disability who are asian</attrdef>
+        <attrdef>Standardized Percentage of people who have a disability and are asian</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>-0.511175685638967</rdommin>
@@ -556,7 +563,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>z_other_pct</attrlabl>
-        <attrdef>Standardized percentage of disability who are other races</attrdef>
+        <attrdef>Standardized Percentage of people who have a disability and are other races</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>-0.852367678544717</rdommin>
@@ -566,7 +573,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>z_non_hisp_white_pct</attrlabl>
-        <attrdef>Standardized percentage of disability who are non-hispanic white</attrdef>
+        <attrdef>Standardized Percentage of people who have a disability and are non-hispanic white</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>-2.640741263676013</rdommin>
@@ -576,7 +583,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>z_hisp_pct</attrlabl>
-        <attrdef>Standardized percentage of disability who are hispanic</attrdef>
+        <attrdef>Standardized Percentage of people who have a disability and are hispanic</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>-0.459918150975744</rdommin>
@@ -586,7 +593,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>z_non_hisp_non_white_pct</attrlabl>
-        <attrdef>Standardized percentage of disability who are non-hispanic and non-white</attrdef>
+        <attrdef>Standardized Percentage of people who have a disability and are non-hispanic and non-white</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>-0.781974122228838</rdommin>
@@ -596,7 +603,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>z_pct_5_17</attrlabl>
-        <attrdef>Standardized percentage of disability who are between 5 and 17</attrdef>
+        <attrdef>Standardized Percentage of people who have a disability and are between 5 and 17</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>-2.185448685041473</rdommin>
@@ -606,7 +613,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>z_pct_18_34</attrlabl>
-        <attrdef>Standardized percentage of disability who are between 18 and 34</attrdef>
+        <attrdef>Standardized Percentage of people who have a disability and are between 18 and 34</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>-2.35809729641233</rdommin>
@@ -616,7 +623,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>z_pct_35_64</attrlabl>
-        <attrdef>Standardized percentage of disability who are between 35 and 64</attrdef>
+        <attrdef>Standardized Percentage of people who have a disability and are between 35 and 64</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>-2.285335161021667</rdommin>
@@ -626,7 +633,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>z_pct_65_74</attrlabl>
-        <attrdef>Standardized percentage of disability who are between 65 and 74</attrdef>
+        <attrdef>Standardized Percentage of people who have a disability and are between 65 and 74</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>-2.715535679917382</rdommin>
@@ -636,7 +643,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>z_pct_75</attrlabl>
-        <attrdef>Standardized percentage of disability who are above 75</attrdef>
+        <attrdef>Standardized Percentage of people who have a disability and are above 75</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>-2.760735080104013</rdommin>
@@ -646,7 +653,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>z_male_pct</attrlabl>
-        <attrdef>Standardized percentage of disability who are male</attrdef>
+        <attrdef>Standardized Percentage of people who have a disability and are male</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>-2.861365014336787</rdommin>
@@ -656,7 +663,7 @@ Please refer to our Rmarkdown for more information on the processing steps</proc
       </attr>
       <attr>
         <attrlabl>z_female_pct</attrlabl>
-        <attrdef>Standardized percentage of disability who are female</attrdef>
+        <attrdef>Standardized Percentage of people who have a disability and are female</attrdef>
         <attrdefs>Producer Defined</attrdefs>
         <attrdomv><rdom>
             <rdommin>-2.665466872429158</rdommin>

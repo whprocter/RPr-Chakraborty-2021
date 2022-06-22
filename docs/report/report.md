@@ -331,7 +331,7 @@ Although Chakraborty does not illustrate the classified relative risk of COVID-1
 ![tmap4](../../results/figures/rr_original.png)
 *Figure 4: Relative risk score of original analysis*
 
-![tmap3](../../results/figures/rr_reproduction.png)
+![tmap3](../../results/figures/rr_reproduction_loc.png)
 *Figure 5: Relative risk score of reproduction analysis*
 
 In the **third part** of our reproduction analysis, we implemented the GEE model (Table 2).

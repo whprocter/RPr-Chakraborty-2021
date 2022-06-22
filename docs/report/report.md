@@ -277,13 +277,17 @@ Counties inside of a cluster but not at its center were excluded in the original
 Additionally, the SpatialEpi package did not calculate relative risk.
 
 Therefore, we changed our conceptualization of COVID-19 clusters to include all counties within any cluster.
-We created a list of all county IDs in clusters derived from the SpatialEpi output and joined this information to the complete geographic layer of counties.
-We then calculated a local relative risk score for each county in a cluster and classified the risk score from 1 to 6.
-This method left `null` data for all of the counties outside of a cluster.
-We inspected the original author's GEE input data to determine how to classify these counties, and accordingly assigned them to the `1` class.
+We created a list of cluster IDs from the SpatialEpi output so that counties within the same cluster all receive the same ID.
+We then joined this information to the geographic layer of counties and calculated the relative risk score for each cluster on a scale from 1 to 6.
+Counties within the same cluster receive the same relative risk score ranging from 2 to 6.
+This approach left `null` data for all counties outside of a cluster. We inspected the original author’s GEE input data to determine how to classify these counties, and accordingly assigned them to the 1 class.
 
-While reproducing the study, we decided that additional data visualizations would improve our understanding of the spatial patterns and relationships in the study.
-Therefore, we also created maps visualizing disability rates by county, spatial clusters of COVID-19 incidence according to the spatial scan statistic, and of the original and reproduced relative risk categories.
+While comparing the results to the original study, we found that the SpatialEpi output contains more clusters than the SaTScan’s output.
+Further investigation suggests that SpatialEpi algorithm does not allow clusters to overlap with each other. This has left many clusters with only one county.
+Therefore, we decided that additional data visualizations would improve our understanding of the spatial patterns and better illustrates the differences in results. We created maps visualizing the spatial clusters of COVID-19 incidence based on the output of SpatialEpi and SaTScan.
+On top of that, we calculated the local relative risk to investigate intra-cluster variations and created a map showing the relative risk score of each county.
+We also visualized disability rates by county. 
+
 
 ## Reproduction result
 

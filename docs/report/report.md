@@ -286,7 +286,7 @@ While comparing the results to the original study, we found that the SpatialEpi 
 Further investigation suggests that SpatialEpi algorithm does not allow clusters to overlap with each other. This has left many clusters with only one county.
 Therefore, we decided that additional data visualizations would improve our understanding of the spatial patterns and better illustrates the differences in results. We created maps visualizing the spatial clusters of COVID-19 incidence based on the output of SpatialEpi and SaTScan.
 On top of that, we calculated the local relative risk to investigate intra-cluster variations and created a map showing the relative risk score of each county.
-We also visualized disability rates by county. 
+We also visualized disability rates by county.
 
 
 ## Reproduction result
@@ -335,41 +335,44 @@ Although Chakraborty does not illustrate the classified relative risk of COVID-1
 ![tmap4](../../results/figures/rr_original.png)
 *Figure 4: Relative risk score of original analysis*
 
-![tmap3](../../results/figures/rr_reproduction_loc.png)
-*Figure 5: Relative risk score of reproduction analysis*
+![tmap3](../../results/figures/rr_reproduction_cluster.png)
+*Figure 5: Cluster based relative risk score of reproduction analysis*
+On top of that, we calculated and mapped the relative risk score for each county to show intra-cluster variations (Figure 6).
+
+![tmap5](../../results/figures/rr_reproduction_loc.png)
+*Figure 6: Local relative risk score of reproduction analysis*
 
 In the **third part** of our reproduction analysis, we implemented the GEE model (Table 2).
 The results of our reproduction study are mostly consistent with that of from Chakraborty's, with slight differences in the magnitude of correlation coefficients.
 The significance of some of the results also changed:
-the percent of Hispanics with disability changed from being significant to non-significant whereas the percentage of disabilities between 18-34 and 35-64 changed from being non-significant to significant.
+the percent of people with disability who fall into none of the racial group and percent of people with disability who are Hispanics changed from being significant to non-significant whereas the percentage of disabilities between 18-34 changed from being non-significant to significant.
 
 *Table 2*: Globalized Estimating Equation Model Outputs
 
-|                         | Estimate| Std.err|      Wald| Pr(>&#124;W&#124;)|
-|:------------------------|--------:|-------:|---------:|------------------:|
-|Race Intercept           |    7.723|   0.076| 10336.073|              0.000|
-|white_pct              |   -0.129|   0.007|   358.943|              0.000|
-|black_pct              |    0.019|   0.008|     5.122|              0.024|
-|native_pct             |    0.018|   0.005|    13.578|              0.000|
-|asian_pct              |    0.022|   0.004|    28.546|              0.000|
-|other_pct              |    0.022|   0.006|    14.714|              0.000|
-|Ethnicity Intercept      |    7.716|   0.076| 10292.946|              0.000|
-|non_hisp_white_pct     |   -0.150|   0.008|   365.943|              0.000|
-|hisp_pct               |    0.006|   0.005|     1.658|              0.198|
-|non_hisp_non_white_pct |    0.023|   0.008|     9.049|              0.003|
-|Poverty Status Intercept |    7.774|   0.074| 10947.636|              0.000|
-|bpov_pct               |    0.018|   0.006|     9.446|              0.002|
-|apov_pct               |   -0.110|   0.007|   233.641|              0.000|
-|Age Intercept            |    7.783|   0.073| 11483.331|              0.000|
-|pct_5_17               |    0.022|   0.003|    39.514|              0.000|
-|pct_18_34              |    0.014|   0.004|    14.751|              0.000|
-|pct_35_64              |   -0.024|   0.007|    11.102|              0.001|
-|pct_65_74              |   -0.056|   0.006|    97.325|              0.000|
-|z_pct_75                 |   -0.053|   0.006|    77.410|              0.000|
-|Biological Sex Intercept |    7.784|   0.073| 11427.103|              0.000|
-|male_pct               |   -0.135|   0.008|   316.207|              0.000|
-|female_pct             |    0.041|   0.006|    43.665|              0.000|
-
+|                         | Estimate| Std.err|     Wald| Pr(>&#124;W&#124;)|
+|:------------------------|--------:|-------:|--------:|------------------:|
+|Race Intercept           |    7.370|   0.083| 7813.513|              0.000|
+|z_white_pct              |   -0.163|   0.010|  275.756|              0.000|
+|z_black_pct              |    0.104|   0.011|   88.678|              0.000|
+|z_native_pct             |    0.036|   0.008|   21.126|              0.000|
+|z_asian_pct              |    0.039|   0.008|   21.766|              0.000|
+|z_other_pct              |    0.010|   0.010|    1.029|              0.310|
+|Ethnicity Intercept      |    7.360|   0.083| 7769.795|              0.000|
+|z_non_hisp_white_pct     |   -0.190|   0.012|  247.675|              0.000|
+|z_hisp_pct               |    0.005|   0.027|    0.032|              0.857|
+|z_non_hisp_non_white_pct |    0.105|   0.011|   92.967|              0.000|
+|Poverty Status Intercept |    7.382|   0.074| 9974.919|              0.000|
+|z_bpov_pct               |    0.109|   0.018|   35.408|              0.000|
+|z_apov_pct               |   -0.194|   0.014|  204.920|              0.000|
+|Age Intercept            |    7.422|   0.077| 9253.948|              0.000|
+|z_pct_5_17               |    0.028|   0.010|    7.132|              0.008|
+|z_pct_18_34              |    0.048|   0.018|    6.945|              0.008|
+|z_pct_35_64              |   -0.014|   0.020|    0.481|              0.488|
+|z_pct_65_74              |   -0.073|   0.017|   17.382|              0.000|
+|z_pct_75                 |   -0.079|   0.013|   36.943|              0.000|
+|Biological Sex Intercept |    7.421|   0.077| 9279.250|              0.000|
+|z_male_pct               |   -0.222|   0.016|  201.110|              0.000|
+|z_female_pct             |    0.121|   0.017|   49.606|              0.000|
 
 ## Discussion
 

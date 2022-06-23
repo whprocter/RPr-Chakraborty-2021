@@ -14,11 +14,11 @@ For every nearest.neighbors item then, the log-likelihood is calculated, and the
 Every single zone is checked for potential inclusion as secondary cluster in descending order, excluding any zones with overlap, until zones are no longer above the specified significance level (usually 0.05).
 The Monte Carlo simulation is used to determine maximum likelihoods under random distribution of cases, from which p-values can be derived.
 
-SatScan reports secondary clusters as follows: "The most likely cluster will always be reported. Secondary clusters can be reported based in either or both of two criteria. The first is a purely hierarchical criterion where secondary clusters with p<1.0 are reported depending on their degree of geographical overlap with more likely clusters already reported. The second is a criteria based on the Gini index, which is a measure of statistical dispersion. With this criterion, SaTScan selected the group of non-overlapping clusters that maximizes the Gini index, so that there is a big difference in rates between the cluster and non-cluster areas31. These latter are called ‘gini clusters’." (pg 68 of the user guide)
+SatScan reports secondary clusters as follows: "The most likely cluster will always be reported. Secondary clusters can be reported based in either or both of two criteria. The first is a purely hierarchical criterion where secondary clusters with p<1.0 are reported depending on their degree of geographical overlap with more likely clusters already reported. The second is a criteria based on the Gini index, which is a measure of statistical dispersion. With this criterion, SaTScan selected the group of non-overlapping clusters that maximizes the Gini index, so that there is a big difference in rates between the cluster and non-cluster areas. These latter are called ‘gini clusters’." (pg 68 of the user guide)
 
 SMR = Standardized Mortality Ratio = ODE (ordinary differential equation)
 
-note: while spatialEpi uses 0.5 significance threshold, satscan appears to use 0.1. 
+note: while spatialEpi uses 0.5 significance threshold, satscan appears to use 0.1.
 
 Should we have used county-level local relative risk or cluster-level cluster relative risk? This probably indicates that we should use county-level local relative risk: "estimate relative risk (RR) for COVID-19 incidence rates at the county level"
 

@@ -263,6 +263,7 @@ We replaced the missing values with zeroes and, with this missing data treatment
 
 In our pre-analysis plan, we planned to test the independent variables for normality prior to using the Pearson's r correlation coefficient for bivariate tests of correlation between the independent variables and COVID-19 incidence rates.
 Most of the independent variables have non-normal distributions; and therefore our reproduction has used the nonparametric Spearman's rank correlation coefficient for bivariate tests of correlation between the independent variables and COVID-19 incidence rates.
+In order to better understand the geographic patterns underlying the correlations between disability and COVID-19, we also visualized disability rates by county.
 
 The original study did not directly report details for the results of the Kulldorff spatial scan statistic for COVID-19 clusters beyond the number of clusters detected.
 In order to better understand the spatial scan statistic and to compare our reproduction with the SpatialEpi package to the original study using SaTScan software, we also ran the spatial scan statistic in SaTScan.
@@ -272,22 +273,22 @@ SaTScan produced three outputs:
 - vector layer of points of the centroids of each county in any cluster, including a unique cluster ID, relative risk score of the cluster, and relative risk score of the location (the county).
 
 We compared our results to the original publication, data files provided by the author, and the number of clusters for GEE models.
-We discovered that the original study most likely conceptualized COVID-19 clusters as the cluster-based relative risk of the county at the center of the cluster.
+We discovered that the original study most likely conceptualized COVID-19 clusters as the local relative risk of the county at the center of the cluster.
 Counties inside of a cluster but not at its center were excluded in the original study, and assigned the lowest risk category.
 Additionally, the SpatialEpi package did not calculate relative risk.
 
 Therefore, we changed our conceptualization of COVID-19 clusters to include all counties within any cluster.
-We created a list of cluster IDs from the SpatialEpi output so that counties within the same cluster all receive the same ID.
+We calculated the local relative risk to investigate intra-cluster variations and created a map showing the relative risk score of each county.
+We created a list of cluster IDs from the SpatialEpi output in order to identify all counties within a cluster and classify their risk.
 We then joined this information to the geographic layer of counties and calculated the relative risk score for each cluster on a scale from 1 to 6.
-Counties within the same cluster receive the same relative risk score ranging from 2 to 6.
-This approach left `null` data for all counties outside of a cluster. We inspected the original author’s GEE input data to determine how to classify these counties, and accordingly assigned them to the 1 class.
+This approach left `null` data for all counties outside of a cluster.
+We inspected the original author’s GEE input data to determine how to classify these counties, and accordingly assigned them to the 1 class.
 
-While comparing the results to the original study, we found that the SpatialEpi output contains more clusters than the SaTScan’s output.
-Further investigation suggests that SpatialEpi algorithm does not allow clusters to overlap with each other. This has left many clusters with only one county.
-Therefore, we decided that additional data visualizations would improve our understanding of the spatial patterns and better illustrates the differences in results. We created maps visualizing the spatial clusters of COVID-19 incidence based on the output of SpatialEpi and SaTScan.
-On top of that, we calculated the local relative risk to investigate intra-cluster variations and created a map showing the relative risk score of each county.
-We also visualized disability rates by county.
-
+At this point we considered the original purpose of calculating clusters and relative risk classes, which was to control for spatial dependence within states and COVID-19 hotspots.
+In order to better understand how the original research used the Kulldorff spatial scan statistic, we decided that additional data visualizations would improve our understanding of the spatial patterns and better illustrate the differences in results.
+We created maps visualizing the spatial clusters of COVID-19 incidence based on the output of SpatialEpi and SaTScan.
+Since the local relative risk classification divided COVID-19 clusters into different classes, we also decided to calculate a cluster-based relative risk score similar to that of the SaTScan software.
+We re-classified each county based on this cluster relative risk and recalculated the generalized estimating equations using this alternative conceptualization of COVID-19 risk.
 
 ## Reproduction result
 
@@ -330,22 +331,23 @@ For example, while the Pearson's correlation coefficient shows a weak positive r
 |male_pct               | -0.201| 11.430| 0.000|
 |female_pct             | -0.014|  0.798| 0.212|
 
-Although Chakraborty does not illustrate the classified relative risk of COVID-19 clusters, we enhanced the study by mapping both relative risk based on the SaTScan results (Figure 4) and on our modified R SpatialEpi results (Figure 5).
+Although Chakraborty does not illustrate the classified relative risk of COVID-19 clusters, we enhanced the study by mapping both relative risk based on the SaTScan results (Figure 4) and on our R SpatialEpi results (Figure 5).
 
-![tmap4](../../results/figures/rr_original.png)
+![fig4](../../results/figures/rr_original.png)
 *Figure 4: Relative risk score of original analysis*
 
-![tmap3](../../results/figures/rr_reproduction_cluster.png)
-*Figure 5: Cluster based relative risk score of reproduction analysis*
-On top of that, we calculated and mapped the relative risk score for each county to show intra-cluster variations (Figure 6).
+![fig5](../../results/figures/rr_reproduction_loc.png)
+*Figure 5: Local relative risk score of reproduction analysis*
 
-![tmap5](../../results/figures/rr_reproduction_loc.png)
-*Figure 6: Local relative risk score of reproduction analysis*
+On top of that, we calculated and mapped the relative risk score for each cluster (Figure 6).
+
+![fig6](../../results/figures/rr_reproduction_cluster.png)
+*Figure 6: Cluster based relative risk score of reproduction analysis*
+
 
 In the **third part** of our reproduction analysis, we implemented the GEE model (Table 2).
 The results of our reproduction study are mostly consistent with that of from Chakraborty's, with slight differences in the magnitude of correlation coefficients.
-The significance of some of the results also changed:
-the percent of people with disability who fall into none of the racial group and percent of people with disability who are Hispanics changed from being significant to non-significant whereas the percentage of disabilities between 18-34 changed from being non-significant to significant.
+The significance of some of the results also changed: the percent of people with disability who fall into none of the racial group and percent of people with disability who are Hispanics changed from being significant to non-significant whereas the percentage of disabilities between 18-34 changed from being non-significant to significant.
 
 *Table 2*: Globalized Estimating Equation Model Outputs
 
@@ -393,6 +395,12 @@ COVID-19 incidence was also found to be higher in counties where there are highe
 While executing the reproduction analysis, we recognize one of the shortcomings of Chakraborty's approach where he used Pearson's correlation on variables that are non-normally distributed.
 We therefore revise this error by calculating the Spearman's correlation coefficient.
 The results indicate that biological sex might not be correlated with COVID-19 incidence rates, but other demographic factors of minority status were significantly correlated with higher COVID-19 rates at the county level.
+
+**discuss differences in Spatial Scan statistic**
+
+While comparing the results to the original study, we found that the SpatialEpi output contains more clusters than the SaTScan's output.
+Further investigation suggests that SpatialEpi algorithm does not allow clusters to overlap with each other.
+This has left many clusters with only one county.
 
 Prior to the running the GEE model, we visualized and compared the classified relative risk of COVID-19 clusters using Chakraborty's original approach and our own approach respectively.
 While Chakraborty only calculated the relative risk score for the center of each cluster, we calculated it for each county in the cluster.

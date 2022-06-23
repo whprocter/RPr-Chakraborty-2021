@@ -18,6 +18,8 @@ SatScan reports secondary clusters as follows: "The most likely cluster will alw
 
 SMR = Standardized Mortality Ratio = ODE (ordinary differential equation)
 
+note: while spatialEpi uses 0.5 significance threshold, satscan appears to use 0.1. 
+
 Should we have used county-level local relative risk or cluster-level cluster relative risk? This probably indicates that we should use county-level local relative risk: "estimate relative risk (RR) for COVID-19 incidence rates at the county level"
 
 There are definitely differences in Kulldorf spatial scan statistic between SatScan and SpatialEpi. What are they?

@@ -242,7 +242,23 @@ acs_covid <- select(
 
 ```
 
+
 ## Map Covid Rates
+
+
+```{r get state geometry}
+
+state <- get_acs(geography = "state", 
+                 variables = c("Total Population" = "B01001_001"),
+                 year = 2018, 
+                 geometry = TRUE,
+                 keep_geo_vars = TRUE)
+
+state <- filter(state, !STATEFP %in% c("02", "15", "72"))
+
+```
+
+
 
 ```{r map covid rates}
 
@@ -253,11 +269,13 @@ tm1 <- tm_shape(acs_covid) +
     border.alpha = .2,
     lwd = 0.2,
     palette = "YlOrBr"
-  )
+  ) +
+  tm_shape(state) +
+  tm_borders("white", lwd = .5) +
+  tmap_options(check.and.fix = TRUE)
 
 tm1
 
-tmap_options(show.messages = FALSE)
 tmap_save(tm1, here("results", "figures", "covid_rates.png"))
 
 ```
@@ -273,7 +291,11 @@ tm2 <- tm_shape(acs_covid) +
     border.alpha = .2,
     lwd = 0.2,
     palette = "YlOrBr"
-  )
+  ) +
+  tm_shape(state) +
+  tm_borders("white", lwd = .5) +
+  tmap_options(check.and.fix = TRUE)
+
 
 tm2
 
@@ -485,68 +507,14 @@ Code each county `0` if it is not in a cluster and `1` if it is in a cluster.
 
 ```{r summarize Kulldorff results by county}
 
-clusters <- covid_kulldorff$most.likely.cluster$location.IDs.included 
-for (i in secondary) {
-  clusters <- c(clusters, i$location.IDs.included)
-}
-
-# Create blank column "cluster" with 0's
-covid$cluster <- 0
-# Change cluster to 1 for any county identified in any cluster
-covid[clusters, ]$cluster <- 1
-
 # Calculate and classify Local relative risk
-# * cluster forces counties outside of clusters to be assigned to class 0
+# Counties outside of any cluster (with cluster risk of 1) are classified as lowest risk (1)
 covid <- covid %>% 
   mutate( 
     rr_loc = 
       (cases / pop) / ((sum(covid$cases) - cases) / (sum(covid$pop) - pop)),
-    loc_class = 
-      (cut(rr_loc, c(-Inf,1,2,3,4,5,Inf), labels=FALSE) - 1) * cluster + 1
-  ) %>% 
-  st_transform(5070)
-
-```
-
-
-```{r summarize Kulldorff results}
-
-# Get counties in most significant cluster
-# Note that the ID numbers are row numbers
-clusters <- covid_kulldorff$most.likely.cluster$location.IDs.included 
-# NEED TO DO: transform clusters into a dataframe with two columns: clusterID and countyID
-
-# Get list of secondary clusters
-secondary <- covid_kulldorff$secondary.clusters
-
-# Get counties from each secondary cluster
-for (i in secondary) {
-  # NEED TO DO: transform each list of countyIDs into a dataframe with two columns: clusterID and countyID, before appending those rows to clusters
-  clusters <- c(clusters, i$location.IDs.included)
-}
-
-# NEED TO DO: calculate relative risk for each cluster (rr_cluster), using dyplr to group by clusterID; then ungroup and group by COUNTYID to summarize the greatest relative risk for each county
-
-# Create blank column "cluster" with 0's
-covid$cluster <- 0
-
-# Change cluster to 1 for any county identified in any cluster
-covid[clusters, ]$cluster <- 1
-
-
-# Calculate and Classify Local Relative Risk
-# cut() classifies rr_loc from 1 to 6
-# * cluster forces counties outside of clusters to be assigned to class 0
-covid <- covid %>% 
-  mutate( 
-    rr_loc = 
-      (cases / pop) / ((sum(covid$cases) - cases) / (sum(covid$pop) - pop)),
-    rr_class = 
-      (cut(rr_loc, c(-Inf,1,2,3,4,5,Inf), labels=FALSE) - 1) * cluster + 1
-  ) %>% 
-  st_transform(5070)
-
-# NEED TO DO: calculate rr_class using newly caculated rr_cluster rather than rr_loc
+    loc_class = ifelse(cluster_class > 1, cut(rr_loc, c(-Inf,1,2,3,4,5,Inf), labels=FALSE), 1)
+  ) 
 
 ```
 
@@ -580,20 +548,6 @@ cat("Classes of cluster risk and frequency of counties",
 
 ## Map Relative Risk Scores
 
-
-```{r get state geometry}
-
-state <- get_acs(geography = "state", 
-                 variables = c("Total Population" = "B01001_001"),
-                 year = 2018, 
-                 geometry = TRUE,
-                 keep_geo_vars = TRUE)
-
-state <- filter(state, !STATEFP %in% c("02", "15", "72"))
-
-```
-
-
 Note that relative risk is > 1 only if the county was in a cluster
 
 ```{r prepare original relative risk scores}
@@ -621,6 +575,8 @@ tm4 <- tm_shape(covid_temp) +
   ) +
   tm_shape(original_cluster) +
   tm_borders("red", lwd = .5) +
+  tm_shape(state) +
+  tm_borders("white", lwd = .5) +
   tmap_options(check.and.fix = TRUE)
 
 tm4

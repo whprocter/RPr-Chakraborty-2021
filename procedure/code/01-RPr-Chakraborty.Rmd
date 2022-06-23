@@ -271,7 +271,7 @@ tm1 <- tm_shape(acs_covid) +
     palette = "YlOrBr"
   ) +
   tm_shape(state) +
-  tm_borders("white", lwd = .5) +
+  tm_borders("grey", lwd = .8) +
   tmap_options(check.and.fix = TRUE)
 
 tm1
@@ -293,7 +293,7 @@ tm2 <- tm_shape(acs_covid) +
     palette = "YlOrBr"
   ) +
   tm_shape(state) +
-  tm_borders("white", lwd = .5) +
+  tm_borders("grey", lwd = .8) +
   tmap_options(check.and.fix = TRUE)
 
 
@@ -576,7 +576,7 @@ tm4 <- tm_shape(covid_temp) +
   tm_shape(original_cluster) +
   tm_borders("red", lwd = .5) +
   tm_shape(state) +
-  tm_borders("white", lwd = .5) +
+  tm_borders("grey", lwd = .8) +
   tmap_options(check.and.fix = TRUE)
 
 tm4

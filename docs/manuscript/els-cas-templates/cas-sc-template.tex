@@ -77,7 +77,7 @@
 %       linkedin=<linkedin id>,
 %       gplus=<gplus id>]
 
-\author[<aff no>]{<author name>}[<options>]
+\author[1]{Joseph Holler}[orcid=0000-0002-2381-2699]
 
 % Corresponding author indication
 \cormark[<corr mark no>]
@@ -86,7 +86,7 @@
 \fnmark[<footnote mark no>]
 
 % Email id of the first author
-\ead{<email address>}
+\ead{josephh@middlebury.edu}
 
 % URL of the first author
 \ead[url]{<URL>}
@@ -104,13 +104,13 @@
             state={},
             country={}}
 
-\author[<aff no>]{<author name>}[<options>]
+\author[1]{Junyi Zhou}
 
 % Footnote of the second author
 \fnmark[2]
 
 % Email id of the second author
-\ead{}
+\ead{zhou@middlebury.edu}
 
 % URL of the second author
 \ead[url]{}
@@ -119,13 +119,13 @@
 \credit{}
 
 % Address/affiliation
-\affiliation[<aff no>]{organization={},
+\affiliation[1]{organization={Middlebury College},
             addressline={}, 
-            city={},
+            city={Middlebury},
 %          citysep={}, % Uncomment if no comma needed between city and postcode
-            postcode={}, 
-            state={},
-            country={}}
+            postcode={05753}, 
+            state={VT},
+            country={United States}}
 
 % Corresponding author text
 \cortext[1]{Corresponding author}
@@ -138,7 +138,25 @@
 
 % Here goes the abstract
 \begin{abstract}
+Chakraborty (2021) investigates the relationships between COVID-19 rates and demographic characteristics of people with disabilities by county in the lower 48 states.
+The study aims to examine public concern that persons with disabilities (PwDs) face disproportionate challenges due to COVID-19.
+To investigate this, Chakraborty examines the statistical relationship between confirmed county-level COVID-19 case rates and county-level socio-demographic and disability variables.
+Specifically, Chakraborty tests county-level bivariate correlations between COVID-19 incidence against the percentage of disability and socio-demographic category, with a separate hypothesis and model for each subcategory within disability, race, ethnicity, age, and biological sex.
+To control for differences between states and geographic clusters of COVID-19 outbreaks, Chakraborty uses five generalized estimating equation (GEE) models to predict the relationship and significance between COVID-19 incidence and disability subgroups within each socio-demographic category while considering inter-county spatial clusters.
+Chakraborty (2021) finds significant positive relationships between COVID-19 rates and socially vulnerable demographic categories of race, ethnicity, poverty, age, and biological sex.
 
+This reproduction study is motivated by expanding the potential impact of Chakraborty's study for policy, research, and teaching purposes.
+Measuring the relationship between COVID-19 incidence and socio-demographic and disability characteristics can provide important information for public health policy-making and resource allocation.
+A fully reproducible study will increase the accessibility, transparency, and potential impact of Chakraborty's (2021) study by publishing a compendium complete with metadata, data, and code.
+This will allow other researchers to review, extend, and modify the study and will allow students of geography and spatial epidemiology to learn from the study design and methods.
+
+In this reproduction, we will attempt to identically reproduce all of the results from the original study.
+This will include the map of county level distribution of COVID-19 incidence rates (Fig. 1), the summary statistics for disability and sociodemographic variables and bivariate correlations with county-level COVID-19 incidence rate (Table 1), and the GEE models for predicting COVID-19 county-level incidence rate (Table 2).
+A successful reproduction should be able to generate identical results as published by Chakraborty (2021).
+
+The reproduction study data and code will be made available in a GitHub repository to the greatest extent that licensing and file sizes permit.
+The repository will be made public at [github.com/HEGSRR/RPr-Chakraborty2021](https://github.com/HEGSRR/RPr-Chakraborty2021).
+To the greatest extent possible, the reproduction will be implemented with R markdown using packages geepack for the generalized estimating equation and SpatialEpi for the spatial scan statistics.
 \end{abstract}
 
 % Use if graphical abstract is present
@@ -156,7 +174,7 @@
 % Keywords
 % Each keyword is seperated by \sep
 \begin{keywords}
- \sep \sep \sep
+COVID-19 \sep Disability \sep Reproduction Study \sep Kulldorff Spatial Scan Statistic \sep United States \sep Generalized Estimating Equations
 \end{keywords}
 
 \maketitle

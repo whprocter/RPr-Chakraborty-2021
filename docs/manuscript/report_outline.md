@@ -43,21 +43,25 @@ Our two confirmatory hypotheses are that we will be able to exactly reproduce Ch
 
 The original study was conducted using ArcGIS (Desktop v 10.7), SPSS, and SaTScan (v9.6). The SaTScan software was used to implement the spatial scan statistics. ArcGIS was used to conduct spatial analysis and mapping. Other statistics were calculated in SPSS.
 
-To make this study reproducible, we have implemented the analysis to the greatest extent possible in R/RStudio. We used the SpatialEpi package to implement spatial scan statistics, the tmap and sf packages for mapping and spatial analysis, the geepack as well as the tidycensus packages for the generalized estimating equation and basic data manipulation.
+To make this study reproducible, we have implemented the analysis to the greatest extent possible in R/RStudio. We used the SpatialEpi package to implement spatial scan statistics, the tmap and sf packages for mapping and spatial analysis, the geepack as well as the tidycensus packages for the generalized estimating equation and data extraction.
 
+- The geepack implements the generalized estimating equations approach for fitting marginal generalized linear models to clustered data, mostly found in longitudinal data and repeated measures. The GEE approach focuses on models for the mean of the correlated observations within clusters without fully specifying the joint distribution of the observations (Højsgaard et al. 2005).
 
-tidyverse
-geepack
-spatialEpi
-tmap
-sf
+- The SpatialEpi package implements methods for spatial epidemiology that includes disease mapping, spatial regression/geographic correlation studies, and analysis of disease clusters. The basis of this model is to partition a study region into a set of areas which are either null or non-null, the latter corresponding to clusters or anti-cluster (Kim & Wakefield 2010).
+
+- The tmap package offers a coherent plotting system for thematic maps that is based on the layered grammar of graphics (Tennekes 2018).
+
+- The sf package is an R package for reading, writing, handling, and manipulating simple features in R (Pebesma 2018).
+
+- The tidycensus package is an R package designed to facilitate the process of acquiring and working with US Census Bureau population data in the R environment. It makes census data available to R users in a tidyverse-friendly format. It is also designed to streamline the data wrangling process for spatial census data analysts (Walker 2022). 
+
+- Comparing SpatialEpi and SaTScan: Kim, A. Y., & Wakefield, J. (2016). A Bayesian Method for Cluster Detection with Application to Brain and Breast Cancer in Puget Sound. Epidemiology (Cambridge, Mass.), 27(3), 347–355. [https://doi.org/10.1097/EDE.0000000000000450](https://doi.org/10.1097/EDE.0000000000000450)
+
 
 ### Measures
 
 **1. Data sources**
 The data on disability and sociodemographic characteristics come from the U.S. Census American Community Survey (ACS) five-year estimates for 2018 (2014-2018). This data is publicly available online and we downloaded it directly from the Census API using the tidycensus package for R. Chakraborty informed us of the ACS data table names used in the study (S1810 for demographic categories and disability status and C18130 for poverty status and disability status)
-
-tidycensus
 
 The COVID-19 data comes from the Johns Hopkins Coronavirus Resources Center and could be found at the John Hopkins CCSE COVID-19 Data Repository. This data expresses cumulative count of reported COVID-19 from 1/22/2020 (when John Hopkins began collecting the data) to 8/1/2020 (when the data was retrieved for the original study). Since it is not possible to download that dynamic dataset in an archived form as it existed on August 1, 2020, we have asked Chakraborty for this data.  
 

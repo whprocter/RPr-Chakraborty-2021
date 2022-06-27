@@ -14,7 +14,7 @@ This study is a replication of:
 - [Drew An-Pham](https://daptx.github.io/)
 - [Peter Kedron](https://sgsup.asu.edu/peter-kedron)
 - [Derrick Burt](https://derrickburt.github.io)
-- [Emily Zhou](https://emilyzhou112.github.io)
+- [Junyi Zhou](https://emilyzhou112.github.io)
 
 ## Repository Documents
 

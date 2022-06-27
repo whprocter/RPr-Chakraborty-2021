@@ -21,7 +21,7 @@ The study reveals significant positive relationships between COVID-19 rates and 
 
 **4. Relevance of reproducing Jay’s paper**
 
-- **Other research has already referenced this paper in subsequent studies.** Chakraborty’s paper has been referenced in 14 subsequent studies since its publication. Most of these studies continue to examine how people with disabilities (PwDs) have been adversely impacted by the COVID-19 pandemic in terms of their physical and mental health as well as access to food and medical resources. Other studies have developed on Chakraborty’s conclusion and investigate ways to mitigate and prevent adverse impacts of future pandemics on PwDs or applied the method and conceptualization of Chakraborty’s study to different parts of the world.  
+- **Other research has already referenced this paper in subsequent studies.** Chakraborty’s paper has been referenced in 14 subsequent studies since its publication. Most of these studies continue to examine how people with disabilities (PwDs) have been adversely impacted by the COVID-19 pandemic in terms of their physical and mental health as well as access to food and medical resources (references). Other studies have developed on Chakraborty’s conclusion and investigate ways to mitigate and prevent adverse impacts of future pandemics on PwDs (references) or applied the method and conceptualization of Chakraborty’s study to different parts of the world (references).  
 
 - **Disability is still important in the context of COVID-19 impacts.** Since the inception of the pandemic, there are 77 publications on the Disability and Health Journal, ranging from research articles, short communications to discussion and review articles that examine disability within the context of COVID-19. However, we found that only 33 of them published supplementary materials along with the paper. Among the 33 publications, only 7 provide accessible raw data, 3 provide instructions on raw data. 8 publications provide accessible processed data or intermediaries, and 10 publications provide other forms of accessible supplementary materials, such as survey instruments and interview guides.
 
@@ -53,7 +53,7 @@ To make this study reproducible, we have implemented the analysis to the greates
 
 - The sf package is an R package for reading, writing, handling, and manipulating simple features in R (Pebesma 2018).
 
-- The tidycensus package is an R package designed to facilitate the process of acquiring and working with US Census Bureau population data in the R environment. It makes census data available to R users in a tidyverse-friendly format. It is also designed to streamline the data wrangling process for spatial census data analysts (Walker 2022). 
+- The tidycensus package is an R package designed to facilitate the process of acquiring and working with US Census Bureau population data in the R environment. It makes census data available to R users in a tidyverse-friendly format. It is also designed to streamline the data wrangling process for spatial census data analysts (Walker 2022).
 
 - Comparing SpatialEpi and SaTScan: Kim, A. Y., & Wakefield, J. (2016). A Bayesian Method for Cluster Detection with Application to Brain and Breast Cancer in Puget Sound. Epidemiology (Cambridge, Mass.), 27(3), 347–355. [https://doi.org/10.1097/EDE.0000000000000450](https://doi.org/10.1097/EDE.0000000000000450)
 

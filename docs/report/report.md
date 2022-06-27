@@ -378,7 +378,7 @@ The significance of some of the results also changed: the percent of people with
 
 ## Discussion
 
-Our reproduction of the original study was partially successful, leading to similar, but inexact results for most analyses.
+Our reproduction of the original study was partially successful, leading to similar, but inexact results compared to the original study. The results suggest support for the conclusions of the original study, but also emphasize the importance of reproduction studies to comconcerns regarding
 
 The choropleth map we made in the **first part** of the reproduction analysis closely resembles that of the original study, confirming the equivalence of our dependent variable with that of the original study.
 Both maps revealed that COVID-19 cases were distributed unevenly across space.

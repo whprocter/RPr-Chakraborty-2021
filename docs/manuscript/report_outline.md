@@ -1,5 +1,11 @@
 # A Draft Outline for Reproduction Analysis Report
 
+## Key Contributions
+
+1. Enhancing reproducibility through a reproduction study by developing a 4.5-star research compendium
+1. Assessing internal validity and credibility of influential original research
+   - https://osf.io/sma6g
+
 ## Introduction
 
 

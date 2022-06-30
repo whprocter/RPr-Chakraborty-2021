@@ -2,7 +2,7 @@
 
 **Need citation for highlighted sentences**
 
-# 1. Introduction
+## 1. Introduction
 
 The COVID-19 pandemic has exacerbated the problem of social inequity inherent in various aspects of people’s life across the country.
 Since its inception, researchers have produced a deluge of studies that investigate how socio-demographically disadvantaged population have been adversely affected by the pandemic and have proposed solutions that address this acute inequity for government officials and policymakers to consult.
@@ -50,7 +50,7 @@ In the following section, we briefly introduce the research methods, results, an
 In the third section, we present our data sources, characteristics, the structure of our reproduction analyses, and how our approach deviates from that of the original.  
 In the last section…
 
-# 2. Statistical Analyses and Findings of Chakraborty (2021)
+## 2. Statistical Analyses and Findings of Chakraborty (2021)
 
 Chakraborty examined the statistical relationship between confirmed county-level COVID-19 case rates and county-level socio-demographic and disability variables.
 Specifically, he first visualized the national distribution of COVID-19 incidence rate and computed summary statistics for COVID incidence and each socio-demographic variable.
@@ -71,9 +71,9 @@ Other statistics were calculated in SPSS.
 Chakraborty’s study reveals significant positive relationships between COVID-19 rates and socially vulnerable demographic categories of race, ethnicity, poverty, age, and biological sex.
 The primary conclusions are that PwDs who are racial/ethnic minority, below poverty, aged 5-17 years, and female are significantly overrepresented in counties with higher COVID-19 incidence.
 
-# 3. Data and Approach to Reproduction Analysis
+## 3. Data and Approach to Reproduction Analysis
 
-## 3.1 Software
+### 3.1 Software
 
 To make this study reproducible, we implemented the analysis to the greatest extent possible in R/RStudio.
 We used the SpatialEpi package, which implements the methods for spatial epidemiology that includes disease mapping, spatial regression, and analysis of disease clusters, to computes spatial scan statistics.
@@ -82,7 +82,7 @@ We used the SpatialEpi package, which implements the methods for spatial epidemi
 The geepack package is used for the GEE model.
 **This package implements GEE by fitting marginal generalized linear models to clustered data, mostly found in longitudinal data and repeated measures (Højsgaard et al. 2005).**
 
-## 3.2 Data
+### 3.2 Data
 
 The data on disability and sociodemographic characteristics comes from the U.S. Census American Community Survey (ACS) five-year estimates for 2018 (2014-2018). Chakraborty informed us of the ACS data table names used in the study (S1810 for demographic categories and disability status and C18130 for poverty status and disability status). Using this information, we obtained the data via the Census API using the tidycensus package for R. **This package is designed to facilitate the process of working with US Census Bureau population data in the R environment in a tidyverse-friendly format (Walker 2022).**
 
@@ -90,7 +90,7 @@ The COVID-19 data comes from the Johns Hopkins Coronavirus Resources Center and 
 
 Both the COVID-19 data and the demographic data are measured at the county level in the 48 contiguous states in the US. The COVID-19 incidence rate is the dependent variable of this study. There are eighteen independent variables, a percentage of total disabled persons per county and seventeen 'disaggregated' categories that break down socio-demographic characteristics of the disabled population.
 
-## 3.3 Reproduction analysis of Chakraborty (2021)
+### 3.3 Reproduction analysis of Chakraborty (2021)
 
 Following the analytical framework of the original analysis, our reproduction study is organized into three parts.
 In the first part, we recreate the map of the county level distribution of COVID-19 incidence rates.
@@ -113,7 +113,7 @@ We calculated the relative risk score for each cluster and classified them on a 
 To better understand how the original research used the Kulldorff spatial scan statistic, we decided that additional data visualizations would improve our understanding of the spatial patterns and better illustrate the differences in results.
 As such, we created maps visualizing the spatial clusters of COVID-19 incidence based on the output of SpatialEpi and SaTScan.
 
-# 4. Results
+## 4. Results
 
 The first part of our reproduction analysis was to visualize the spatial distribution of COVID-19 cases per 100,000 in the US (Figure).
 The reproduction results closely resembled that of the original study.

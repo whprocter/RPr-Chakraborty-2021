@@ -721,6 +721,7 @@ Generalized Estimating Equation parameters:
 Useful Reference:
 https://data.library.virginia.edu/getting-started-with-generalized-estimating-equations/
 
+
 ```{r gee models}
 
 # it would be smarter to iterate over a list of models and their parameters
@@ -805,6 +806,94 @@ QIC_results <- data.frame(
   select(QIC)
 QIC_results
 
+```
+
+
+```{r preprocess original gee data}
+
+original_gee <- read.csv(here("data", "raw", "public", "chakraborty", "Aug1GEEdata.csv"))
+
+original_processed <- original_gee %>%
+  filter(Incidence > 0) %>%
+  mutate(id = as.integer(COUNTY_FIPS) * 10 + RISK_BIN) %>%
+  arrange(id)
+
+```
+
+
+```{r gee model with author provided data}
+
+race_gee_original <- geeglm(
+  Incidence ~ ZPD_White + ZPD_Black + ZPD_Asian + ZPD_Native + ZPD_OthRac,
+  data = original_processed, # data frame
+  id = id, # cluster IDs
+  family = Gamma(link = "log"),
+  corstr = "exchangeable"
+)
+
+ethnicity_gee_original <- geeglm(
+  Incidence ~ ZPD_NHwhite + ZPD_Hispani + ZPD_NHoth,
+  data = original_processed, # data frame
+  id = id, # cluster IDs
+  family = Gamma(link = "log"),
+  corstr = "exchangeable"
+)
+
+pov_gee_original <- geeglm(
+  Incidence ~ ZPDisBpov + ZPDisApov,
+  data = original_processed, # data frame
+  id = id, # cluster IDs
+  family = Gamma(link = "log"),
+  corstr = "exchangeable"
+)
+
+age_gee_original <- geeglm(
+  Incidence ~ ZPD_age5to17 + ZPDage18to34 + ZPDage35to64 + ZPDage65to74 + ZPDage75,
+  data = original_processed,
+  id = id,
+  family = Gamma(link = "log"),
+  corstr = "exchangeable"
+)
+
+sex_gee_original <- geeglm(
+  Incidence ~ ZPD_Male + ZPD_Female,
+  data = original_processed, # data frame
+  id = id, # cluster IDs
+  family = Gamma(link = "log"),
+  corstr = "exchangeable"
+)
+
+coefficient_results_original <- rbind(
+  coef(summary(race_gee_original)),
+  coef(summary(ethnicity_gee_original)),
+  coef(summary(pov_gee_original)),
+  coef(summary(age_gee_original)),
+  coef(summary(sex_gee_original))
+) %>%
+  round(3)
+
+coefrows <- rownames(coefficient_results_original)
+coefrows[1] <- "Race Intercept"
+coefrows[7] <- "Ethnicity Intercept"
+coefrows[11] <- "Poverty Status Intercept"
+coefrows[14] <- "Age Intercept"
+coefrows[20] <- "Biological Sex Intercept"
+rownames(coefficient_results_original) <- coefrows
+coefficient_results_original
+
+
+QIC_results_original <- data.frame(
+  race = QIC(race_gee_original),
+  ethnicity = QIC(ethnicity_gee_original),
+  poverty_status = QIC(pov_gee_original),
+  age = QIC(age_gee_original),
+  biological_sex = QIC(sex_gee_original)
+) %>%
+  round(3) %>%
+  t() %>%
+  as.data.frame() %>%
+  select(QIC)
+QIC_results_original
 ```
 
 

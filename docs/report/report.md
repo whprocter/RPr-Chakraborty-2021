@@ -262,11 +262,11 @@ One county was unexpectedly missing disability and poverty data: Rio Arriba Coun
 We replaced the missing values with zeroes and, with this missing data treatment, confirmed that our descriptive statistics matched the original publication.
 
 In our pre-analysis plan, we planned to test the independent variables for normality prior to using the Pearson's r correlation coefficient for bivariate tests of correlation between the independent variables and COVID-19 incidence rates.
-Most of the independent variables have non-normal distributions; and therefore our reproduction has used the nonparametric Spearman's rank correlation coefficient for bivariate tests of correlation between the independent variables and COVID-19 incidence rates.
+Most of the independent variables have significantly non-normal distributions; and therefore our reproduction has used the nonparametric Spearman's rank correlation coefficient for bivariate tests of correlation between the independent variables and COVID-19 incidence rates.
 In order to better understand the geographic patterns underlying the correlations between disability and COVID-19, we also visualized disability rates by county.
 
 The original study did not directly report details for the results of the Kulldorff spatial scan statistic for COVID-19 clusters beyond the number of clusters detected.
-In order to better understand the spatial scan statistic and to compare our reproduction with the SpatialEpi package to the original study using SaTScan software, we also ran the spatial scan statistic in SaTScan.
+In order to better understand the spatial scan statistic, and to compare our reproduction using the SpatialEpi package to the original study using SaTScan software, we also ran the spatial scan statistic in SaTScan.
 SaTScan produced three outputs:
 - text file report of each cluster
 - vector layer of circle polygons with the center and radius of each cluster, ID of the county at the center of the cluster, and a relative risk score for the cluster. The layer contained one feature for each cluster, identifying only the county at the center of the cluster.
@@ -274,21 +274,24 @@ SaTScan produced three outputs:
 
 We compared our results to the original publication, data files provided by the author, and the number of clusters for GEE models.
 We discovered that the original study most likely conceptualized COVID-19 clusters as the local relative risk of the county at the center of the cluster.
-Counties inside of a cluster but not at its center were excluded in the original study, and assigned the lowest risk category.
+This conceptualization excluded all but the center county of each cluster and assigned the other counties to the lowest risk category.
 Additionally, the SpatialEpi package did not calculate relative risk.
 
-Therefore, we changed our conceptualization of COVID-19 clusters to include all counties within any cluster.
+Therefore, we changed our conceptualization of COVID-19 clusters to include all counties within any cluster and to calculate relative risk for localities (counties) and clusters.
 We calculated the local relative risk to investigate intra-cluster variations and created a map showing the relative risk score of each county.
-We created a list of cluster IDs from the SpatialEpi output in order to identify all counties within a cluster and classify their risk.
-We then joined this information to the geographic layer of counties and calculated the relative risk score for each cluster on a scale from 1 to 6.
-This approach left `null` data for all counties outside of a cluster.
+To calculate the cluster relative risk, we created a list of unique cluster IDs and extracted the counties contained within each cluster from SpatialEpi output.
+We combined these counties with their geographic, demographic, and COVID data to calculate and visualize cluster relative risk, classified on a scale from 1 to 6.
+This approach left `null` data for all counties outside of any cluster.
 We inspected the original author’s GEE input data to determine how to classify these counties, and accordingly assigned them to the 1 class.
 
 At this point we considered the original purpose of calculating clusters and relative risk classes, which was to control for spatial dependence within states and COVID-19 hotspots.
 In order to better understand how the original research used the Kulldorff spatial scan statistic, we decided that additional data visualizations would improve our understanding of the spatial patterns and better illustrate the differences in results.
 We created maps visualizing the spatial clusters of COVID-19 incidence based on the output of SpatialEpi and SaTScan.
 Since the local relative risk classification divided COVID-19 clusters into different classes, we also decided to calculate a cluster-based relative risk score similar to that of the SaTScan software.
-We re-classified each county based on this cluster relative risk and recalculated the generalized estimating equations using this alternative conceptualization of COVID-19 risk.
+We then re-classified each county based on this cluster relative risk and recalculated the generalized estimating equations using this alternative conceptualization of COVID-19 risk.
+
+After finding our results differed from the original publication, we sought to confirm whether differences could be caused by the computational environment.
+Therefore, we loaded data provided by the original author into R and used this original data as input to the GEE models.
 
 ## Reproduction result
 
@@ -378,16 +381,20 @@ The significance of some of the results also changed: the percent of people with
 
 ## Discussion
 
-Our reproduction of the original study was partially successful, leading to similar, but inexact results compared to the original study. The results suggest support for the conclusions of the original study, but also emphasize the importance of reproduction studies to comconcerns regarding
+Our reproduction of the original study was partially successful, leading to similar, but inexact results compared to the original study.
+A portion of the inexactitude may be attributed to differences in the computational environments.
+However, we have also reanalyzed the study and tested its robustness by changing some research parameters.
+Our results suggest support for the conclusions of the original study, but also emphasize the importance of reproduction studies to understand the full details of the research design, to evaluate internal validity, and to test for uncertainty and robustness to key parameters.
 
 The choropleth map we made in the **first part** of the reproduction analysis closely resembles that of the original study, confirming the equivalence of our dependent variable with that of the original study.
 Both maps revealed that COVID-19 cases were distributed unevenly across space.
 In particular, cases were more prevalent in the southern part of the country, in the metropolitan areas of the northeast, Chicago, and California, and in some rural areas, including eastern Washington, New Mexico, and Iowa.
-As an improvement to this part of the analysis, we visualized the spatial distribution of the percentages of population with disability in each county.
-Doing so complements Chakraborty's treatment of the census data, in which he went straight into the bivariate analyses instead of examining the characteristics of these data first.
-The map shows that many counties in the northeast, northwest corner of the country as well as in the south obtain a relatively higher percentages of disability population.
+Prior to Chakaraborty's bivariate analysis of disability and COVID-19 incidence, we also mapped the spatial distribution of disability.
+This spatial visual analysis reveals many regions in which disability rates are high but COVID-19 incidence was still low, including rural New England, Appalacia, and northern Michigan.
+Conversely, many hotspots of COVID-19 incidence had low rates of disability, including metropolitan New England, South Florida, and Chicago.
+The two spatial distributions help explain the negative bivariate relationship between disability rates and COVID-19 incidence.
 
-The summary statistics for the **second part** of the reproduction analysis matched perfectly with those of the original study.
+The summary statistics for the **second part** of the reproduction analysis matched perfectly with those of the original study, confirming that the reproduction uses identical original data.
 The Pearson's correlation coefficient closely resembled the original result, indicating a successful but inexact reproduction.
 The differences in magnitude could be attributed to differences in the computational environments.
 Nevertheless, our results validated Chakraborty's results by displaying a relatively weak but significantly negative correlation between COVID-19 incidence and the overall disability percentages in the country.
@@ -410,6 +417,8 @@ This difference is greater for the larger clusters, e.g. those of in the south.
 
 In the **third part** of our reproduction analysis, the results from each the 5 GEE models were mostly consistent with Chakraborty's.
 We found that 13 of 17 independent variables matched the direction and significance levels of the original study.
+
+**geepack** resulted in slightly different GEE results than the original study using the original data, suggesting differences in the computational environments with regard to calculating Z scores and fitting generalized linear models.
 
 We confirmed support for Chakraborty's conclusion that controlling for spatial clustering, although the overall disability percentage is negatively associated with confirmed COVID-19 cases, intra-categorical analysis reveals that socio-demographically disadvantaged PwDs were significantly over-represented in counties with higher COVID-19 incidence.
 We found the same direction for each independent variable of intra-categorical disability and COVID-19 incidence.

@@ -40,7 +40,7 @@ Second, Chakraborty’s study has been influential in the academia; it has been 
 
 Third, Chakraborty’s original study is not reproducible.
 Therefore, transforming it into a reproducible study by publishing a compendium could increase its accessibility, transparency, and potential impact.
-More importantly, among the 77 articles on COVID-19 and disability, we found only 32 of them have published some form of supplementary materials (7 provided raw data, 10 provided processed data, and 16 provided survey instruments or interview guides).
+More importantly, among the 76 articles on COVID-19 and disability, we found only 40.7% of them have published some form of supplementary materials (8% provided raw data, 13.3% provided processed data, and 2.6% provided data access instructions and 21.3% provided survey instruments or interview guides).
 Few studies have provided both the raw data and intermediaries that allow others to reproduce the study and check for validity.
 Some of the supplementary materials provided information on the variables used in the study that serve as metadata of some kind, but they are not documented following the international standard.
 Accordingly, our study will also add to the paucity of reproduction studies done in this field.

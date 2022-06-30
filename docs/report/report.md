@@ -349,6 +349,7 @@ On top of that, we calculated and mapped the relative risk score for each cluste
 
 
 In the **third part** of our reproduction analysis, we implemented the GEE model (Table 2).
+
 The results of our reproduction study are mostly consistent with that of from Chakraborty's, with slight differences in the magnitude of correlation coefficients.
 The significance of some of the results also changed: the percent of people with disability who fall into none of the racial group and percent of people with disability who are Hispanics changed from being significant to non-significant whereas the percentage of disabilities between 18-34 changed from being non-significant to significant.
 
@@ -389,31 +390,37 @@ Our results suggest support for the conclusions of the original study, but also 
 The choropleth map we made in the **first part** of the reproduction analysis closely resembles that of the original study, confirming the equivalence of our dependent variable with that of the original study.
 Both maps revealed that COVID-19 cases were distributed unevenly across space.
 In particular, cases were more prevalent in the southern part of the country, in the metropolitan areas of the northeast, Chicago, and California, and in some rural areas, including eastern Washington, New Mexico, and Iowa.
-Prior to Chakaraborty's bivariate analysis of disability and COVID-19 incidence, we also mapped the spatial distribution of disability.
-This spatial visual analysis reveals many regions in which disability rates are high but COVID-19 incidence was still low, including rural New England, Appalacia, and northern Michigan.
+Prior to Chakraborty's bivariate analysis of disability and COVID-19 incidence, we also mapped the spatial distribution of disability.
+This spatial visual analysis reveals many regions in which disability rates are high but COVID-19 incidence was still low, including rural New England, Appalachia, and northern Michigan.
 Conversely, many hotspots of COVID-19 incidence had low rates of disability, including metropolitan New England, South Florida, and Chicago.
 The two spatial distributions help explain the negative bivariate relationship between disability rates and COVID-19 incidence.
 
 The summary statistics for the **second part** of the reproduction analysis matched perfectly with those of the original study, confirming that the reproduction uses identical original data.
 The Pearson's correlation coefficient closely resembled the original result, indicating a successful but inexact reproduction.
-The differences in magnitude could be attributed to differences in the computational environments.
-Nevertheless, our results validated Chakraborty's results by displaying a relatively weak but significantly negative correlation between COVID-19 incidence and the overall disability percentages in the country.
-COVID-19 incidence was also found to be higher in counties where there are higher percentages of people who are Black, Asian, Hispanic, non-Hispanic non-White, below poverty, and aged 5-34 years.
-While executing the reproduction analysis, we recognize one of the shortcomings of Chakraborty's approach where he used Pearson's correlation on variables that are non-normally distributed.
-We therefore revise this error by calculating the Spearman's correlation coefficient.
-The results indicate that biological sex might not be correlated with COVID-19 incidence rates, but other demographic factors of minority status were significantly correlated with higher COVID-19 rates at the county level.
+Differences in magnitude could be attributed to differences in the computational environments.
+Nevertheless, our results validated the original findings by displaying a relatively weak but significantly negative correlation between COVID-19 incidence and the overall disability percentages in the country.
+COVID-19 incidence was also found to be higher in counties where there are higher percentages of people with disabilities (PwDs) who are Black, Asian, Hispanic, non-Hispanic non-White, below poverty, and aged 5-34 years.
+The original study used Pearson's correlation to test bivariate relationship between variables that are non-normally distributed, and we revised this to use the nonparametric Spearman's correlation coefficient.
+Results indicate that biological sex might not be correlated with COVID-19 incidence rates, but other demographic factors of minority status were still significantly correlated with higher COVID-19 rates at the county level.
 
-**discuss differences in Spatial Scan statistic**
+Results and interpretation of the Kulldorff spatial scan statistic varied significantly between the original study and our reproduction and re-analysis with regards to selection of secondary clusters, interpretation of clusters, and relative risk scores.
+SatSCan and SpatialEpi identify the same most likely cluster, but different sets of secondary clusters.
+On one hand, SaTScan uses GINI statistics to select secondary clusters which maximize the difference between the population within clusters and the population outside of clusters, allowing for geographic overlap and finding 96 total clusters.
+The original study used this default method. On the other hand, SpatialEpi selects the most likely secondary clusters while excluding clusters with any geographic overlap, finding 135 total clusters.
+This difference of parameters and computational environment explains the two different sets of clusters.
+The different sets of secondary clusters largely agree in terms of the most likely cluster in a region and diverge in terms of overlapping, small, and less likely clusters.
 
-While comparing the results to the original study, we found that the SpatialEpi output contains more clusters than the SaTScan's output.
-Further investigation suggests that SpatialEpi algorithm does not allow clusters to overlap with each other.
-This has left many clusters with only one county.
+In addition to the computational differences, the original study classified COVID risk used a local relative risk score for the county at the center of each cluster. Considering the relatively small number of clusters (102) compared to counties (3108), this method implies that the majority counties in each state are classified as one low-risk cluster for the GEE analysis, and the remaining 53 clusters were composed of just a few counties at the centers of various COVID hotspots.
+When we extended the interpretation of clusters to use the local relative risk score of any county within a cluster (figure 5), we find significantly more variance in COVID risk within states, resulting in 139 unique GEE clusters.
+However, this conceptualization apparently created GEE clusters defined in part by an ordinal classification of the dependent variable-- COVID incidence.
+Considering that the original motivation for using GEE models was to account for spatial dependence within states (accounting for COVID response policy) and within COVID hotspots (accounting for the uneven geographic diffusion of the pandemic).
+Therefore, a cluster-based relative risk classification seemed more appropriate than a local county-based relative risk classification, by applying the same risk level to the entire COVID cluster and allowing the GEE models to analyze variance within the clusters.
+However, many of the most likely clusters extend across multiple states (see Figure 6, especially the southern states from Louisiana to South Carolina).
+This resulted in creation of GEE clusters composed of every county within a state, amounting to 111 unique GEE clusters overall.
 
-Prior to the running the GEE model, we visualized and compared the classified relative risk of COVID-19 clusters using Chakraborty's original approach and our own approach respectively.
-While Chakraborty only calculated the relative risk score for the center of each cluster, we calculated it for each county in the cluster.
-The maps reveal that our approach more comprehensively represented the intra-cluster variation of COVID-19 risk.
-The original study appears to have classified all counties in COVID-19 clusters as low-risk except for the county at the center of each cluster.
-This difference is greater for the larger clusters, e.g. those of in the south.
+Our analysis of COVID-19 clusters in the context of controlling for spatial dependence has revealed several challenges and limitations to application of Kulldorff spatial scan statistics across different computational environments.
+These include including inconsistent methods for determining secondary clusters, limitation to circular or ellipsoidal cluster shapes, inclusion of single-county clusters, and choosing a method to control for spatial dependence in COVID 19 risk without controlling for too much of the variance in the dependent variable.
+Ideally, we would have liked to use a GINI-based secondary cluster detection to classify counties by their maximum cluster-based relative risk score, but this particular conceptualization is not possible in available R packages.
 
 In the **third part** of our reproduction analysis, the results from each the 5 GEE models were mostly consistent with Chakraborty's.
 We found that 13 of 17 independent variables matched the direction and significance levels of the original study.
@@ -428,8 +435,16 @@ Differences in our results can be attributable to our different approach to clas
 Closer inspection of the clusters for the GEE models revealed a highly skewed distribution of cluster sizes, with most clusters containing very few counties and a few clusters containing 50 or more counties.
 The combination of very differing cluster sizes and use of a clustering criteria related to the dependent variable warrant further analysis with alternative approaches to controlling for spatial dependence.
 
-In sum, although some of our results differed from Chakraborty's because of the adoption of different analytical methods and the use of different computational environments, our still suggests that PwDs are experiencing multiple jeopardy based on the convergence of their disability, racial/ethnic minority, and poverty status.
-However, we reiterate Chakraborty's cautious interpretation of the results, which were based on aggregate statistics at the county level and on statistical methods which produce approximate estimates, not inferences.
+With regards to the **overall conclusions** and **research design**, we agree with the original author's cautious interpretation emphasizing "county-level associations" and the need for "additional data and analysis".
+There are at least four sources of uncertainty in this study: ecological fallacy, scale dependency, modifiable areal unit problem, and variable measurement.
+There is a risk of ecological fallacy with this research design, whereby county-level statistics for the whole population should not be interpreted as definitive inferential proof of individual-level relationships, especially for populations comprising no more than one third of any county.
+There is a real possibility that the study findings are scale-dependent, but it is also impossible to replicate the study using a finer spatial support without also limiting the extent to one or more adjacent states with sub-county data on COVID-19.
+The modifiable areal unit problem (MAUP) may also be a source of uncertainty, especially when considering the variable population sizes of counties, which all carry equal weights in the analysis.
+Finally, there are well-known problems with the testing and reporting of COVID-19 cases across time and space during the pandemic in the United States, and there is also uncertainty in American Community Survey (ACS) data, particularly when cross-tabulating multiple demographic characteristics.
+This study partially mitigates measurement uncertainty by aggregating data across time (more than one year of the pandemic and the five-year ACS estimate) and into relatively large geographic units (counties).
+
+In sum, although some of our results differed from Chakraborty's because of differences in analytical methods, conceptualizations, and computational environments, our reproduction results still suggest that PwDs are likely experiencing multiple jeopardy based on the convergence of their disability, racial/ethnic minority, and poverty status.
+We reiterate Chakraborty's carefully limited interpretation emphasizing county-level relationships and the need for additional data and research, because the estimated relationship at the county level may not hold at the individual level.  interpretation of the results, which were based on aggregate statistics at the county level and on statistical methods which produce approximate estimates, not inferences.
 Further work is needed to reliably infer relationships between minority PwDs and COVID-19 morbidity and mortality, especially at finer geographic scales.
 
 ## References

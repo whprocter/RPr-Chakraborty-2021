@@ -422,10 +422,26 @@ Our analysis of COVID-19 clusters in the context of controlling for spatial depe
 These include including inconsistent methods for determining secondary clusters, limitation to circular or ellipsoidal cluster shapes, inclusion of single-county clusters, and choosing a method to control for spatial dependence in COVID 19 risk without controlling for too much of the variance in the dependent variable.
 Ideally, we would have liked to use a GINI-based secondary cluster detection to classify counties by their maximum cluster-based relative risk score, but this particular conceptualization is not possible in available R packages.
 
-In the **third part** of our reproduction analysis, the results from each the 5 GEE models were mostly consistent with Chakraborty's.
-We found that 13 of 17 independent variables matched the direction and significance levels of the original study.
+In the **third part** of our reproduction analysis, the results from each the five GEE models were largely consistent with Chakraborty's, suggesting robustness to modelling decisions with regards to GEE clusters.
+However, a few independent variables exhibited instability across models, suggesting weak or spurious relationships.
+We ultimately modeled three different scenarios:
+1. We reproduced the original analysis with the original data while changing only the computational environment to geepack in R.
+2. We reproduced the Kulldorff spatial scan in R and reanalyzed the data by applying a local relative risk score to every county within any cluster.
+3. We reproduced the Kulldorff spatial scan in R and reaanalyzed the data by applying a cluster relative risk score to every county in a cluster.
 
-**geepack** resulted in slightly different GEE results than the original study using the original data, suggesting differences in the computational environments with regard to calculating Z scores and fitting generalized linear models.
+We found that reproducing the analysis with **geepack** in resulted in slightly different GEE results than the original study, even when using data provided by the author from the original study.
+This suggests that the computational environments differ in their implementation of GEE, or we have incorrectly specified one or more GEE parameters.
+Still, the coefficients trend in the same direction with similar magnitudes, with the exception of the 35-64 age group.
+In our model assigning using local relative risk scores for all counties in clusters, the coefficients are weaker while more of the variance in COVID-19 incidence is accounted for in the GEE clustering method.
+When we moved to cluster-level relative risk scores, the coefficients again performed more similarly to the original publication.
+Although the results of the original publication and the cluster-level relative risk model version are similar, the model conceptualization is very different.
+The original model excludes most counties from COVID-19 hotspots, assigning them the lowest level of risk and inadvertently avoiding the problem of controlling for too much variance in COVID-19 through definition of clusters.
+Conversely, the reanalyzed cluster-based model includes most counties in COVID-19 hotspots at the same risk level.
+The results are similar because in both scenarios the majority of counties in each state are aggregated into the same cluster.
+
+Comparing across each version of the model, we observed that most variables exhibit stability in the direction and magnitude of the coefficients.
+However, some variables are less stable-- especially the black and other race categories, Hispanic ethnicity, and some age groups less affected by severe COVID-19 cases (18-34 and 35-64).
+Therefore, these variables are more sensitive to the design of GEE clusters, warranting further investigation to evaluate the internal validity of these relationships with regard to the model assumptions of GEE.
 
 We confirmed support for Chakraborty's conclusion that controlling for spatial clustering, although the overall disability percentage is negatively associated with confirmed COVID-19 cases, intra-categorical analysis reveals that socio-demographically disadvantaged PwDs were significantly over-represented in counties with higher COVID-19 incidence.
 We found the same direction for each independent variable of intra-categorical disability and COVID-19 incidence.

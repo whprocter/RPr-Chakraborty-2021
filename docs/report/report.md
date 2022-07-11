@@ -10,8 +10,7 @@ Version 1.1 | Created Jul 7, 2021 | Last Updated June 16, 2022
 
 ## Abstract
 
-Chakraborty (2021) investigates the relationships between COVID-19 rates and demographic characteristics of people with disabilities by county in the lower 48 states.
-The study aims to examine public concern that persons with disabilities (PwDs) face disproportionate challenges due to COVID-19.
+Chakraborty (2021) investigates the relationships between rates of COVID-19 cases and socio-demographic characteristics of people with disabilities by county in the lower 48 states.
 To investigate this, Chakraborty examines the statistical relationship between confirmed county-level COVID-19 case rates and county-level socio-demographic and disability variables.
 Specifically, Chakraborty tests county-level bivariate correlations between COVID-19 incidence against the percentage of disability and socio-demographic category, with a separate hypothesis and model for each subcategory within disability, race, ethnicity, age, and biological sex.
 To control for differences between states and geographic clusters of COVID-19 outbreaks, Chakraborty uses five generalized estimating equation (GEE) models to predict the relationship and significance between COVID-19 incidence and disability subgroups within each socio-demographic category while considering inter-county spatial clusters.
@@ -48,9 +47,11 @@ There are multiple models being tested within each of the two hypotheses. That i
 ### Original study design
 
 The original study is **observational**, with the **exploratory** objective of determining "whether COVID-19 incidence is significantly greater in counties containing higher percentages of socio-demographically disadvantaged [people with disabilities], based on their race, ethnicity, poverty status, age, and biological sex" (Chakraborty 2021).
+The independent variables are derived from Census crosstabulations between people with disabilities and different socio-demographic categories.
+For example, the independent variable `white people with disabilities` is the number of people with disabilities identifying as one race (white) divided by the total number of people for whom disability and race status are determined.
 This exploratory objective is broken down into five implicit hypotheses that each of the demographic characteristics of people with disabilities is associated with higher COVID-19 incidence rates.
 
-The **spatial extent** of the study are the 49 contiguous states in the U.S.
+The **spatial extent** of the study are the 48 contiguous states and Washington D.C. in the U.S.
 The **spatial scale** of the analysis is at the county level.
 Both COVID-19 incidence rates and demographic variables are all measured at the county level.
 The **temporal extent** of the COVID-19 data ranges from 1/22/2020 (when John Hopkins began collecting the data) to 8/1/2020 (when the data was retrieved for the original study).
@@ -58,7 +59,7 @@ The data on disability and sociodemographic characteristics come from the U.S. C
 
 There is no **randomization** in the original study.
 
-The study was originally conducted using SaTScan software (unspecified version) to implement the spatial scan statistic.
+The study was originally conducted using SaTScan software (citing version 9.6) to implement the spatial scan statistic.
 Other software are not specified in the publication; however data files and communication with the author show that spatial analysis and mapping was conducted in ArcGIS and statistics were calculated in SPSS.
 
 Our understanding of the original study design and our plan for the reproduction analysis are visualized in the workflow diagram (Figure 1).
@@ -214,7 +215,18 @@ The county-level Pearson's rho correlation coefficient is used to test associati
 As this is a parametric test, normality should be tested.
 A separate hypothesis is formulated for each sociodemographic disability characteristic.
 
+> H1.1: There is no correlation between the COVID-19 incidence rate and the percentage of people with disabilities at the county level.
+> H1.2: There is no correlation between the COVID-19 incidence rate and the percentage of white people with disabilities at the county level.
+...
+> H1.18 There is no correlation between the COVID-19 incidence rate and the percentage of female people with disabilities at the county level.
+
 The generalized estimating equation (GEE) models are used to test association between intra-categorical rates of disability and COVID-19 incidence rates while accounting for spatial clustering.
+Although the original publication does not clearly state hypotheses for each model, we may formulate null as follows:
+
+> H2.1: The percentages of people with disability, categorized by race, are not associated with COVID-19 incidence at the county level when accounting for the state and risk level of COVID-19 clusters.
+...
+> H2.5: The percentages of people with disability, categorized by gender, are not associated with COVID-19 incidence at the county level when accounting for the state and risk level of COVID-19 clusters.
+
 As specified by the author, "GEEs extend the generalized linear model to accommodate clustered data, in addition to relaxing several assumptions of traditional regression (i.e., normality)".
 Additionally, the author notes that "clusters of observations must be defined based on the assumption that observations within a cluster are correlated while observations from different clusters are independent."
 Following Chakraborty, all five GEE models will be specified with exchangeable correlation matrices, gamma distributions, and logarithmic link function.

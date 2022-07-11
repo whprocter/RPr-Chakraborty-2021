@@ -36,12 +36,12 @@ COVID-19; Disability; Intersectionality; Race/ethnicity; Poverty; Reproducibilit
 
 ## Study design
 
-The reproduction study will try to implement the original study as closely as possible to reproduce the map of county level distribution of COVID-19 incidence rate, the summary statistics and bivariate correlation for disability characteristics and COVID-19 incidence, and the generalized estimating equations.
+The reproduction study will try to implement the original study as closely as possible to reproduce the map of county level distribution of COVID-19 incidence rate, the summary statistics and bivariate correlation for disability characteristics and COVID-19 incidence, and the effect estimates of the generalized estimating equations.
 Our two confirmatory hypotheses are that we will be able to exactly reproduce Chakraborty's results as presented in figure 1, table 1, and table 2 of Chakraborty (2021). Stated as null hypotheses:
 
 > H1: There is a less than perfect match between Chakraborty's bivariate correlation coefficient for each disability/sociodemographic variable and COVID-19 incidence rate and our bivariate correlation coefficient for each disability/sociodemographic variable and COVID-19 incidence rate.
 
-> H2: There is a less than perfect match between Chakraborty's beta coefficient for the GEE of each disability/sociodemographic variable and our beta coefficient for the GEE of each disability/sociodemographic variable.
+> H2: There is a less than perfect match between Chakraborty's GEE-based beta coefficient estimates for the of each disability/sociodemographic variable and our GEE-based beta coefficient estimates for the GEE of each disability/sociodemographic variable.
 
 There are multiple models being tested within each of the two hypotheses. That is, H1 and H2 both encompass five models, including one for each dimension of socio-demographics: race, ethnicity, poverty status, age, and biological sex.
 
@@ -93,18 +93,19 @@ Details on the data collection can be found at [https://www.census.gov/topics/he
 
 Although the data specifications are described in detail in the original study, none of the data from the original study is provided in an online repository.
 
-We received the COVID-19 case data from 8/1/2020 from the author, as there is no readily apparent way to access archived data from the Johns Hopkins University Center for Systems Science Engineering database.
+We received the COVID-19 case data through 8/1/2020 from the author, as there is no readily apparent way to access archived data from the Johns Hopkins University Center for Systems Science Engineering database.
 The COVID-19 case data expresses cumulative count of reported COVID-19 from 1/22/2020 to 8/1/2020. The data can be found at the John Hopkins CCSE COVID-19 Data Repository ([https://github.com/CSSEGISandData/COVID-19](https://github.com/CSSEGISandData/COVID-19)).
 However, archived data only provides summaries at the national scale.
 
-The 2018 ACS 5 year estimates for disabilities can be accessed from the U.S. Census website or through the Census API.
+We accessed the 2018 ACS 5 year estimates for disabilities from the U.S. Census website. The data is also available through the Census API.
 
 ## Variables
 
 All variables in this study were derived from secondary data.
-There are no experimentally manipulated variables in this experiment.
-Eighteen independent variables, a percentage of total disabled persons per county and seventeen 'disaggregated' categories that break down socio-demographic characteristics of the disabled population.
-COVID-19 incidence rate can be seen as the dependent variables.
+There were no experimentally manipulated variables in this experiment.
+COVID-19 incidence rate was used as the dependent variable.
+Following the original study, we examined eighteen independent variables, a percentage of total disabled persons per county and seventeen 'disaggregated' categories that break down socio-demographic characteristics of the disabled population.
+
 
 The socio-demographic variables are broken down into the following categories.
 Their table code from the ACS data has been included in this documentation
@@ -155,7 +156,7 @@ Non-Hispanic non-White, Below poverty level and Above poverty level are calculat
 Before conducting the GEE, all independent variables are normalized into z-scores.
 
 For the GEE, two different clustering scores are assigned to each county.
-The first clustering ID is just a categorical variable determined by the counties' state.
+The first clustering ID is a categorical variable determined by the counties' state.
 The second clustering ID is a relative risk score calculated by identifying spatial clusters from a spatial scan statistic based on the Poisson Model.
 We will calculate the clusters using the SpatialEpi package in R.
 We then calculate the relative risk score for each county using the formula: ``(rate of cases within the cluster) / (rate of cases outside the cluster)``.
@@ -236,7 +237,7 @@ There is no need for a **contingency plan** in this study.
 
 ### Planned differences from the original study
 
-We plan to implement the analysis to the greatest extent possible in R / RStudio, using the geepack package for the generalized estimating equation and SpatialEpi package for the spatial scan statistics, whereas the original study was conducted using ArcGIS (Desktop v 10.7), SPSS, and SaTScan (v9.6).
+We implemented the analysis to the greatest extent possible in R / RStudio, using the geepack package for the generalized estimating equation and SpatialEpi package for the spatial scan statistics, whereas the original study was conducted using ArcGIS (Desktop v 10.7), SPSS, and SaTScan (v9.6).
 
 We will plan to check the normality of our distribution of our independent variables before correlations. If they are not normal, we may choose to calculate the bivariate correlation using a Spearman's Rho.
 

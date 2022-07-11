@@ -70,25 +70,25 @@ Our understanding of the original study design and our plan for the reproduction
 
 ### Existing data and data exploration
 
-This registration is based upon a thorough reading of the original research article, searching and calculating summary statistics for American Community Survey data, accessing the Johns Hopkins Coronavirus Resource Center, and acquiring some additional information and data from the original author, Jay Chakraborty.
+This registration was based upon a thorough reading of the original research article, searching and calculating summary statistics for American Community Survey data, accessing the Johns Hopkins Coronavirus Resource Center, and acquiring some additional information and data from the original author, Jay Chakraborty.
 Specifically, Chakraborty informed us of the American Community Survey data table names used in the study (S1810 for demographic categories and disability status and C18130 for poverty status and disability status), provided Johns Hopkins county-level Coronavirus data downloaded on August 1, 2020, outputs from SaTScan spatial clustering analysis, and inputs for the GEE models.
 The data provided by the author is not available in an online repository, but we will include the data in our research compendium with permission of the author.
 
-In our reproduction attempt, we will use publicly available American Community Survey data downloaded directly from the Census API using the tidycensus package for R.
-We will use Johns Hopkins Coronavirus data provided by the author because it is not possible to download that dynamic dataset in an archived form as it existed on August 1, 2020.
+In our reproduction attempt, we used publicly available American Community Survey data downloaded directly from the Census API using the tidycensus package for R.
+We used Johns Hopkins Coronavirus data provided by the author because it is not possible to download that dynamic dataset in an archived form as it existed on August 1, 2020.
 Johns Hopkins still provides aggregated COVID-19 incidence rate data, but does not publicly provide archived data identical to those used in the original study.
-This pre-analysis plan is based on information from the original paper, correspondence with the original author (as described above), viewing metadata and data sources provided by the author and the U.S. Census, and calculating summary statistics.  
+This pre-analysis plan was based on information from the original paper, correspondence with the original author (as described above), viewing metadata and data sources provided by the author and the U.S. Census, and calculating summary statistics.  
 
-*Disclaimer*: For demonstration purposes, we are registering this plan *after* running the full analysis in R-studio, based upon our documented plan and knowledge of the study prior to completing the analysis.
+*Disclaimer*: For demonstration purposes, we were registering this plan *after* running the full analysis in R-studio, based upon our documented plan and knowledge of the study prior to completing the analysis.
 
 ### Data collection and spatial sampling
 
-The study exclusively uses secondary data sources.
-The study does not sample from the secondary data sources.
+The study exclusively used secondary data sources.
+The study did not sample from the secondary data sources.
 
-The published results are based of COVID-19 cases reported at the county-level and this is not a sampled dataset.
-The disability data from the ACS are collected at the county level.
-Details on the data collection can be found at [https://www.census.gov/topics/health/disability/guidance/data-collection-acs.html](https://www.census.gov/topics/health/disability/guidance/data-collection-acs.html) and details on sampling methods can be found at [https://www.census.gov/programs-surveys/acs/technical-documentation/code-lists.html](https://www.census.gov/programs-surveys/acs/technical-documentation/code-lists.html).
+The published results were based on COVID-19 cases reported at the county-level and this is not a sampled dataset.
+The disability data from the ACS were collected at the county level.
+Details on the data collection could be found at [https://www.census.gov/topics/health/disability/guidance/data-collection-acs.html](https://www.census.gov/topics/health/disability/guidance/data-collection-acs.html) and details on sampling methods could be found at [https://www.census.gov/programs-surveys/acs/technical-documentation/code-lists.html](https://www.census.gov/programs-surveys/acs/technical-documentation/code-lists.html).
 
 ## Data description
 
@@ -320,11 +320,11 @@ In addition, we proceeded to create a map that illustrated the percentages of po
 
 The **second part** of our reproduction analysis focused on computing the summary statistics for variables analyzed and the bivariate correlations with county COVID-19 incidence rates.
 Our summary statistics and Pearson's correlation coefficients were consistent with those of Chakraborty's, but differ slightly in magnitude.
-Since the Pearson's correlation should only be used on variables with normal distribution, we calculated the Spearman's Rho correlation coefficient (Table 1).
+Since the Pearson's correlation should only be used on variables with normal distribution, we calculated the Spearman's Rho correlation coefficient (Table 2).
 There seems to be more changes to the result in terms of their magnitude and direction.
 For example, while the Pearson's correlation coefficient shows a weak positive relationship between "COVID-19 incidence rate" and "Percentages with disability that are Native American" and "Percentages with disability that are female", these turned into weak negative relationships in Spearman's correlation coefficient.
 
-*Table 1*: Spearman's Ranked Correlation Coefficient between COVID-19 Incidence and Disability Subgroups
+*Table 2*: Spearman's Ranked Correlation Coefficient between COVID-19 Incidence and Disability Subgroups
 
 |Variable               |    rho|      t|     p|
 |:----------------------|------:|------:|-----:|
@@ -361,37 +361,37 @@ On top of that, we calculated and mapped the relative risk score for each cluste
 *Figure 6: Cluster based relative risk score of reproduction analysis*
 
 
-In the **third part** of our reproduction analysis, we implemented the GEE model (Table 2).
+In the **third part** of our reproduction analysis, we implemented the GEE model (Table 3).
 
 The results of our reproduction study are mostly consistent with that of from Chakraborty's, with slight differences in the magnitude of correlation coefficients.
 The significance of some of the results also changed: the percent of people with disability who fall into none of the racial group and percent of people with disability who are Hispanics changed from being significant to non-significant whereas the percentage of disabilities between 18-34 changed from being non-significant to significant.
 
-*Table 2*: Globalized Estimating Equation Model Outputs
+*Table 3*: Globalized Estimating Equation Model Outputs
 
-|                         | Estimate| Std.err|     Wald| Pr(>&#124;W&#124;)|
-|:------------------------|--------:|-------:|--------:|------------------:|
-|Race Intercept           |    7.370|   0.083| 7813.513|              0.000|
-|z_white_pct              |   -0.163|   0.010|  275.756|              0.000|
-|z_black_pct              |    0.104|   0.011|   88.678|              0.000|
-|z_native_pct             |    0.036|   0.008|   21.126|              0.000|
-|z_asian_pct              |    0.039|   0.008|   21.766|              0.000|
-|z_other_pct              |    0.010|   0.010|    1.029|              0.310|
-|Ethnicity Intercept      |    7.360|   0.083| 7769.795|              0.000|
-|z_non_hisp_white_pct     |   -0.190|   0.012|  247.675|              0.000|
-|z_hisp_pct               |    0.005|   0.027|    0.032|              0.857|
-|z_non_hisp_non_white_pct |    0.105|   0.011|   92.967|              0.000|
-|Poverty Status Intercept |    7.382|   0.074| 9974.919|              0.000|
-|z_bpov_pct               |    0.109|   0.018|   35.408|              0.000|
-|z_apov_pct               |   -0.194|   0.014|  204.920|              0.000|
-|Age Intercept            |    7.422|   0.077| 9253.948|              0.000|
-|z_pct_5_17               |    0.028|   0.010|    7.132|              0.008|
-|z_pct_18_34              |    0.048|   0.018|    6.945|              0.008|
-|z_pct_35_64              |   -0.014|   0.020|    0.481|              0.488|
-|z_pct_65_74              |   -0.073|   0.017|   17.382|              0.000|
-|z_pct_75                 |   -0.079|   0.013|   36.943|              0.000|
-|Biological Sex Intercept |    7.421|   0.077| 9279.250|              0.000|
-|z_male_pct               |   -0.222|   0.016|  201.110|              0.000|
-|z_female_pct             |    0.121|   0.017|   49.606|              0.000|
+|                         | Estimate| Std.err|     Wald| Pr(>&#124;W&#124;)| Orig Coef| Coef Diff|
+|:------------------------|--------:|-------:|--------:|------------------:|---------:|---------:|
+|Race Intercept           |    7.370|   0.083| 7813.513|              0.000|      7.11|      0.26|
+|z_white_pct              |   -0.163|   0.010|  275.756|              0.000|     -0.20|     -0.04|
+|z_black_pct              |    0.104|   0.011|   88.678|              0.000|      0.11|     -0.01|
+|z_native_pct             |    0.036|   0.008|   21.126|              0.000|      0.05|     -0.02|
+|z_asian_pct              |    0.039|   0.008|   21.766|              0.000|      0.08|     -0.04|
+|z_other_pct              |    0.010|   0.010|    1.029|              0.310|      0.08|     -0.07|
+|Ethnicity Intercept      |    7.360|   0.083| 7769.795|              0.000|      7.19|      0.17|
+|z_non_hisp_white_pct     |   -0.190|   0.012|  247.675|              0.000|     -0.24|     -0.05|
+|z_hisp_pct               |    0.005|   0.027|    0.032|              0.857|      0.12|     -0.11|
+|z_non_hisp_non_white_pct |    0.105|   0.011|   92.967|              0.000|      0.12|     -0.01|
+|Poverty Status Intercept |    7.382|   0.074| 9974.919|              0.000|      7.18|      0.20|
+|z_bpov_pct               |    0.109|   0.018|   35.408|              0.000|      0.15|     -0.04|
+|z_apov_pct               |   -0.194|   0.014|  204.920|              0.000|     -0.27|     -0.07|
+|Age Intercept            |    7.422|   0.077| 9253.948|              0.000|      7.24|      0.18|
+|z_pct_5_17               |    0.028|   0.010|    7.132|              0.008|      0.05|     -0.02|
+|z_pct_18_34              |    0.048|   0.018|    6.945|              0.008|      0.04|      0.01|
+|z_pct_35_64              |   -0.014|   0.020|    0.481|              0.488|     -0.03|     -0.01|
+|z_pct_65_74              |   -0.073|   0.017|   17.382|              0.000|     -0.09|     -0.02|
+|z_pct_75                 |   -0.079|   0.013|   36.943|              0.000|     -0.11|     -0.03|
+|Biological Sex Intercept |    7.421|   0.077| 9279.250|              0.000|      7.22|      0.20|
+|z_male_pct               |   -0.222|   0.016|  201.110|              0.000|     -0.30|     -0.08|
+|z_female_pct             |    0.121|   0.017|   49.606|              0.000|      0.15|     -0.03|
 
 ## Discussion
 

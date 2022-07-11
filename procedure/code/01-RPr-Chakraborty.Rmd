@@ -262,9 +262,20 @@ state <- filter(state, !STATEFP %in% c("02", "15", "72"))
 
 ```{r map covid rates}
 
-tm1 <- tm_shape(acs_covid) +
+bbox_new <- st_bbox(acs_covid)
+
+xrange <- bbox_new$xmax - bbox_new$xmin
+yrange <- bbox_new$ymax - bbox_new$ymin
+
+bbox_new[3] <- bbox_new[3] + (0.25 * xrange)
+bbox_new[4] <- bbox_new[4] + (0.2 * yrange)
+
+bbox_new <- bbox_new %>%
+  st_as_sfc()
+
+tm1 <- tm_shape(acs_covid, bbox = bbox_new) +
   tm_polygons("covid_rate",
-    title = "COVID-19 Cases per 100,000",
+    title = "Count",
     style = "quantile",
     border.alpha = .2,
     lwd = 0.2,
@@ -272,7 +283,10 @@ tm1 <- tm_shape(acs_covid) +
   ) +
   tm_shape(state) +
   tm_borders("grey", lwd = .8) +
-  tmap_options(check.and.fix = TRUE)
+  tmap_options(check.and.fix = TRUE) +  
+  tm_layout(legend.position = c("left", "bottom"),
+  title= "Cumulative COVID-19 Cases per 100,000 (01/22/2020 ~ 08/01/2020)", 
+  title.position = c('left', 'top'))
 
 tm1
 

@@ -120,7 +120,12 @@ acs_pov <- get_acs(
   cache_table = TRUE
 )
 
-
+# Query state geographic data
+state <- get_acs(geography = "state", 
+                 variables = c("Total Population" = "B01001_001"),
+                 year = 2018, 
+                 geometry = TRUE,
+                 keep_geo_vars = TRUE)
 ```
 
 ### Filtering and joining the ACS data
@@ -130,9 +135,11 @@ This accomplishes the step 1 and 3 of the workflow diagram
 
 # Remove Alaska, Hawaii & Puerto Rico
 acs <- filter(acs, !STATEFP %in% c("02", "15", "72"))
+state <- filter(state, !STATEFP %in% c("02", "15", "72"))
 
 # Join poverty data to disability data
 acs <- left_join(acs, acs_pov, by = "GEOID")
+rm(acs_pov)
 
 ```
 
@@ -142,10 +149,16 @@ acs <- left_join(acs, acs_pov, by = "GEOID")
 Optionally, you may save the raw data to data/raw/public/acs.gpkg
 
 ```{r save ACS data, message = F, eval = FALSE}
-
 # Save downloaded acs data to acs.gpkg
-write_sf(acs, here("data", "raw", "public", "acs.gpkg"))
-
+write_sf(
+    acs,
+    here("data", "raw", "public", "acs.gpkg"),
+    layer = "acs")
+write_sf(
+    state,
+    here("data", "raw", "public", "acs.gpkg"),
+    layer = "state"
+)
 ```
 
 ## Load raw data
@@ -154,7 +167,8 @@ Optionally, you may load the raw data and begin processing here
 
 ```{r load ACS data, message = F}
 
-acs <- read_sf(here("data", "raw", "public", "acs.gpkg"))
+acs <- read_sf(here("data", "raw", "public", "acs.gpkg"), layer = "acs")
+state <- read_sf(here("data", "raw", "public", "acs.gpkg"), layer = "state")
 
 ```
 
@@ -221,8 +235,6 @@ covid <- select(covid,
 covid$covid_rate <- covid$cases / covid$pop * 100000
 covid_table <- st_drop_geometry(covid)
 
-# It might be wise to calculate our own X and Y using centroids
-
 ```
 
 ### Join COVID data to ACS data
@@ -230,11 +242,13 @@ This accomplishes the step 5 of the workflow diagram
 
 ```{r join data and reorder columns}
 
-# Join poverty data to acs data
-covid_rate_table <- select(covid_table, fips, covid_rate)
-acs_covid <- left_join(acs_derived, covid_rate_table, by = c("geoid" = "fips"))
+# Join COVID data to acs data
+acs_covid <- left_join(acs_derived,
+  select(covid_table, fips, covid_rate),
+  by = c("geoid" = "fips")
+)
 
-# move covid_rate prior to percentages
+# move covid_rate column prior to disability percentages
 acs_covid <- select(
   acs_covid, geoid, statefp, county, county_st, covid_rate,
   everything()
@@ -244,21 +258,6 @@ acs_covid <- select(
 
 
 ## Map Covid Rates
-
-
-```{r get state geometry}
-
-state <- get_acs(geography = "state", 
-                 variables = c("Total Population" = "B01001_001"),
-                 year = 2018, 
-                 geometry = TRUE,
-                 keep_geo_vars = TRUE)
-
-state <- filter(state, !STATEFP %in% c("02", "15", "72"))
-
-```
-
-
 
 ```{r map covid rates}
 
@@ -273,20 +272,22 @@ bbox_new[4] <- bbox_new[4] + (0.2 * yrange)
 bbox_new <- bbox_new %>%
   st_as_sfc()
 
-tm1 <- tm_shape(acs_covid, bbox = bbox_new) +
+tm1 <- tm_shape(acs_covid) +
   tm_polygons("covid_rate",
-    title = "Count",
+    title = "COVID-19 Cases per 100,000\n(01/22/2020 ~ 08/01/2020)",
     style = "quantile",
     border.alpha = .2,
     lwd = 0.2,
-    palette = "YlOrBr"
+    palette = "YlOrBr",
   ) +
   tm_shape(state) +
   tm_borders("grey", lwd = .8) +
   tmap_options(check.and.fix = TRUE) +  
-  tm_layout(legend.position = c("left", "bottom"),
-  title= "Cumulative COVID-19 Cases per 100,000 (01/22/2020 ~ 08/01/2020)", 
-  title.position = c('left', 'top'))
+  tm_layout(
+    legend.position = c("left", "bottom"),
+    legend.title.size = 0.8,
+    legend.text.size = 0.5
+  )
 
 tm1
 

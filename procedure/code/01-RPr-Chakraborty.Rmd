@@ -261,17 +261,6 @@ acs_covid <- select(
 
 ```{r map covid rates}
 
-bbox_new <- st_bbox(acs_covid)
-
-xrange <- bbox_new$xmax - bbox_new$xmin
-yrange <- bbox_new$ymax - bbox_new$ymin
-
-bbox_new[3] <- bbox_new[3] + (0.25 * xrange)
-bbox_new[4] <- bbox_new[4] + (0.2 * yrange)
-
-bbox_new <- bbox_new %>%
-  st_as_sfc()
-
 tm1 <- tm_shape(acs_covid) +
   tm_polygons("covid_rate",
     title = "COVID-19 Cases per 100,000\n(01/22/2020 ~ 08/01/2020)",
@@ -301,7 +290,7 @@ tmap_save(tm1, here("results", "figures", "covid_rates.png"))
 
 tm2 <- tm_shape(acs_covid) +
   tm_polygons("dis_pct",
-    title = "Percent with Disability",
+    title = "Percent with Disability\n(ACS 2014-2018)",
     style = "quantile",
     border.alpha = .2,
     lwd = 0.2,
@@ -309,7 +298,11 @@ tm2 <- tm_shape(acs_covid) +
   ) +
   tm_shape(state) +
   tm_borders("grey", lwd = .8) +
-  tmap_options(check.and.fix = TRUE)
+  tmap_options(check.and.fix = TRUE) +
+  tm_layout(
+  legend.position = c("left", "bottom"),
+  legend.title.size = 0.8,
+  legend.text.size = 0.5)
 
 
 tm2
@@ -592,7 +585,11 @@ tm4 <- tm_shape(covid_temp) +
   tm_borders("red", lwd = .5) +
   tm_shape(state) +
   tm_borders("grey", lwd = .8) +
-  tmap_options(check.and.fix = TRUE)
+  tmap_options(check.and.fix = TRUE) + 
+  tm_layout(
+  legend.position = c("left", "bottom"),
+  legend.title.size = 0.8,
+  legend.text.size = 0.5)
 
 tm4
 
@@ -613,7 +610,11 @@ tm5 <- tm_shape(covid) +
   ) +
   tm_shape(state) +
   tm_borders("grey", lwd = .5) +
-  tmap_options(check.and.fix = TRUE)
+  tmap_options(check.and.fix = TRUE) +
+  tm_layout(
+  legend.position = c("left", "bottom"),
+  legend.title.size = 0.8,
+  legend.text.size = 0.5)
   
 
 tm5
@@ -636,7 +637,11 @@ tm3 <- tm_shape(covid) +
   ) +
   tm_shape(state) +
   tm_borders("grey", lwd = .5) +
-  tmap_options(check.and.fix = TRUE)
+  tmap_options(check.and.fix = TRUE) +
+  tm_layout(
+  legend.position = c("left", "bottom"),
+  legend.title.size = 0.8,
+  legend.text.size = 0.5)
 
 tm3
 tmap_save(tm3, here("results", "figures", "rr_reproduction_loc.png"))

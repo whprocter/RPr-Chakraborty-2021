@@ -74,7 +74,7 @@ Our understanding of the original study design and our plan for the reproduction
 
 This registration was based upon a thorough reading of the original research article, searching and calculating summary statistics for American Community Survey data, accessing the Johns Hopkins Coronavirus Resource Center, and acquiring some additional information and data from the original author, Jay Chakraborty.
 Specifically, Chakraborty informed us of the American Community Survey data table names used in the study (S1810 for demographic categories and disability status and C18130 for poverty status and disability status), provided Johns Hopkins county-level Coronavirus data downloaded on August 1, 2020, outputs from SaTScan spatial clustering analysis, and inputs for the GEE models.
-We used the data provided by Chakraborty to 1) check for the census variables to ensure that we are using the same independent variables to predict COVID-19 incidence rate. 2) compare our outputs from the gee model to evaluate how different computational environment could lead to different results. 3) experiment with the SaTScan software and learn the methodology behind to ensure that we have the correct input for gee. 
+We used the data provided by Chakraborty to 1) check for the census variables to ensure that we are using the same independent variables to predict COVID-19 incidence rate. 2) compare our outputs from the gee model to evaluate how different computational environment could lead to different results. 3) experiment with the SaTScan software and learn the methodology behind to ensure that we have the correct input for gee.
 The data provided by the author is not available in an online repository, but we will include the data in our research compendium with permission of the author.
 
 In our reproduction attempt, we used publicly available American Community Survey data downloaded directly from the Census API using the tidycensus package for R.
@@ -164,9 +164,24 @@ The first clustering ID is a categorical variable determined by the counties' st
 The second clustering ID is a relative risk score calculated by identifying spatial clusters from a spatial scan statistic based on the Poisson Model.
 We will calculate the clusters using the SpatialEpi package in R.
 We then calculate the relative risk score for each county using the formula: ``(rate of cases within the cluster) / (rate of cases outside the cluster)``.
-The relative risk score is then classified into six categories based on the estimated relative risk values (<1.0, 1.00-1.99, 2.00-2.99, 3.00-3.99, 4.00-4.99, and 5.0 or more).
+The relative risk score is then classified into six categories based on the estimated relative risk values (<1.0, 1.00-1.99, 2.00-2.99, 3.00-3.99, 4.00-4.99, and 5.0 or more). See the table 2 below for detailed explanation on the classification of relative risk score.
+
+*Table 2: Relative Risk Score Classification*
+
+|Relative Risk Values   | Relative Risk Class|            Counties|
+|:----------------------|-------------------:|-------------------:|
+|Outside of cluster     |                   1|                2170|
+|1 <= RR < 2            |                   2|                 843|
+|2 <= RR < 3            |                   3|                  84|
+|3 <= RR < 4            |                   4|                   9|
+|4 <= RR < 5            |                   5|                   2|
+|5 <= RR < 6            |                   6|                   1|
+
+
 The first clustering ID (State) and second clustering score (Classified Relative Risk) are combined to form IDs for each unique combination of state and relative risk class.
 The clustering ID's will then be joined with the American Community Survey data on disability subgroups to be used as input to the GEE models.
+
+
 
 #### Geographic transformations
 
@@ -327,7 +342,7 @@ Since the Pearson's correlation should only be used on variables with normal dis
 There seems to be more changes to the result in terms of their magnitude and direction.
 For example, while the Pearson's correlation coefficient shows a weak positive relationship between "COVID-19 incidence rate" and "Percentages with disability that are Native American" and "Percentages with disability that are female", these turned into weak negative relationships in Spearman's correlation coefficient.
 
-*Table 2*: Spearman's Ranked Correlation Coefficient between COVID-19 Incidence and Disability Subgroups
+*Table 3*: Spearman's Ranked Correlation Coefficient between COVID-19 Incidence and Disability Subgroups
 
 |Variable               |    rho|      t|     p|
 |:----------------------|------:|------:|-----:|
@@ -369,7 +384,7 @@ In the **third part** of our reproduction analysis, we implemented the GEE model
 The results of our reproduction study are mostly consistent with that of from Chakraborty's, with slight differences in the magnitude of correlation coefficients.
 The significance of some of the results also changed: the percent of people with disability who fall into none of the racial group and percent of people with disability who are Hispanics changed from being significant to non-significant whereas the percentage of disabilities between 18-34 changed from being non-significant to significant.
 
-*Table 3*: Globalized Estimating Equation Model Outputs
+*Table 4*: Globalized Estimating Equation Model Outputs
 
 |                         | Estimate| Std.err|     Wald| Pr(>&#124;W&#124;)| Orig Coef| Coef Diff|
 |:------------------------|--------:|-------:|--------:|------------------:|---------:|---------:|

@@ -313,12 +313,12 @@ Therefore, we loaded data provided by the original author into R and used this o
 The **first part** of our reproduction analysis was to visualize the spatial distribution of COVID-19 cases per 100,000 in the US (Figure 2). The reproduction result closely resembled that of the original study.
 
 ![tmap1](../../results/figures/covid_rates.png)
-*Figure 2*
+*Figure 2: Cumulative incidence rate of confirmed COVID-19 cases*
 
 In addition, we proceeded to create a map that illustrated the percentages of population with disability in each county (Figure 3).
 
 ![tmap2](../..//results/figures/disability_rates.png)
-*Figure 3*
+*Figure 3: Percent of population with a disability*
 
 The **second part** of our reproduction analysis focused on computing the summary statistics for variables analyzed and the bivariate correlations with county COVID-19 incidence rates.
 Our summary statistics and Pearson's correlation coefficients were consistent with those of Chakraborty's, but differ slightly in magnitude.
@@ -372,26 +372,31 @@ The significance of some of the results also changed: the percent of people with
 
 |                         | Estimate| Std.err|     Wald| Pr(>&#124;W&#124;)| Orig Coef| Coef Diff|
 |:------------------------|--------:|-------:|--------:|------------------:|---------:|---------:|
-|Race Intercept           |    7.370|   0.083| 7813.513|              0.000|      7.11|      0.26|
+| *Race Model* |
+| Intercept           |    7.370|   0.083| 7813.513|              0.000|      7.11|      0.26|
 |z_white_pct              |   -0.163|   0.010|  275.756|              0.000|     -0.20|     -0.04|
 |z_black_pct              |    0.104|   0.011|   88.678|              0.000|      0.11|     -0.01|
 |z_native_pct             |    0.036|   0.008|   21.126|              0.000|      0.05|     -0.02|
 |z_asian_pct              |    0.039|   0.008|   21.766|              0.000|      0.08|     -0.04|
 |z_other_pct              |    0.010|   0.010|    1.029|              0.310|      0.08|     -0.07|
-|Ethnicity Intercept      |    7.360|   0.083| 7769.795|              0.000|      7.19|      0.17|
+| *Ethnicity Model* |
+| Intercept      |    7.360|   0.083| 7769.795|              0.000|      7.19|      0.17|
 |z_non_hisp_white_pct     |   -0.190|   0.012|  247.675|              0.000|     -0.24|     -0.05|
 |z_hisp_pct               |    0.005|   0.027|    0.032|              0.857|      0.12|     -0.11|
 |z_non_hisp_non_white_pct |    0.105|   0.011|   92.967|              0.000|      0.12|     -0.01|
-|Poverty Status Intercept |    7.382|   0.074| 9974.919|              0.000|      7.18|      0.20|
+| *Poverty Model* |
+| Intercept |    7.382|   0.074| 9974.919|              0.000|      7.18|      0.20|
 |z_bpov_pct               |    0.109|   0.018|   35.408|              0.000|      0.15|     -0.04|
 |z_apov_pct               |   -0.194|   0.014|  204.920|              0.000|     -0.27|     -0.07|
-|Age Intercept            |    7.422|   0.077| 9253.948|              0.000|      7.24|      0.18|
+| *Age Model* |
+| Intercept            |    7.422|   0.077| 9253.948|              0.000|      7.24|      0.18|
 |z_pct_5_17               |    0.028|   0.010|    7.132|              0.008|      0.05|     -0.02|
 |z_pct_18_34              |    0.048|   0.018|    6.945|              0.008|      0.04|      0.01|
 |z_pct_35_64              |   -0.014|   0.020|    0.481|              0.488|     -0.03|     -0.01|
 |z_pct_65_74              |   -0.073|   0.017|   17.382|              0.000|     -0.09|     -0.02|
 |z_pct_75                 |   -0.079|   0.013|   36.943|              0.000|     -0.11|     -0.03|
-|Biological Sex Intercept |    7.421|   0.077| 9279.250|              0.000|      7.22|      0.20|
+| *Biological Sex Model* |
+| Intercept |    7.421|   0.077| 9279.250|              0.000|      7.22|      0.20|
 |z_male_pct               |   -0.222|   0.016|  201.110|              0.000|     -0.30|     -0.08|
 |z_female_pct             |    0.121|   0.017|   49.606|              0.000|      0.15|     -0.03|
 

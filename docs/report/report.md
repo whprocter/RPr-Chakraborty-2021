@@ -196,7 +196,7 @@ Having looked at the SaTScan outputs from the original study, our best guess is 
 
 The **coordinate reference system** is not specified in the methodology.
 Census data is provided in the NAD1983 Geographic Coordinate System.
-We assume that the analysis was also conducted the NAD1983 Geographic Coordinate System because the SaTScan can perform a spherical distance calculation using latitude and longitude.
+We assume that the analysis was also conducted the NAD1983 Geographic Coordinate System because the SaTScan can perform a ellipsoidal distance calculation using latitude and longitude.
 
 The **spatial extent** of the study were the contiguous 49 United States (including the District of Columbia).
 
@@ -269,23 +269,23 @@ There is no need for a **contingency plan** in this study.
 
 We implemented the analysis to the greatest extent possible in R / RStudio, using the geepack package for the generalized estimating equation and SpatialEpi package for the spatial scan statistics, whereas the original study was conducted using ArcGIS Desktop (unknown version), SPSS (unknown version), and SaTScan (v9.6).
 
-We will plan to check the normality of our distribution of our independent variables before correlations. If they are not normal, we may choose to calculate the bivariate correlation using a Spearman's Rho.
+We planned to check the normality of our distribution of our independent variables before correlations. If they are not normal, we may choose to calculate the bivariate correlation using a Spearman's Rho.
 
 ### Evaluating the reproduction results
 
-Before comparing results from our reproduction of the statistical models, we plan to compare summary statistics for all of our independent variables to those of the original study to confirm we are using the same inputs.
-We will compare the summary statistics (in table 1) and geographic distribution (in figure 1) of the dependent variable, COVID-19 incidence.
+Before comparing results from our reproduction of the statistical models, we planned to compare summary statistics for all of our independent variables to those of the original study to confirm we were using the same inputs.
+We compared the summary statistics (in table 1) and geographic distribution (in figure 1) of the dependent variable, COVID-19 incidence.
 
-Considering that we will use a different computational environment from the original authors, we will compare the bivariate correlation coefficients and significance levels expecting extremely similar coefficients and p-values.
+Considering that we used a different computational environment from the original authors, we compared the bivariate correlation coefficients and significance levels expecting extremely similar coefficients and p-values.
 
-Considering that both the computational environment and some analytical decisions will vary in our reproduction of the clusters for GEE modeling, we will compare the coefficients and significance levels with expectation that the direction and significance level will be the identical, but magnitudes and Chi Square values may vary.
+Considering that both the computational environment and some analytical decisions varied in our reproduction of the clusters for GEE modeling, we compared the coefficients and significance levels with expectation that the direction and significance level would be identical, but magnitudes and Chi Square values may vary.
 
-In order to test the results for both our bivariate correlation and GEE, we plan to construct tables (or matrices) that show the difference between our correlation coefficients and the original study's correlation coefficients.
+In order to test the results for both our bivariate correlation and GEE, we planned to construct tables (or matrices) that show the difference between our correlation coefficients and the original study's correlation coefficients.
 If there are any non-zeroes, we will investigate further.
 
-We will consider the reproduction an exact reproduction only if we can create identical coefficients for the Pearson's Rho bivariate tests of table 1 and the GEE models of table 2.
-We will consider the reproduction to be approximate if we find coefficients with the same direction and significance levels as the original study.
-We will consider the reproduction to have at least partially failed if we find coefficients with different directions or significance levels.
+We considered the reproduction an exact reproduction only if we can create identical coefficients for the Pearson's Rho bivariate tests of table 1 and the GEE models of table 2.
+We considered the reproduction to be approximate if we find coefficients with the same direction and significance levels as the original study.
+We considered the reproduction to have at least partially failed if we find coefficients with different directions or significance levels.
 
 ## Unplanned deviations
 
@@ -344,26 +344,26 @@ For example, while the Pearson's correlation coefficient shows a weak positive r
 
 *Table 3*: Spearman's Ranked Correlation Coefficient between COVID-19 Incidence and Disability Subgroups
 
-|Variable               |    rho|      t|     p|
-|:----------------------|------:|------:|-----:|
-|dis_pct                | -0.113|  6.312| 0.000|
-|white_pct              | -0.421| 25.874| 0.000|
-|black_pct              |  0.575| 39.163| 0.000|
-|native_pct             | -0.084|  4.688| 0.000|
-|asian_pct              |  0.194| 11.001| 0.000|
-|other_pct              |  0.104|  5.825| 0.000|
-|non_hisp_white_pct     | -0.454| 28.389| 0.000|
-|hisp_pct               |  0.231| 13.210| 0.000|
-|non_hisp_non_white_pct |  0.481| 30.564| 0.000|
-|bpov_pct               |  0.062|  3.452| 0.000|
-|apov_pct               | -0.205| 11.694| 0.000|
-|pct_5_17               |  0.079|  4.411| 0.000|
-|pct_18_34              |  0.034|  1.902| 0.029|
-|pct_35_64              | -0.020|  1.136| 0.128|
-|pct_65_74              | -0.151|  8.523| 0.000|
-|pct_75                 | -0.285| 16.592| 0.000|
-|male_pct               | -0.201| 11.430| 0.000|
-|female_pct             | -0.014|  0.798| 0.212|
+|Variable               |    rho|      t|     p| Orig Pearson's Coef|
+|:----------------------|------:|------:|-----:|-------------------:|
+|dis_pct                | -0.113|  6.312| 0.000|              -0.056|
+|white_pct              | -0.421| 25.874| 0.000|              -0.326|
+|black_pct              |  0.575| 39.163| 0.000|               0.456|
+|native_pct             | -0.084|  4.688| 0.000|               0.020|
+|asian_pct              |  0.194| 11.001| 0.000|               0.097|
+|other_pct              |  0.104|  5.825| 0.000|               0.028|
+|non_hisp_white_pct     | -0.454| 28.389| 0.000|              -0.355|
+|hisp_pct               |  0.231| 13.210| 0.000|               0.119|
+|non_hisp_non_white_pct |  0.481| 30.564| 0.000|               0.439|
+|bpov_pct               |  0.062|  3.452| 0.000|               0.108|
+|apov_pct               | -0.205| 11.694| 0.000|              -0.146|
+|pct_5_17               |  0.079|  4.411| 0.000|               0.083|
+|pct_18_34              |  0.034|  1.902| 0.029|               0.066|
+|pct_35_64              | -0.020|  1.136| 0.128|              -0.005|
+|pct_65_74              | -0.151|  8.523| 0.000|              -0.089|
+|pct_75                 | -0.285| 16.592| 0.000|              -0.181|
+|male_pct               | -0.201| 11.430| 0.000|              -0.131|
+|female_pct             | -0.014|  0.798| 0.212|               0.028|
 
 Although Chakraborty does not illustrate the classified relative risk of COVID-19 clusters, we enhanced the study by mapping both relative risk based on the SaTScan results (Figure 4) and on our R SpatialEpi results (Figure 5).
 

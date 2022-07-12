@@ -6,11 +6,11 @@ Drew An-Pham, Department of Geography, Middlebury College, Middlebury VT 05753
 Derrick Burt, Department of Geography, Middlebury College, Middlebury VT 05753  
 Peter Kedron, School of Geographical Sciences and Urban Planning, Arizona State University, Tempe AZ 85281  
 
-Version 1.1 | Created Jul 7, 2021 | Last Updated June 16, 2022
+Version 1.1 | Created Jul 7, 2021 | Last Updated July 11, 2022
 
 ## Abstract
 
-Chakraborty (2021) investigates the relationships between rates of COVID-19 cases and socio-demographic characteristics of people with disabilities by county in the lower 48 states.
+Chakraborty (2021) investigates the relationships between incidence of confirmed COVID-19 cases and socio-demographic characteristics of people with disabilities by county in the lower 48 states and Washington D.C.
 To investigate this, Chakraborty examines the statistical relationship between confirmed county-level COVID-19 case rates and county-level socio-demographic and disability variables.
 Specifically, Chakraborty tests county-level bivariate correlations between COVID-19 incidence against the percentage of disability and socio-demographic category, with a separate hypothesis and model for each subcategory within disability, race, ethnicity, age, and biological sex.
 To control for differences between states and geographic clusters of COVID-19 outbreaks, Chakraborty uses five generalized estimating equation (GEE) models to predict the relationship and significance between COVID-19 incidence and disability subgroups within each socio-demographic category while considering inter-county spatial clusters.
@@ -31,18 +31,20 @@ To the greatest extent possible, the reproduction will be implemented with R mar
 
 ### Keywords
 
-COVID-19; Disability; Intersectionality; Race/ethnicity; Poverty; Reproducibility
+COVID-19; Disability; Reproducibility, United States, Kulldorff Spatial Scan Statistic, Generalized Estimating Equations
 
 ## Study design
 
 The reproduction study will try to implement the original study as closely as possible to reproduce the map of county level distribution of COVID-19 incidence rate, the summary statistics and bivariate correlation for disability characteristics and COVID-19 incidence, and the effect estimates of the generalized estimating equations.
-Our two confirmatory hypotheses are that we will be able to exactly reproduce Chakraborty's results as presented in figure 1, table 1, and table 2 of Chakraborty (2021). Stated as null hypotheses:
+Our two confirmatory hypotheses are that we will be able to exactly reproduce Chakraborty's results as presented in figure 1, table 1, and table 2 of Chakraborty (2021).
+Stated as null hypotheses:
 
 > H1: There is a less than perfect match between Chakraborty's bivariate correlation coefficient for each disability/sociodemographic variable and COVID-19 incidence rate and our bivariate correlation coefficient for each disability/sociodemographic variable and COVID-19 incidence rate.
 
 > H2: There is a less than perfect match between Chakraborty's GEE-based beta coefficient estimates for the of each disability/sociodemographic variable and our GEE-based beta coefficient estimates for the GEE of each disability/sociodemographic variable.
 
-There are multiple models being tested within each of the two hypotheses. That is, H1 and H2 both encompass five models, including one for each dimension of socio-demographics: race, ethnicity, poverty status, age, and biological sex.
+There are multiple models being tested within each of the two hypotheses.
+*H1* compares the results 18 different bivariate correlation tests, while *H2* compares the results of 5 different generalized estimation equation models, including one for each dimension of socio-demographics: race, ethnicity, poverty status, age, and biological sex.
 
 ### Original study design
 

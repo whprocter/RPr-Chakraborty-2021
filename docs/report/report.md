@@ -49,7 +49,7 @@ There are multiple models being tested within each of the two hypotheses.
 ### Original study design
 
 The original study is **observational**, with the **exploratory** objective of determining "whether COVID-19 incidence is significantly greater in counties containing higher percentages of socio-demographically disadvantaged [people with disabilities], based on their race, ethnicity, poverty status, age, and biological sex" (Chakraborty 2021).
-The independent variables are derived from Census crosstabulations between people with disabilities and different socio-demographic categories.
+The independent variables are derived from Census cross tabulations between people with disabilities and different socio-demographic categories.
 For example, the independent variable `white people with disabilities` is the number of people with disabilities identifying as one race (white) divided by the total number of people for whom disability and race status are determined.
 This exploratory objective is broken down into five implicit hypotheses that each of the demographic characteristics of people with disabilities is associated with higher COVID-19 incidence rates.
 
@@ -74,6 +74,7 @@ Our understanding of the original study design and our plan for the reproduction
 
 This registration was based upon a thorough reading of the original research article, searching and calculating summary statistics for American Community Survey data, accessing the Johns Hopkins Coronavirus Resource Center, and acquiring some additional information and data from the original author, Jay Chakraborty.
 Specifically, Chakraborty informed us of the American Community Survey data table names used in the study (S1810 for demographic categories and disability status and C18130 for poverty status and disability status), provided Johns Hopkins county-level Coronavirus data downloaded on August 1, 2020, outputs from SaTScan spatial clustering analysis, and inputs for the GEE models.
+We used the data provided by Chakraborty to 1) check for the census variables to ensure that we are using the same independent variables to predict COVID-19 incidence rate. 2) compare our outputs from the gee model to evaluate how different computational environment could lead to different results. 3) experiment with the SaTScan software and learn the methodology behind to ensure that we have the correct input for gee. 
 The data provided by the author is not available in an online repository, but we will include the data in our research compendium with permission of the author.
 
 In our reproduction attempt, we used publicly available American Community Survey data downloaded directly from the Census API using the tidycensus package for R.

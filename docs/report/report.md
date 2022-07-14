@@ -22,12 +22,12 @@ A fully reproducible study will increase the accessibility, transparency, and po
 This will allow other researchers to review, extend, and modify the study and will allow students of geography and spatial epidemiology to learn from the study design and methods.
 
 In this reproduction, we will attempt to identically reproduce all of the results from the original study.
-This will include the map of county level distribution of COVID-19 incidence rates (Fig. 1), the summary statistics for disability and sociodemographic variables and bivariate correlations with county-level COVID-19 incidence rate (Table 1), and the GEE models for predicting COVID-19 county-level incidence rate (Table 2).
+This will include the map of county level distribution of COVID-19 incidence rate (original study Figure 1), the summary statistics for disability and sociodemographic variables (original study Table 1) and bivariate correlations with county-level COVID-19 incidence rate (original study Table 1), and the GEE models for predicting COVID-19 county-level incidence rate (original study Table 2).
 A successful reproduction should be able to generate identical results as published by Chakraborty (2021).
 
 The reproduction study data and code will be made available in a GitHub repository to the greatest extent that licensing and file sizes permit.
 The repository will be made public at [github.com/HEGSRR/RPr-Chakraborty2021](https://github.com/HEGSRR/RPr-Chakraborty2021).
-To the greatest extent possible, the reproduction will be implemented with R markdown using packages geepack for the generalized estimating equation and SpatialEpi for the spatial scan statistics.
+To the greatest extent possible, the reproduction will be implemented with R markdown using the SpatialEpi package for the Kulldorff spatial scan statistic packages and the geepack package for the generalized estimating equation.
 
 ### Keywords
 
@@ -49,9 +49,23 @@ There are multiple models being tested within each of the two hypotheses.
 ### Original study design
 
 The original study is **observational**, with the **exploratory** objective of determining "whether COVID-19 incidence is significantly greater in counties containing higher percentages of socio-demographically disadvantaged [people with disabilities], based on their race, ethnicity, poverty status, age, and biological sex" (Chakraborty 2021).
-The independent variables are derived from Census cross tabulations between people with disabilities and different socio-demographic categories.
+The independent variables are derived from Census cross-tabulations between people with disabilities and different socio-demographic categories.
 For example, the independent variable `white people with disabilities` is the number of people with disabilities identifying as one race (white) divided by the total number of people for whom disability and race status are determined.
-This exploratory objective is broken down into five implicit hypotheses that each of the demographic characteristics of people with disabilities is associated with higher COVID-19 incidence rates.
+
+In the original study, 18 implicit bivariate hypotheses are tested for correlation between COVID-19 cumulative incidence rates and specific categories of PwDs at the county level.
+Although the original publication does not state null hypotheses for each bivariate correlation, we may formulate them as follows:
+
+> H1.1: There is no correlation between the COVID-19 incidence rate and the percentage of people with disabilities at the county level.
+> H1.2: There is no correlation between the COVID-19 incidence rate and the percentage of white people with disabilities at the county level.
+...
+> H1.18 There is no correlation between the COVID-19 incidence rate and the percentage of female people with disabilities at the county level.
+
+Five multi-variate hypotheses are tested for associations between COVID-19 cumulative incidence rates and subgroups of PwDs at the county level.
+Although the original publication does not state null hypotheses for each model, we may formulate them as follows:
+
+> H2.1: The percentages of people with disability, categorized by race, are not associated with COVID-19 incidence at the county level when accounting for the state and risk level of COVID-19 clusters.
+...
+> H2.5: The percentages of people with disability, categorized by gender, are not associated with COVID-19 incidence at the county level when accounting for the state and risk level of COVID-19 clusters.
 
 The **spatial extent** of the study are the 48 contiguous states and Washington D.C. in the U.S.
 The **spatial scale** of the analysis is at the county level.
@@ -74,15 +88,15 @@ Our understanding of the original study design and our plan for the reproduction
 
 This registration was based upon a thorough reading of the original research article, searching and calculating summary statistics for American Community Survey data, accessing the Johns Hopkins Coronavirus Resource Center, and acquiring some additional information and data from the original author, Jay Chakraborty.
 Specifically, Chakraborty informed us of the American Community Survey data table names used in the study (S1810 for demographic categories and disability status and C18130 for poverty status and disability status), provided Johns Hopkins county-level Coronavirus data downloaded on August 1, 2020, outputs from SaTScan spatial clustering analysis, and inputs for the GEE models.
-We used the data provided by Chakraborty to 1) check for the census variables to ensure that we are using the same independent variables to predict COVID-19 incidence rate. 2) compare our outputs from the gee model to evaluate how different computational environment could lead to different results. 3) experiment with the SaTScan software and learn the methodology behind to ensure that we have the correct input for gee.
-The data provided by the author is not available in an online repository, but we will include the data in our research compendium with permission of the author.
+We used the data provided by Chakraborty to:
+1. Check the census variables to ensure that we are using the same independent variables to predict COVID-19 incidence rate.
+1. Experiment with the SaTScan software and Kulldorff spatial scan methodology to verify parameters used in the original study,  compare computational environments between SaTScan and R spatialepi, and visualize spatial scan outputs used in the original study.
+1. Compare the computational environments for GEE models between SPSS and R geepack.
+The data provided by the author is not available in an online repository, but we have included the data in our research compendium with permission of the author.
 
 In our reproduction attempt, we used publicly available American Community Survey data downloaded directly from the Census API using the tidycensus package for R.
 We used Johns Hopkins Coronavirus data provided by the author because it is not possible to download that dynamic dataset in an archived form as it existed on August 1, 2020.
 Johns Hopkins still provides aggregated COVID-19 incidence rate data, but does not publicly provide archived data identical to those used in the original study.
-This pre-analysis plan was based on information from the original paper, correspondence with the original author (as described above), viewing metadata and data sources provided by the author and the U.S. Census, and calculating summary statistics.  
-
-*Disclaimer*: For demonstration purposes, we were registering this plan *after* running the full analysis in R-studio, based upon our documented plan and knowledge of the study prior to completing the analysis.
 
 ### Data collection and spatial sampling
 
@@ -109,7 +123,6 @@ All variables in this study were derived from secondary data.
 There were no experimentally manipulated variables in this experiment.
 COVID-19 incidence rate was used as the dependent variable.
 Following the original study, we examined eighteen independent variables, a percentage of total disabled persons per county and seventeen 'disaggregated' categories that break down socio-demographic characteristics of the disabled population.
-
 
 The socio-demographic variables are broken down into the following categories.
 Their table code from the ACS data has been included in this documentation
@@ -153,16 +166,16 @@ percent w disability: female | S1810_C03_003E
 
 #### Attribute variable transformations
 
-The COVID-19 incidence rate is normalized at the county-level per 100,000 people.
-Most of the disability and sociodemographic variables are provided in the format that they are used, as a percentage of "people with disabilities in each subgroup by the total civilian non-institutionalized population relevant to the variable category" (Chakraborty 2011).
-Non-Hispanic non-White, Below poverty level and Above poverty level are calculated as shown in Table 1 above.
+The COVID-19 incidence rate was normalized at the county-level per 100,000 people.
+Most of the disability and sociodemographic variables were provided in the format that they are used, as a percentage of "people with disabilities in each subgroup by the total civilian non-institutionalized population relevant to the variable category" (Chakraborty 2011).
+Non-Hispanic non-White, Below poverty level and Above poverty level were calculated as shown in Table 1 above.
 
-Before conducting the GEE, all independent variables are normalized into z-scores.
+Prior to GEE analysis, all independent variables were normalized into z-scores.
+All observations were assigned to clusters identified by unique combinations of two clustering IDs.
+The first clustering ID was a categorical variable determined by the counties' state.
+The second clustering ID was COVID relative risk class derived from Kulldorff spatial scan statistic spatial clusters.
+For each
 
-For the GEE, two different clustering scores are assigned to each county.
-The first clustering ID is a categorical variable determined by the counties' state.
-The second clustering ID is a relative risk score calculated by identifying spatial clusters from a spatial scan statistic based on the Poisson Model.
-We will calculate the clusters using the SpatialEpi package in R.
 We then calculate the relative risk score for each county using the formula: ``(rate of cases within the cluster) / (rate of cases outside the cluster)``.
 The relative risk score is then classified into six categories based on the estimated relative risk values (<1.0, 1.00-1.99, 2.00-2.99, 3.00-3.99, 4.00-4.99, and 5.0 or more). See the table 2 below for detailed explanation on the classification of relative risk score.
 
@@ -181,8 +194,6 @@ The relative risk score is then classified into six categories based on the esti
 The first clustering ID (State) and second clustering score (Classified Relative Risk) are combined to form IDs for each unique combination of state and relative risk class.
 The clustering ID's will then be joined with the American Community Survey data on disability subgroups to be used as input to the GEE models.
 
-
-
 #### Geographic transformations
 
 Although there are no explicit geographic transformations in this experiment, the variable transformations that occur during the SaTScan procedure are geographic in nature: they assign values based on spatial clustering of COVID-19 risk, which are subsequently used to define clusters in the GEE models.
@@ -190,7 +201,6 @@ Although there are no explicit geographic transformations in this experiment, th
 Having looked at the SaTScan outputs from the original study, our best guess is that the author might have calculated centroids for each county before running the GEE, using a geographic coordinate system.
 
 ## Analyses
-
 
 ### Geographical characteristics
 
@@ -202,7 +212,7 @@ The **spatial extent** of the study were the contiguous 49 United States (includ
 
 The **spatial scale** and **unit of analysis** of the study is are U.S. counties.
 
-**Edge effects** will not be accounted for in the analysis.
+**Edge effects** were not accounted for in the analysis.
 
 This analysis does create **spatial subgroups** based on **spatial clustering**.
 The purpose of this grouping is to control for **spatial heterogeneity** between regions (defined as states) and spatial correlation within regions.
@@ -231,19 +241,10 @@ The study does not **weight samples**.
 
 The county-level Pearson's rho correlation coefficient is used to test association between intra-categorical rates of disability and COVID-19 incidence rates.
 As this is a parametric test, normality should be tested.
-A separate hypothesis is formulated for each sociodemographic disability characteristic.
-
-> H1.1: There is no correlation between the COVID-19 incidence rate and the percentage of people with disabilities at the county level.
-> H1.2: There is no correlation between the COVID-19 incidence rate and the percentage of white people with disabilities at the county level.
-...
-> H1.18 There is no correlation between the COVID-19 incidence rate and the percentage of female people with disabilities at the county level.
+A separate hypothesis is formulated for disability in aggregate and for each sociodemographic disability characteristic, numbered H1.1 through H1.18 in Table 3.
 
 The generalized estimating equation (GEE) models are used to test association between intra-categorical rates of disability and COVID-19 incidence rates while accounting for spatial clustering.
-Although the original publication does not clearly state hypotheses for each model, we may formulate null as follows:
-
-> H2.1: The percentages of people with disability, categorized by race, are not associated with COVID-19 incidence at the county level when accounting for the state and risk level of COVID-19 clusters.
-...
-> H2.5: The percentages of people with disability, categorized by gender, are not associated with COVID-19 incidence at the county level when accounting for the state and risk level of COVID-19 clusters.
+A separate hypothesis is formulated for each type of subcategorization of PwDs, numbered H2.1 through H2.5 in Table 4.
 
 As specified by the author, "GEEs extend the generalized linear model to accommodate clustered data, in addition to relaxing several assumptions of traditional regression (i.e., normality)".
 Additionally, the author notes that "clusters of observations must be defined based on the assumption that observations within a cluster are correlated while observations from different clusters are independent."
@@ -344,26 +345,26 @@ For example, while the Pearson's correlation coefficient shows a weak positive r
 
 *Table 3*: Spearman's Ranked Correlation Coefficient between COVID-19 Incidence and Disability Subgroups
 
-|Variable               |    rho|      t|     p| Orig Pearson's Coef|
-|:----------------------|------:|------:|-----:|-------------------:|
-|dis_pct                | -0.113|  6.312| 0.000|              -0.056|
-|white_pct              | -0.421| 25.874| 0.000|              -0.326|
-|black_pct              |  0.575| 39.163| 0.000|               0.456|
-|native_pct             | -0.084|  4.688| 0.000|               0.020|
-|asian_pct              |  0.194| 11.001| 0.000|               0.097|
-|other_pct              |  0.104|  5.825| 0.000|               0.028|
-|non_hisp_white_pct     | -0.454| 28.389| 0.000|              -0.355|
-|hisp_pct               |  0.231| 13.210| 0.000|               0.119|
-|non_hisp_non_white_pct |  0.481| 30.564| 0.000|               0.439|
-|bpov_pct               |  0.062|  3.452| 0.000|               0.108|
-|apov_pct               | -0.205| 11.694| 0.000|              -0.146|
-|pct_5_17               |  0.079|  4.411| 0.000|               0.083|
-|pct_18_34              |  0.034|  1.902| 0.029|               0.066|
-|pct_35_64              | -0.020|  1.136| 0.128|              -0.005|
-|pct_65_74              | -0.151|  8.523| 0.000|              -0.089|
-|pct_75                 | -0.285| 16.592| 0.000|              -0.181|
-|male_pct               | -0.201| 11.430| 0.000|              -0.131|
-|female_pct             | -0.014|  0.798| 0.212|               0.028|
+|Variable                     |    rho|      t|     p| Orig Pearson's Coef|
+|:----------------------------|------:|------:|-----:|-------------------:|
+|H1.1 dis_pct                 | -0.113|  6.312| 0.000|              -0.056|
+|H1.2 white_pct               | -0.421| 25.874| 0.000|              -0.326|
+|H1.3 black_pct               |  0.575| 39.163| 0.000|               0.456|
+|H1.4 native_pct              | -0.084|  4.688| 0.000|               0.020|
+|H1.5 asian_pct               |  0.194| 11.001| 0.000|               0.097|
+|H1.6 other_pct               |  0.104|  5.825| 0.000|               0.028|
+|H1.7 non_hisp_white_pct      | -0.454| 28.389| 0.000|              -0.355|
+|H1.8 hisp_pct                |  0.231| 13.210| 0.000|               0.119|
+|H1.9 non_hisp_non_white_pct  |  0.481| 30.564| 0.000|               0.439|
+|H1.10 bpov_pct               |  0.062|  3.452| 0.000|               0.108|
+|H1.11 apov_pct               | -0.205| 11.694| 0.000|              -0.146|
+|H1.12 pct_5_17               |  0.079|  4.411| 0.000|               0.083|
+|H1.13 pct_18_34              |  0.034|  1.902| 0.029|               0.066|
+|H1.14 pct_35_64              | -0.020|  1.136| 0.128|              -0.005|
+|H1.15 pct_65_74              | -0.151|  8.523| 0.000|              -0.089|
+|H1.16 pct_75                 | -0.285| 16.592| 0.000|              -0.181|
+|H1.17 male_pct               | -0.201| 11.430| 0.000|              -0.131|
+|H1.18 female_pct             | -0.014|  0.798| 0.212|               0.028|
 
 Although Chakraborty does not illustrate the classified relative risk of COVID-19 clusters, we enhanced the study by mapping both relative risk based on the SaTScan results (Figure 4) and on our R SpatialEpi results (Figure 5).
 
@@ -388,31 +389,31 @@ The significance of some of the results also changed: the percent of people with
 
 |                         | Estimate| Std.err|     Wald| Pr(>&#124;W&#124;)| Orig Coef| Coef Diff|
 |:------------------------|--------:|-------:|--------:|------------------:|---------:|---------:|
-| *Race Model* |
-| Intercept           |    7.370|   0.083| 7813.513|              0.000|      7.11|      0.26|
+| *H2.1 Race Model*                                                                              |
+| Intercept               |    7.370|   0.083| 7813.513|              0.000|      7.11|      0.26|
 |z_white_pct              |   -0.163|   0.010|  275.756|              0.000|     -0.20|     -0.04|
 |z_black_pct              |    0.104|   0.011|   88.678|              0.000|      0.11|     -0.01|
 |z_native_pct             |    0.036|   0.008|   21.126|              0.000|      0.05|     -0.02|
 |z_asian_pct              |    0.039|   0.008|   21.766|              0.000|      0.08|     -0.04|
 |z_other_pct              |    0.010|   0.010|    1.029|              0.310|      0.08|     -0.07|
-| *Ethnicity Model* |
-| Intercept      |    7.360|   0.083| 7769.795|              0.000|      7.19|      0.17|
+| *H2.2 Ethnicity Model*                                                                         |
+| Intercept               |    7.360|   0.083| 7769.795|              0.000|      7.19|      0.17|
 |z_non_hisp_white_pct     |   -0.190|   0.012|  247.675|              0.000|     -0.24|     -0.05|
 |z_hisp_pct               |    0.005|   0.027|    0.032|              0.857|      0.12|     -0.11|
 |z_non_hisp_non_white_pct |    0.105|   0.011|   92.967|              0.000|      0.12|     -0.01|
-| *Poverty Model* |
-| Intercept |    7.382|   0.074| 9974.919|              0.000|      7.18|      0.20|
+| *H2.3 Poverty Model*                                                                           |
+| Intercept               |    7.382|   0.074| 9974.919|              0.000|      7.18|      0.20|
 |z_bpov_pct               |    0.109|   0.018|   35.408|              0.000|      0.15|     -0.04|
 |z_apov_pct               |   -0.194|   0.014|  204.920|              0.000|     -0.27|     -0.07|
-| *Age Model* |
-| Intercept            |    7.422|   0.077| 9253.948|              0.000|      7.24|      0.18|
+| *H2.4 Age Model*                                                                               |
+| Intercept               |    7.422|   0.077| 9253.948|              0.000|      7.24|      0.18|
 |z_pct_5_17               |    0.028|   0.010|    7.132|              0.008|      0.05|     -0.02|
 |z_pct_18_34              |    0.048|   0.018|    6.945|              0.008|      0.04|      0.01|
 |z_pct_35_64              |   -0.014|   0.020|    0.481|              0.488|     -0.03|     -0.01|
 |z_pct_65_74              |   -0.073|   0.017|   17.382|              0.000|     -0.09|     -0.02|
 |z_pct_75                 |   -0.079|   0.013|   36.943|              0.000|     -0.11|     -0.03|
-| *Biological Sex Model* |
-| Intercept |    7.421|   0.077| 9279.250|              0.000|      7.22|      0.20|
+| *H2.5 Biological Sex Model*                                                                    |
+| Intercept               |    7.421|   0.077| 9279.250|              0.000|      7.22|      0.20|
 |z_male_pct               |   -0.222|   0.016|  201.110|              0.000|     -0.30|     -0.08|
 |z_female_pct             |    0.121|   0.017|   49.606|              0.000|      0.15|     -0.03|
 

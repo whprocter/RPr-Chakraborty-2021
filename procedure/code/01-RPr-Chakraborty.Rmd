@@ -419,6 +419,7 @@ covid_geo <- covid_table %>%
 # latlong2grid approximates an equidistant grid measured in kilometers
 # need to look more into the methods of this, but it surely is not as good
 # as a geodesic calculation. SaTScan uses spherical or ellipsoidal distance
+# Latitude is multiplied by 111.133 and Longitude is multiplied by 86.97357
 
 # calculate expected cases with one strata
 expected.cases <- expected(covid_table$pop, covid_table$cases, 1)

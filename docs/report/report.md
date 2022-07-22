@@ -369,7 +369,7 @@ For example, while the Pearson's correlation coefficient shows a weak positive r
 Although Chakraborty does not illustrate the classified relative risk of COVID-19 clusters, we enhanced the study by mapping both relative risk based on the SaTScan results (Figure 4) and on our R SpatialEpi results (Figure 5).
 
 ![fig4](../../results/figures/rr_original.png)
-*Figure 4: Relative risk score of original analysis*
+*Figure 4: Relative risk score of original analysis. Circles represent the spatial extent of each cluster.*
 
 Once the original analysis of clusters in mapped in Figure 4, it becomes clear that many counties are included within clusters (visualized by red circles), but classified with the minimum level of relative risk because they were not the county defining the center of the cluster.
 While some of those counties did in fact have low local relative risk scores, most of them actually had higher risk levels (Figure 5).
@@ -582,6 +582,9 @@ Closer inspection of the clusters for the GEE models revealed a highly skewed di
 GEE weights observations based on the number of observations within a cluster and the degree of correlation in the standard errors within clusters.
 Therefore, counties within small clusters (e.g. the counties of Rhode Island or the few counties with high COVID risk classification) will have much larger weights than counties within large clusters (e.g. counties with low risk classifications in large states).
 The combination of very different cluster sizes and use of a clustering criteria related to the dependent variable warrant further analysis with alternative approaches to controlling for spatial dependence.
+We quickly diagnosed whether the clustering method was significantly skewing the estimated coefficients by running non-clustered generalized linear (GLM) models for each of the hypotheses H2.1 through H2.5.
+Fortunately, we found the GLM coefficients to be consistent, and in most cases stronger, than the GEE model coefficients.
+Future replications of this research should consider selecting an alternative inferential statistical model which explicitly accounts for spatial dependence.
 
 With regards to the **overall conclusions** and **research design**, we agree with the original author's cautious interpretation emphasizing "county-level associations" and the need for "additional data and analysis".
 There are at least five sources of uncertainty in this study: ecological fallacy, scale dependency, modifiable areal unit problem, variable measurement, and spatial dependency.

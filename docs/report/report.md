@@ -386,7 +386,7 @@ The estimated coefficients, errors, and *p* values for our final cluster relativ
 The estimated coefficients from the original study are compared to each version of our reproduction in table 5.
 The average difference in the coefficients between different versions of the GEE models are summarized in table 6.
 
-*Table 4*: Reanalyzed GEE Models with Cluster-based Relative Risk
+*Table 4: Generalized Estimating Equation Modles of Disability Subgroups and COVID-19 Incidence*
 
 |                         | Estimate| Std.err|     Wald| Pr(>&#124;W&#124;)| Orig Est | Est Difference|
 |:------------------------|--------:|-------:|--------:|------------------:|---------:|---------:|
@@ -472,6 +472,40 @@ The greatest differences were produced using the same input data in different en
 The R/geepack computational environment found different coefficient estimates from the SPSS computational environment using the same original data, with an average coefficient estimate difference of 0.082, identical directions, and reduced significance levels for the Native American race and the three age groups from 18 through 74.
 Our local relative risk reproduction produced an average coefficient estimate difference of 0.077 from the original study, and 0.146 from the original data in the R/geepack computational environment.
 Our cluster-based relative risk reproduction produced an average coefficient difference of 0.038 from the original study, and 0.122 from the original data in the R/geepack computational environment.
+
+
+|                         | Estimate| Std. Error| t value| Pr(>&#124;t&#124;)|
+|:------------------------|--------:|----------:|-------:|------------------:|
+|*H2.1 Race Model*        |         |           |        |                   |
+|Intercept                |    6.782|      0.018| 385.245|              0.000|
+|z_white_pct              |   -0.214|      0.020| -10.619|              0.000|
+|z_black_pct              |    0.340|      0.019|  17.664|              0.000|
+|z_native_pct             |    0.018|      0.018|   1.019|              0.308|
+|z_asian_pct              |    0.053|      0.019|   2.810|              0.005|
+|z_other_pct              |    0.106|      0.018|   5.867|              0.000|
+|*H2.2 Ethnicity Model*   |         |           |        |                   |
+|Intercept                |    6.773|      0.017| 391.315|              0.000|
+|z_non_hisp_white_pct     |   -0.240|      0.020| -12.236|              0.000|
+|z_hisp_pct               |    0.128|      0.019|   6.832|              0.000|
+|z_non_hisp_non_white_pct |    0.336|      0.019|  17.896|              0.000|
+|*H2.3 Poverty Model*     |         |           |        |                   |
+|Intercept                |    6.850|      0.019| 367.671|              0.000|
+|z_bpov_pct               |    0.282|      0.023|  12.167|              0.000|
+|z_apov_pct               |   -0.319|      0.023| -13.754|              0.000|
+|*H2.4 Age Model*         |         |           |        |                   |
+|Intercept                |    6.865|      0.018| 375.694|              0.000|
+|z_pct_5_17               |    0.079|      0.020|   3.876|              0.000|
+|z_pct_18_34              |    0.023|      0.022|   1.075|              0.283|
+|z_pct_35_64              |    0.036|      0.029|   1.223|              0.221|
+|z_pct_65_74              |   -0.022|      0.030|  -0.736|              0.462|
+|z_pct_75                 |   -0.203|      0.024|  -8.619|              0.000|
+|*H2.5 Age Model*         |         |           |        |                   |
+|Intercept                |    6.852|      0.018| 376.541|              0.000|
+|z_male_pct               |   -0.464|      0.031| -14.860|              0.000|
+|z_female_pct             |    0.373|      0.031|  11.957|              0.000|
+
+*Table 7: Generalized Linear Model of Disability Subgroups and COVID-19 Incidence*
+
 
 ## Discussion
 

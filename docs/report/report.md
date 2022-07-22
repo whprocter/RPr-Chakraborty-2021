@@ -2,11 +2,11 @@
 
 Joseph Holler, Department of Geography, Middlebury College, Middlebury VT 05753  
 Junyi Zhou, Department of Geography, Middlebury College, Middlebury VT 05753  
+Peter Kedron, School of Geographical Sciences and Urban Planning, Arizona State University, Tempe AZ 85281  
 Drew An-Pham, Department of Geography, Middlebury College, Middlebury VT 05753  
 Derrick Burt, Department of Geography, Middlebury College, Middlebury VT 05753  
-Peter Kedron, School of Geographical Sciences and Urban Planning, Arizona State University, Tempe AZ 85281  
 
-Version 1.1 | Created Jul 7, 2021 | Last Updated July 17, 2022
+Version 1.2 | Created Jul 7, 2021 | Last Updated July 19, 2022
 
 ## Abstract
 
@@ -14,20 +14,19 @@ Chakraborty (2021) investigates the relationships between incidence of confirmed
 To investigate this, Chakraborty examines the statistical relationship between confirmed county-level COVID-19 case rates and county-level socio-demographic and disability variables.
 Specifically, Chakraborty tests county-level bivariate correlations between COVID-19 incidence against the percentage of disability and socio-demographic category, with a separate hypothesis and model for each subcategory within disability, race, ethnicity, age, and biological sex.
 To control for differences between states and geographic clusters of COVID-19 outbreaks, Chakraborty uses five generalized estimating equation (GEE) models to predict the relationship and significance between COVID-19 incidence and disability subgroups within each socio-demographic category while considering inter-county spatial clusters.
-Chakraborty (2021) finds significant positive relationships between COVID-19 rates and socially vulnerable demographic categories of race, ethnicity, poverty, age, and biological sex.
+Chakraborty finds significant positive relationships between COVID-19 rates and socially vulnerable demographic categories of race, ethnicity, poverty, age, and biological sex.
 
 This reproduction study is motivated by expanding the potential impact of Chakraborty's study for policy, research, and teaching purposes.
-Measuring the relationship between COVID-19 incidence and socio-demographic and disability characteristics can provide important information for public health policy-making and resource allocation.
-A fully reproducible study will increase the accessibility, transparency, and potential impact of Chakraborty's (2021) study by publishing a compendium complete with metadata, data, and code.
+Our reproduction study will provide important information for public health policy-making and resource allocation by checking the internal validity of the original study's proposed relationships between COVID-19 incidence and socio-demographic and disability characteristics.
+Since the original study has none of the data or code components of computational reproducibility, our reproduction study will be published in a fully open and reproducible manner (complete with code, data, and metadata), expanding the accessibility, transparency, and potential impact of the original study.
 This will allow other researchers to review, extend, and modify the study and will allow students of geography and spatial epidemiology to learn from the study design and methods.
 
 In this reproduction, we will attempt to identically reproduce all of the results from the original study.
 This will include the map of county level distribution of COVID-19 incidence rate (original study Figure 1), the summary statistics for disability and sociodemographic variables (original study Table 1) and bivariate correlations with county-level COVID-19 incidence rate (original study Table 1), and the GEE models for predicting COVID-19 county-level incidence rate (original study Table 2).
 A successful reproduction should be able to generate identical results as published by Chakraborty (2021).
 
-The reproduction study data and code will be made available in a GitHub repository to the greatest extent that licensing and file sizes permit.
-The repository will be made public at [github.com/HEGSRR/RPr-Chakraborty2021](https://github.com/HEGSRR/RPr-Chakraborty2021).
-To the greatest extent possible, the reproduction will be implemented with R markdown using the `SpatialEpi` package for the Kulldorff spatial scan statistic packages and the `geepack` package for the generalized estimating equation.
+The reproduction study data and code are available in public a GitHub repository at [github.com/HEGSRR/RPr-Chakraborty2021](https://github.com/HEGSRR/RPr-Chakraborty2021) and the analysis plans and reports are registered with OSF at https://doi.org/10.17605/OSF.IO/S5MTQ.
+The reproduction is implemented with R markdown using the `SpatialEpi` package for the Kulldorff spatial scan statistic packages and the `geepack` package for the generalized estimating equation.
 
 ### Keywords
 
@@ -35,7 +34,7 @@ COVID-19; Disability; Reproducibility, United States, Kulldorff Spatial Scan Sta
 
 ## Study design
 
-The reproduction study will try to implement the original study as closely as possible to reproduce the map of county level distribution of COVID-19 incidence rate, the summary statistics and bivariate correlation for disability characteristics and COVID-19 incidence, and the effect estimates of the generalized estimating equations.
+In this reproduction study, we will implement the original study as identically as possible to reproduce the map of county level distribution of COVID-19 incidence rate, the summary statistics and bivariate correlation for disability characteristics and COVID-19 incidence, and the effect estimates of the generalized estimating equations.
 Our two confirmatory hypotheses are that we will be able to exactly reproduce Chakraborty's results as presented in figure 1, table 1, and table 2 of Chakraborty (2021).
 Stated as null hypotheses:
 
@@ -44,12 +43,13 @@ Stated as null hypotheses:
 > H2: There is a less than perfect match between Chakraborty's GEE-based beta coefficient estimates for each of the disability/sociodemographic variable and our GEE-based beta coefficient estimates for the GEE of each disability/sociodemographic variable.
 
 There are multiple models being tested within each of the two hypotheses.
-*H1* compares the results of 18 different bivariate correlation tests, while *H2* compares the results of 5 different generalized estimation equation models, including one for each dimension of socio-demographics: race, ethnicity, poverty status, age, and biological sex.
+*H1* compares the results of 18 different bivariate correlation tests between COVID-19 incidence and people with disabilities (one test) or socio-demographic subcategories of people with disabilities (17 different tests).
+*H2* compares the results of 5 different generalized estimation equation models, including one for each dimension of socio-demographics: race, ethnicity, poverty status, age, and biological sex.
 
 ### Original study design
 
 The original study is **observational**, with the **exploratory** objective of determining "whether COVID-19 incidence is significantly greater in counties containing higher percentages of socio-demographically disadvantaged [people with disabilities], based on their race, ethnicity, poverty status, age, and biological sex" (Chakraborty 2021).
-The independent variables are derived from Census cross-tabulations between people with disabilities and different socio-demographic categories.
+The independent variables are derived from census cross-tabulations between people with disabilities and different socio-demographic categories.
 For example, the independent variable `white people with disabilities` is the number of people with disabilities identifying as one race (white) divided by the total number of people for whom disability and race status are determined.
 
 In the original study, 18 implicit bivariate hypotheses are tested for correlation between COVID-19 cumulative incidence rates and specific categories of PwDs at the county level.
@@ -67,7 +67,7 @@ Although the original publication does not state null hypotheses for each model,
 ...
 > H2.5: The percentages of people with disability, categorized by gender, are not associated with COVID-19 incidence at the county level when accounting for the state and risk level of COVID-19 clusters.
 
-The **spatial extent** of the study are the 48 contiguous states and Washington D.C. in the U.S.
+The **spatial extent** of the study is the 48 contiguous states and Washington D.C. in the U.S.
 The **spatial scale** of the analysis is at the county level.
 Both COVID-19 incidence rates and demographic variables are all measured at the county level.
 The **temporal extent** of the COVID-19 data ranges from 1/22/2020 (when John Hopkins began collecting the data) to 8/1/2020 (when the data was retrieved for the original study).
@@ -75,7 +75,7 @@ The data on disability and sociodemographic characteristics come from the U.S. C
 
 There is no **randomization** in the original study.
 
-The study was originally conducted using SaTScan software (citing version 9.6) to implement the spatial scan statistic.
+The study was originally conducted using SaTScan software (citing version 9.6) to implement the Kulldorff spatial scan statistic.
 Other software were not specified in the original publication.
 However, communications and data files shared by the author indicated that spatial analysis and mapping was conducted in ArcGIS and statistics were calculated in SPSS, but specific software versions and computational environments were not specified.
 
@@ -88,16 +88,18 @@ Our understanding of the original study design and our plan for the reproduction
 ### Existing data and data exploration
 
 This registration was based upon a thorough reading of the original research article, searching and calculating summary statistics for American Community Survey data, accessing the Johns Hopkins Coronavirus Resource Center, and acquiring some additional information and data from the original author, Jay Chakraborty.
-Specifically, Chakraborty informed us of the American Community Survey data table names used in the study (S1810 for demographic categories and disability status and C18130 for poverty status and disability status), provided Johns Hopkins county-level Coronavirus data downloaded on August 1, 2020, outputs from SaTScan spatial clustering analysis, and inputs for the GEE models.
+Specifically, Chakraborty provided Johns Hopkins county-level Coronavirus data downloaded on August 1, 2020, outputs from SaTScan spatial clustering analysis, and inputs for the GEE models.
+He also informed us of the American Community Survey data table names used in the study (S1810 for demographic categories and disability status and C18130 for poverty status and disability status).
 We used the data provided by Chakraborty to:
 1. Check the census variables to ensure that we are using the same independent variables to predict COVID-19 incidence rate.
 1. Experiment with the SaTScan software and Kulldorff spatial scan methodology to verify parameters used in the original study,  compare computational environments between SaTScan and R `SpatialEpi`, and visualize spatial scan outputs used in the original study.
 1. Compare the computational environments for GEE models between SPSS and R `geepack`.
+
 The data provided by the author is not available in an online repository, but we have included the data in our research compendium with permission from the author.
 
 In our reproduction attempt, we used publicly available American Community Survey data downloaded directly from the Census API using the `tidycensus` package for R.
 We used Johns Hopkins Coronavirus data provided by the author because it is not possible to download that dynamic dataset in an archived form as it existed on August 1, 2020.
-Johns Hopkins still provides aggregated COVID-19 incidence rate data, but does not publicly provide archived data identical to those used in the original study.
+
 
 ### Data collection and spatial sampling
 
@@ -105,7 +107,7 @@ The study exclusively used secondary data sources.
 The study did not sample from the secondary data sources.
 
 The published results were based on COVID-19 cases reported at the county-level and this is not a sampled dataset.
-The disability data from the ACS were collected at the county level.
+The disability data from the ACS were aggregated at the county level.
 Details on the data collection could be found at [https://www.census.gov/topics/health/disability/guidance/data-collection-acs.html](https://www.census.gov/topics/health/disability/guidance/data-collection-acs.html) and details on sampling methods could be found at [https://www.census.gov/programs-surveys/acs/technical-documentation/code-lists.html](https://www.census.gov/programs-surveys/acs/technical-documentation/code-lists.html).
 
 ## Data description
@@ -113,20 +115,18 @@ Details on the data collection could be found at [https://www.census.gov/topics/
 Although the data specifications are described in detail in the original study, none of the data from the original study is provided in an online repository.
 
 We received the COVID-19 case data through 8/1/2020 from the author, as there is no readily apparent way to access archived data from the Johns Hopkins University Center for Systems Science Engineering database.
-The COVID-19 case data expresses cumulative count of reported COVID-19 from 1/22/2020 to 8/1/2020. The data can be found at the John Hopkins CCSE COVID-19 Data Repository ([https://github.com/CSSEGISandData/COVID-19](https://github.com/CSSEGISandData/COVID-19)).
+The COVID-19 case data expresses cumulative count of reported COVID-19 from 1/22/2020 to 8/1/2020.
+The data can be found at the John Hopkins CCSE COVID-19 Data Repository ([https://github.com/CSSEGISandData/COVID-19](https://github.com/CSSEGISandData/COVID-19)).
 However, archived data only provides summaries at the national scale.
 
-We accessed the 2018 ACS 5 year estimates for disabilities from the U.S. Census website. The data is also available through the Census API.
+We accessed the 2018 ACS 5 year estimates for disabilities and population from through the tidycensus package in R, which uses the census API.
 
 ## Variables
 
 All variables in this study were derived from secondary data.
-There were no experimentally manipulated variables in this experiment.
+None of the variables were experimentally manipulated.
 COVID-19 incidence rate was used as the dependent variable.
 Following the original study, we examined eighteen independent variables, a percentage of total disabled persons per county and seventeen 'disaggregated' categories that break down socio-demographic characteristics of the disabled population.
-
-The socio-demographic variables are broken down into the following categories.
-Their table code from the ACS data has been included in this documentation
 
 ##### COVID-19 incidence rate
 
@@ -134,7 +134,7 @@ COVID-19 Incidence is calculated as the number of known cases per 100,000 people
 
 ##### Persons with disabilities
 
-The American Community Survey (ACS) variables used in the study are outlined below.
+The American Community Survey (ACS) socio-demographic variables used in the study are outlined in Table 1 below, including the variable name and relevant ACS variable code name(s).
 
 *Table 1: Disability Subgroup Variables*
 
@@ -182,15 +182,15 @@ The second clustering ID was an ordinal COVID relative risk class derived as fol
 
 *Table 2: Relative Risk Score Classification*
 
-|Relative Risk Values   | Relative Risk Class|            Counties|
-|:----------------------|-------------------:|-------------------:|
-|Outside of cluster     |                   1|                2170|
-|RR < 1                 |                   1|                2170|
-|1 <= RR < 2            |                   2|                 843|
-|2 <= RR < 3            |                   3|                  84|
-|3 <= RR < 4            |                   4|                   9|
-|4 <= RR < 5            |                   5|                   2|
-|5 <= RR < 6            |                   6|                   1|
+|Relative Risk Values   | Relative Risk Class|
+|:---------------------:|:------------------:|
+|Outside of cluster     |                   1|
+|RR < 1                 |                   1|
+|1 <= RR < 2            |                   2|
+|2 <= RR < 3            |                   3|
+|3 <= RR < 4            |                   4|
+|4 <= RR < 5            |                   5|
+|5 <= RR < 6            |                   6|
 
 
 The first clustering ID (State) and second clustering score (COVID relative risk class) were combined to form IDs for each unique combination of state and relative risk class.
@@ -198,7 +198,7 @@ The first clustering ID (State) and second clustering score (COVID relative risk
 #### Geographic transformations
 
 Although there were no explicit geographic transformations in this experiment, the variable transformations resulting from the Kulldorff spatial scan statistic were geographic in nature: they assigned values based on spatial clustering of COVID-19 risk, which were subsequently used to define clusters in the GEE models.
-The scan statistic used spherical great circle distance calculations based upon the latitude and longitude coordinates of the centroid of each county.
+The scan statistic in SaTScan used spherical great circle distance calculations based upon the latitude and longitude coordinates of the centroid of each county.
 For this purpose, we have used the `X` and `Y` attributes provided as geographic variables with ACS data.
 
 ## Analyses
@@ -206,11 +206,11 @@ For this purpose, we have used the `X` and `Y` attributes provided as geographic
 ### Geographical characteristics
 
 The **coordinate reference system** was not specified in the methodology.
-Census data were provided in the NAD1983 Geographic Coordinate System, and these latitude/longitude coodinates could have been used for the Kulldorff spatial scan statistic's spherical distance calculations in SaTScan software.
+Census data were provided in the NAD1983 Geographic Coordinate System (EPSG: 4269) and COVID-19 case data were provided using the Web Mercator projection (EPSG: 3857)
 
-The **spatial extent** of the study were the contiguous 49 United States (including the District of Columbia).
+The **spatial extent** of the study were the contiguous 48 United States and the District of Columbia.
 
-The **spatial scale** and **unit of analysis** of the study is are U.S. counties.
+The **spatial scale** and **unit of analysis** of the study is are U.S. counties or county equivalents.
 
 **Edge effects** were not accounted for in the analysis.
 
@@ -250,7 +250,7 @@ These specifications were chosen after testing each alternative and choosing the
 
 ### Inference criteria and robustness
 
-Bivariate inference were assessed with correlation coefficients and p-values.
+Bivariate inferences were assessed with correlation coefficients and p-values.
 
 Multivariate inferences could not be made because GEE models provide estimated coefficients for the independent variables and these are best interpreted as exploratory estimates.
 Model fit was assessed with QIC.
@@ -267,17 +267,17 @@ We planned to test the independent and dependent variables for normality prior t
 
 ### Evaluating the reproduction results
 
-We compared summary statistics for all of our independent variables to those of the original study (original study table 1) to confirm that we were using the same inputs.
-We compared the summary statistics (original study table 1) and geographic distribution (original study figure 1) of the dependent variable, COVID-19 incidence.
+We manually and visually compared the summary statistics (original study table 1) and geographic distribution (original study figure 1) of the dependent variable, COVID-19 incidence.
+We manually compared summary statistics for all of our independent variables to those of the original study (original study table 1) to confirm that we were using the same inputs.
 
 Considering that we used a different computational environment from the original authors, we compared the bivariate correlation coefficients and significance levels expecting extremely similar coefficients and p-values.
 
 We reconstructed the Kulldorff spatial scan statistic in SaTScan software and compared our results to data provided by the author.
-We then recalculated the Kulldorff spatial scan statistic using the `SpatialEpi` package to compare, expecting to find very similar results with possibility for variation due to the Monte Carlo simulation component of the statistic and the difference in computational environments.
+We then recalculated the Kulldorff spatial scan statistic using the `SpatialEpi` package, expecting to find very similar results with possibility for variation due to the Monte Carlo simulation component of the statistic and the difference in computational environments.
 
 We calculated the generalized estimating equation models using `geepack` in R with both the original author's exact data and our reproduced data.
-We expected to find very similar results with both data inputs, with the possibility for variation due to differences in approaches to estimating parameters between different computational environments.
-We compared the coefficients and significance levels with expectation that the direction and significance level would be identical, but magnitudes and Chi Square values may vary.
+We expected to find very similar results with both data inputs, with the possibility for variation due to differences in approaches to estimating parameters in different computational environments.
+We compared the coefficients and significance levels with expectation that the directions and significance levels would be identical, but magnitudes and Chi Square values may vary.
 
 ## Unplanned deviations
 
@@ -289,9 +289,9 @@ Most of the independent variables had significantly non-normal distributions; an
 In order to better understand the geographic patterns underlying the correlations between disability and COVID-19, we also visualized disability rates by county.
 
 The original study did not directly report details for the results of the Kulldorff spatial scan statistic for COVID-19 clusters beyond the number of clusters detected.
-In order to compare our reproduction using the `SpatialEpi` package to the original study using SaTScan software, we also ran the spatial scan statistic in SaTScan.
+In order to compare our reproduction using the SpatialEpi package to the original study using SaTScan software, we also ran the spatial scan statistic in SaTScan.
 SaTScan produced three outputs:
-1. text file report of each cluster
+1. text file report of the analysis with information on each cluster
 1. vector layer of circle polygons with the center and radius of each cluster, ID of the county at the center of the cluster, and a relative risk score for the cluster. The layer contained one circular polygon feature for each cluster (see figure 4), identifying only the county at the center of the cluster.
 1. vector layer of points of the centroids of each county in any cluster, including a unique cluster ID, relative risk score of the cluster, and relative risk score of the location (the county).
 
@@ -299,18 +299,18 @@ We compared our results to the original publication, data files provided by the 
 We exactly reproduced the original author's data files using our data inputs and SaTScan software.
 In order to better understand how the original research used the Kulldorff spatial scan statistic, we decided to create an additional map to visualize the spatial distributions of COVID-19 clusters resulting from SaTScan software.
 We created maps visualizing the spatial clusters of COVID-19 incidence based on the output of SpatialEpi and SaTScan.
-We discovered that the original study most likely operationalized COVID-19 risk as the local relative risk of the county at the center of the cluster.
+We discovered that the original study most likely operationalized COVID-19 risk as the local relative risk of the county at the center of the cluster using the vector layer of circle polygons enumerated as the second output above.
 This operationalization excluded all but the center county of each cluster and assigned the other counties to the lowest risk category.
 For example, SaTScan identified a circular cluster encompassing all of Rhode Island and most of Massachusetts, Connecticut, and Long Island.
 However, the original operationalization of COVID-19 risk only considered the relative risk of the county at the center of the cluster: Washington County, Rhode Island.
 All other counties were classified as minimal risk.
-We also discovered that unlike SaTScan, the `SpatialEpi` package in R did not calculate local or cluster relative risk.
+We also discovered that unlike SaTScan, the SpatialEpi package in R did not calculate local or cluster relative risk.
 
 Therefore, we changed our conceptualization of COVID-19 clusters to include all counties within any cluster.
 We calculated relative risk for localities (counties) and clusters as `(incidence rate within the county) / (incidence rate outside of the county)`.
 We calculated the Kulldorff spatial scan statistic in `SpatialEpi` and then calculated local relative risk for any county within any of the resulting clusters.
 Once we joined the spatial clustering data to all counties with socio-demographic and COVID-19 data, we observed that all counties outside of any cluster had `null` or `na` data for COVID-19 risk.
-We inspected the original author’s GEE input data to determine how to classify these counties, and accordingly assigned them to the lowest risk class: `1`.
+We inspected the original author's data to determine how to classify these counties, and accordingly assigned them to the lowest risk class: `1`.
 We created a map showing the relative risk score of each county (Figure 5) for comparison with the original analysis and to assess its appropriateness for GEE clusters.
 We proceeded to combine the local COVID risk score with State ID's for use as the GEE clustering ID and to run the GEE models.
 
@@ -337,8 +337,8 @@ In addition, we proceeded to create a map that illustrated the percentages of po
 *Figure 3: Percent of population with a disability*
 
 The **second part** of our reproduction analysis focused on computing the summary statistics for variables analyzed and the bivariate correlations with county COVID-19 incidence rates.
-Our summary statistics and Pearson's correlation coefficients were consistent with those of Chakraborty's, but differ slightly in magnitude.
-Since the Pearson's correlation should only be used on variables with normal distribution, we calculated the Spearman's Rho correlation coefficient (Table 3).
+Our summary statistics and Pearson's correlation coefficients were consistent with those of Chakraborty's, but differ slightly in magnitude (Table 3).
+Since the Pearson's correlation should only be used on variables with normal distribution, we calculated the Spearman's Rho correlation coefficient.
 Comparing the Pearson's and Spearman's results, there are some changes in direction and magnitude of the correlations.
 For example, while the Pearson's correlation coefficient shows a weak positive relationship between "COVID-19 incidence rate" and "Percentages with disability that are Native American" and "Percentages with disability that are female", these turned into weak negative relationships in Spearman's correlation coefficient.
 
@@ -370,15 +370,18 @@ Although Chakraborty does not illustrate the classified relative risk of COVID-1
 ![fig4](../../results/figures/rr_original.png)
 *Figure 4: Relative risk score of original analysis*
 
+Once the original analysis of clusters in mapped in Figure 4, it becomes clear that many counties are included within clusters (visualized by red circles), but classified with the minimum level of relative risk because they were not the county defining the center of the cluster.
+While some of those counties did in fact have low local relative risk scores, most of them actually had higher risk levels (Figure 5).
+
 ![fig5](../../results/figures/rr_reproduction_loc.png)
 *Figure 5: Local relative risk score of reproduction analysis*
 
-On top of that, we calculated and mapped the relative risk score for each cluster (Figure 6).
+Once we re-conceptualized relative risk to use cluster-based risk, we found more homogenous regional clusters of elevated risk (Figure 6).
 
 ![fig6](../../results/figures/rr_reproduction_cluster.png)
 *Figure 6: Cluster based relative risk score of reproduction analysis*
 
-In the **third part** of our reproduction analysis, we ultimately implemented three versions of the five GEE models: (1) using the author's original data in the R and `geepack` computational environment, (2) using our reproduced data with a local relative risk score, and (3) using our reproduced data with a cluster relative risk score.
+In the **third part** of our reproduction analysis, we ultimately implemented three versions of the five GEE models: (1) using the author's original data in the R and `geepack` computational environment with relative risk scores identical to those of Figure 4, (2) using our reproduced data with a local relative risk score (see Figure 5), and (3) using our reproduced data with a cluster relative risk score (see Figure 6).
 The estimated coefficients, errors, and *p* values for our final cluster relative risk model are presented in table 4.
 The estimated coefficients from the original study are compared to each version of our reproduction in table 5.
 The average difference in the coefficients between different versions of the GEE models are summarized in table 6.
@@ -417,8 +420,8 @@ The average difference in the coefficients between different versions of the GEE
 
 The results of our reproduction study are mostly consistent with those of Chakraborty, with a few notable differences.
 All estimated coefficients had the same direction compared to the original study.
-The intercepts were all higher in our reanalysis and the other estimated coefficients were lower.
-The other race category and the Hispanic ethnicity category was not found to be significantly related with COVID-19 incidence in our reanalyzed models, while the 18-34 age group was found to have a higher significance level in our model.
+The intercepts were all higher in our reanalysis and the other estimated coefficients were weaker.
+The other race category and the Hispanic ethnicity category were not found to be significantly related with COVID-19 incidence in our reanalyzed models, while the 18-34 age group was found to have a higher significance level in our model.
 
 *Table 5*: Globalized Estimating Equation Model Estimated Parameters
 
@@ -464,7 +467,8 @@ The directions of all estimated coefficients were constant with the exception of
 |Reproduced local relative risk|0.077|0.146||
 |Reproduced cluster relative risk|0.038|0.122|0.043|
 
-Comparing the average differences in estimated coefficients, excluding the intercepts, illustrates how sensitive the GEE models can be to computational environment alone, with the greatest differences produced by the same input data in different environments (Table 6).
+Comparing the average differences in estimated independent variable coefficients (excluding the intercepts) illustrates how sensitive the GEE models can be to computational environment alone.
+The greatest differences were produced using the same input data in different environments (Table 6).
 The R/geepack computational environment found different coefficient estimates from the SPSS computational environment using the same original data, with an average coefficient estimate difference of 0.082, identical directions, and reduced significance levels for the Native American race and the three age groups from 18 through 74.
 Our local relative risk reproduction produced an average coefficient estimate difference of 0.077 from the original study, and 0.146 from the original data in the R/geepack computational environment.
 Our cluster-based relative risk reproduction produced an average coefficient difference of 0.038 from the original study, and 0.122 from the original data in the R/geepack computational environment.
@@ -476,31 +480,29 @@ A portion of the inexactitude may be attributed to differences in the computatio
 However, we have also reanalyzed the study and tested its robustness by changing some research parameters.
 Our results suggest support for the conclusions of the original study, but also emphasize the importance of reproduction studies to understand the full details of the research design, to evaluate internal validity, and to test for uncertainty and robustness to key parameters.
 
-The choropleth map we made in the **first part** of the reproduction analysis closely resembles that of the original study, confirming the equivalence of our dependent variable with that of the original study.
+The choropleth map we made in the **first part** of the reproduction analysis (Figure 2) reveals an identical spatial pattern to that of the original study's Figure 1, confirming the equivalence of our dependent variable with that of the original study.
 Both maps revealed that COVID-19 cases were distributed unevenly across space.
 In particular, cases were more prevalent in the southern part of the country, in the metropolitan areas of the northeast, Chicago, and California, and in some rural areas, including eastern Washington, New Mexico, and Iowa.
-Prior to Chakraborty's bivariate analysis of disability and COVID-19 incidence, we also mapped the spatial distribution of disability.
+Prior to Chakraborty's bivariate analysis of disability and COVID-19 incidence, we also mapped the spatial distribution of disability (Figure 3).
 This spatial visual analysis reveals many regions in which disability rates are high but COVID-19 incidence was still low, including rural New England, Appalachia, and northern Michigan.
 Conversely, many hotspots of COVID-19 incidence had low rates of disability, including metropolitan New England, South Florida, and Chicago.
 The two spatial distributions help explain the negative bivariate relationship between disability rates and COVID-19 incidence.
 
 The summary statistics for the **second part** of the reproduction analysis matched perfectly with those of the original study, confirming that the reproduction uses identical original data.
-The Pearson's correlation coefficient closely resembled the original result, indicating a successful but inexact reproduction.
-Differences in magnitude could be attributed to differences in the computational environments.
-Nevertheless, our results validated the original findings by displaying a relatively weak but significantly negative correlation between COVID-19 incidence and the overall disability percentages in the country.
-COVID-19 incidence was also found to be higher in counties where there are higher percentages of people with disabilities (PwDs) who are Black, Asian, Hispanic, non-Hispanic non-White, below poverty, and aged 5-34 years.
 The original study used Pearson's correlation to test bivariate relationship between variables that are non-normally distributed, and we revised this to use the nonparametric Spearman's correlation coefficient.
-Results indicate that biological sex might not be correlated with COVID-19 incidence rates, but other demographic factors of minority status were still significantly correlated with higher COVID-19 rates at the county level.
+Our reanalysis of the correlations generally found identical directions and increased magnitudes, confirming the bivariate correlations and significance levels of most of the socio-demographic subcategories.
+However, biological sex may not be correlated with COVID-19 incidence rates, as the percentage of females with disabilities changes direction and significance.
 
-Results and interpretation of the Kulldorff spatial scan statistic varied significantly between the original study and our reproduction and re-analysis with regards to selection of secondary clusters, interpretation of clusters, and relative risk scores.
+The Kulldorff spatial scan statistic varied significantly between the original study and our reproduction and re-analysis with regards to selection of secondary clusters, interpretation of clusters, and relative risk scores.
 SatScan and SpatialEpi identify the same most likely cluster, but different sets of secondary clusters.
-On one hand, SaTScan uses GINI statistics to select secondary clusters which maximize the difference between the population within clusters and the population outside of clusters, allowing for geographic overlap and finding 96 total clusters.
-The original study used this default method.
-On the other hand, SpatialEpi selects the most likely secondary clusters while excluding clusters with any geographic overlap, finding 135 total clusters.
+SaTScan uses GINI statistics to select secondary clusters which maximize the difference between the population within clusters and the population outside of clusters, allowing for geographic overlap and finding 96 total clusters.
+The original study used this default secondary cluster selection method.
+SpatialEpi selects the most likely secondary clusters while excluding clusters with any geographic overlap, finding 135 total clusters.
 This difference of parameters and computational environment explains the two different sets of clusters.
 The different sets of secondary clusters largely agree in terms of the most likely cluster in a region and diverge in terms of overlapping, small, and less likely clusters.
 
-In addition to the computational differences, the original study classified COVID risk using a local relative risk score for the county at the center of each cluster. Considering the relatively small number of clusters (102) compared to counties (3108), this method implies that the majority of counties in each state are classified as one low-risk cluster for the GEE analysis, and the remaining 53 clusters were composed of just a few counties at the centers of various COVID hotspots.
+The original study classified COVID risk using a local relative risk score for the county at the center of each cluster (Figure 4).
+Considering the relatively small number of clusters (102) compared to counties (3108), this method implies that the majority of counties in each state are classified as one low-risk cluster for the GEE analysis, and the remaining 53 clusters were composed of just a few counties at the centers of various COVID hotspots.
 When we extended the interpretation of clusters to use the local relative risk score of any county within a cluster (Figure 5), we find significantly more variance in COVID risk within states, resulting in 139 unique GEE clusters.
 However, this conceptualization apparently created GEE clusters defined in part by an ordinal classification of the dependent variable -- COVID incidence.
 Considering that the original motivation for using GEE models was to account for spatial dependence within states (accounting for COVID response policy) and within COVID hotspots (accounting for the uneven geographic diffusion of the pandemic).
@@ -520,7 +522,7 @@ We ultimately modeled three different scenarios:
 3. We reproduced the Kulldorff spatial scan in R and reanalyzed the data by applying a cluster relative risk score to every county in a cluster.
 
 We found that reproducing the analysis with **geepack** resulted in slightly different GEE results than the original study, even when using data provided by the author from the original study.
-This suggests that the computational environments differ in their implementation of GEE, or we have incorrectly specified one or more GEE parameters.
+This suggests that the computational environments differ in their implementation of GEE, a method for which there are multiple approaches to parameter estimation.
 Still, the coefficients trend in the same direction with similar magnitudes, with the exception of the 35-64 age group.
 In our model that assigns local relative risk scores for all counties in clusters, the coefficients are weaker while more of the variance in COVID-19 incidence is accounted for in the GEE clustering method.
 When we moved to cluster-level relative risk scores, the coefficients again performed more similarly to the original publication.
@@ -533,7 +535,7 @@ Comparing across each version of the model, we observed that most variables exhi
 However, some variables are less stable -- especially the black and other race categories, Hispanic ethnicity, and some age groups less affected by severe COVID-19 cases (18-34 and 35-64).
 Therefore, these variables are more sensitive to the design of GEE clusters, warranting further investigation to evaluate the internal validity of these relationships with regard to the model assumptions of GEE.
 
-We confirmed support for Chakraborty's conclusion that controlling for spatial clustering, although the overall disability percentage is negatively associated with confirmed COVID-19 cases, intra-categorical analysis reveals that socio-demographically disadvantaged PwDs were significantly over-represented in counties with higher COVID-19 incidence.
+We confirmed support for Chakraborty's conclusion that although the overall disability percentage is negatively associated with confirmed COVID-19 cases, intra-categorical analysis with geographic GEE clustering reveals that socio-demographically disadvantaged PwDs were significantly over-represented in counties with higher COVID-19 incidence.
 We found the same direction for each independent variable of intra-categorical disability and COVID-19 incidence.
 However, we found weaker significance levels for the Black category and the Hispanic or Latino category.
 We found stronger significance levels for the 18-34 and 35-64 age categories.

@@ -743,6 +743,60 @@ Useful Reference:
 https://data.library.virginia.edu/getting-started-with-generalized-estimating-equations/
 
 
+```{r glm model}
+race_glm <- glm(
+  covid_rate ~ z_white_pct + z_black_pct + z_native_pct + z_asian_pct + z_other_pct,
+  data = gee_data,
+  family = Gamma(link = "log")
+)
+
+ethnicity_glm <- glm(
+  covid_rate ~ z_non_hisp_white_pct + z_hisp_pct + z_non_hisp_non_white_pct,
+  data = gee_data,
+  family = Gamma(link = "log")
+)
+
+pov_glm <- glm(
+  covid_rate ~ z_bpov_pct + z_apov_pct,
+  data = gee_data,
+  family = Gamma(link = "log")
+)
+
+age_glm <- glm(
+  covid_rate ~ z_pct_5_17 + z_pct_18_34 + z_pct_35_64 + z_pct_65_74 + z_pct_75,
+  data = gee_data,
+  family = Gamma(link = "log")
+)
+
+sex_glm <- glm(
+  covid_rate ~ z_male_pct + z_female_pct,
+  data = gee_data,
+  family = Gamma(link = "log")
+)
+
+
+glm_results <- rbind(
+  coef(summary(race_glm)),
+  coef(summary(ethnicity_glm)),
+  coef(summary(pov_glm)),
+  coef(summary(age_glm)),
+  coef(summary(sex_glm))
+) %>%
+  round(3)
+
+
+coefrows <- rownames(glm_results)
+coefrows[1] <- "Race Intercept"
+coefrows[7] <- "Ethnicity Intercept"
+coefrows[11] <- "Poverty Status Intercept"
+coefrows[14] <- "Age Intercept"
+coefrows[20] <- "Biological Sex Intercept"
+rownames(glm_results) <- coefrows
+glm_results
+
+```
+
+
 ```{r gee models}
 
 # it would be smarter to iterate over a list of models and their parameters

@@ -3,44 +3,62 @@ title: "Reproduction Analysis of Chakraborty 2021"
 author: "Joseph Holler, Junyi Zhou, Drew An-Pham, Derrick Burt"
 date: "`r Sys.Date()`"
 output: pdf_document
+editor_options: 
+  markdown: 
+    wrap: sentence
 ---
 
 # Rpr-Reproduction of Social Inequities in the distribution of COVID-19: An intra-categorical analysis of people with disabilities in the U.S.
 
-Joseph Holler, Department of Geography, Middlebury College, Middlebury VT 05753
-Junyi Zhou, Department of Geography, Middlebury College, Middlebury VT 05753 
-Drew An-Pham, Department of Geography, Middlebury College, Middlebury VT 05753
-Derrick Burt, Department of Geography, Middlebury College, Middlebury VT 05753
-Peter Kedron, School of Geographical Sciences and Urban Planning, Arizona State University, Tempe AZ 85281 
+Joseph Holler, Department of Geography, Middlebury College, Middlebury VT 05753 Junyi Zhou, Department of Geography, Middlebury College, Middlebury VT 05753 Drew An-Pham, Department of Geography, Middlebury College, Middlebury VT 05753 Derrick Burt, Department of Geography, Middlebury College, Middlebury VT 05753 Peter Kedron, School of Geographical Sciences and Urban Planning, Arizona State University, Tempe AZ 85281
 
-Version 1.3 | Created Jul 7, 2021 | Last Updated June 22, 2022
+Version 1.3 \| Created Jul 7, 2021 \| Last Updated June 22, 2022
 
-# Abstract
+## Abstract
 
-Chakraborty (2021) investigates the relationships between COVID-19 rates and demographic characteristics of people with disabilities by county in the lower 48 states. The study aims to examine public concern that persons with disabilities (PwDs) face disproportionate challenges due to COVID-19. To investigate this, Chakraborty examines the statistical relationship between confirmed county-level COVID-19 case rates and county-level socio-demographic and disability variables. Specifically, Chakraborty tests county-level bivariate correlations between COVID-19 incidence against the percentage of disability and socio-demographic category, with a separate hypothesis and model for each subcategory within disability, race, ethnicity, age, and biological sex. To control for differences between states and geographic clusters of COVID-19 outbreaks, Chakraborty uses five generalized estimating equation (GEE) models to predict the relationship and significance between COVID-19 incidence and disability subgroups within each socio-demographic category while considering inter-county spatial clusters. Chakraborty (2021) finds significant positive relationships between COVID-19 rates and socially vulnerable demographic categories of race, ethnicity, poverty, age, and biological sex.
+Chakraborty (2021) investigates the relationships between COVID-19 rates and demographic characteristics of people with disabilities by county in the lower 48 states.
+The study aims to examine public concern that persons with disabilities (PwDs) face disproportionate challenges due to COVID-19.
+To investigate this, Chakraborty examines the statistical relationship between confirmed county-level COVID-19 case rates and county-level socio-demographic and disability variables.
+Specifically, Chakraborty tests county-level bivariate correlations between COVID-19 incidence against the percentage of disability and socio-demographic category, with a separate hypothesis and model for each subcategory within disability, race, ethnicity, age, and biological sex.
+To control for differences between states and geographic clusters of COVID-19 outbreaks, Chakraborty uses five generalized estimating equation (GEE) models to predict the relationship and significance between COVID-19 incidence and disability subgroups within each socio-demographic category while considering inter-county spatial clusters.
+Chakraborty (2021) finds significant positive relationships between COVID-19 rates and socially vulnerable demographic categories of race, ethnicity, poverty, age, and biological sex.
 
-This reproduction study is motivated by expanding the potential impact of Chakraborty's study for policy, research, and teaching purposes. Measuring the relationship between COVID-19 incidence and socio-demographic and disability characteristics can provide important information for public health policy-making and resource allocation. A fully reproducible study will increase the accessibility, transparency, and potential impact of Chakraborty's (2021) study by publishing a compendium complete with metadata, data, and code. This will allow other researchers to review, extend, and modify the study and will allow students of geography and spatial epidemiology to learn from the study design and methods.
+This reproduction study is motivated by expanding the potential impact of Chakraborty's study for policy, research, and teaching purposes.
+Measuring the relationship between COVID-19 incidence and socio-demographic and disability characteristics can provide important information for public health policy-making and resource allocation.
+A fully reproducible study will increase the accessibility, transparency, and potential impact of Chakraborty's (2021) study by publishing a compendium complete with metadata, data, and code.
+This will allow other researchers to review, extend, and modify the study and will allow students of geography and spatial epidemiology to learn from the study design and methods.
 
-In this reproduction, we will attempt to identically reproduce all of the results from the original study. This will include the map of county level distribution of COVID-19 incidence rates (Fig. 1), the summary statistics for disability and sociodemographic variables and bivariate correlations with county-level COVID-19 incidence rate (Table 1), and the GEE models for predicting COVID-19 county-level incidence rate (Table 2). A successful reproduction should be able to generate identical results as published by Chakraborty (2021).
+In this reproduction, we will attempt to identically reproduce all of the results from the original study.
+This will include the map of county level distribution of COVID-19 incidence rates (Fig. 1), the summary statistics for disability and sociodemographic variables and bivariate correlations with county-level COVID-19 incidence rate (Table 1), and the GEE models for predicting COVID-19 county-level incidence rate (Table 2).
+A successful reproduction should be able to generate identical results as published by Chakraborty (2021).
 
-The replication study data and code will be made available in a GitHub repository to the greatest extent that licensing and file sizes permit. The repository will be made public at [github.com/HEGSRR/RPr-Chakraborty2021](). 
+The replication study data and code will be made available in a GitHub repository to the greatest extent that licensing and file sizes permit.
+The repository will be made public at [github.com/HEGSRR/RPr-Chakraborty2021]().
 
-Chakraborty, J. 2021. Social inequities in the distribution of COVID-19: An intra-categorical analysis of people with disabilities in the U.S. Disability and Health Journal 14:1-5. DOI:[10.1016/j.dhjo.2020.101007]()
+Chakraborty, J.
+2021.
+Social inequities in the distribution of COVID-19: An intra-categorical analysis of people with disabilities in the U.S.
+Disability and Health Journal 14:1-5.
+[DOI:[10.1016/j.dhjo.2020.101007](DOI:%5B10.1016/j.dhjo.2020.101007){.uri}]()
 
 ### Keywords
+
 COVID-19; Disability; Intersectionality; Race/ethnicity; Poverty; Reproducibility
 
 ## Study Design
+
 The reproduction study will try to implement the original study as closely as possible to reproduce the map of county level distribution of COVID-19 incidence rate, the summary statistics and bivariate correlation for disability characteristics and COVID-19 incidence, and the generalized estimating equations.
-Our two confirmatory hypotheses are that we will be able to exactly reproduce Chakraborty's results as presented in table 1 and table 2 of Chakraborty (2021). Stated as null hypotheses:
+Our two confirmatory hypotheses are that we will be able to exactly reproduce Chakraborty's results as presented in table 1 and table 2 of Chakraborty (2021).
+Stated as null hypotheses:
 
 > H1: There is a less than perfect match between Chakraborty's bivariate correlation coefficient for each disability/sociodemographic variable and COVID-19 incidence rate and our bivariate correlation coefficient for each disability/sociodemographic variable and COVID-19 incidence rate.
 
 > H2: There is a less than perfect match between Chakraborty's beta coefficient for the GEE of each disability/sociodemographic variable and our beta coefficient for the GEE of each disability/sociodemographic variable.
 
-There are multiple models being tested within each of the two hypotheses. That is, H1 and H2 both encompass five models, including one for each dimension of socio-demographics: race, ethnicity, poverty status, age, and biological sex.
+There are multiple models being tested within each of the two hypotheses.
+That is, H1 and H2 both encompass five models, including one for each dimension of socio-demographics: race, ethnicity, poverty status, age, and biological sex.
 
-### Original study design
+## Original study design
 
 The original study is **observational**, with the **exploratory** objective of determining "whether COVID-19 incidence is significantly greater in counties containing higher percentages of socio-demographically disadvantaged [people with disabilities], based on their race, ethnicity, poverty status, age, and biological sex" (Chakraborty 2021).
 This exploratory objective is broken down into five implicit hypotheses that each of the demographic characteristics of people with disabilities is associated with higher COVID-19 incidence rates.
@@ -49,22 +67,29 @@ The **spatial extent** of the study are the 49 contiguous states in the U.S.
 The **spatial scale** of the analysis is at the county level.
 Both COVID-19 incidence rates and demographic variables are all measured at the county level.
 The **temporal extent** of the COVID-19 data ranges from 1/22/2020 (when John Hopkins began collecting the data) to 8/1/2020 (when the data was retrieved for the original study).
-The data on disability and sociodemographic characteristics come from the U.S. Census American Community Survey (ACS) five-year estimates for 2018 (2014-2018).
+The data on disability and sociodemographic characteristics come from the U.S.
+Census American Community Survey (ACS) five-year estimates for 2018 (2014-2018).
 
 There is no **randomization** in the original study.
 
-The study was originally conducted using SaTScan software (unspecified version) to implement the spatial scan statistic.
-Other software are not specified in the publication; however data files and communication with the author show that spatial analysis and mapping was conducted in ArcGIS and statistics were calculated in SPSS.
+![](../../docs/report/workflow.jpg "Workflow diagram")
 
+### Computational environment
 
+The study was originally conducted using SaTScan software (unspecified version) to implement the Kulldorff spatial scan statistic.
+Other software are not specified in the publication; however data files and communication with the author show that spatial analysis and mapping was conducted in ArcGIS and generalized estimating equation (GEE) models were calculated in SPSS.
+
+This reproduction study uses R, including the SpatialEpi package for the Kulldorff spatial scan statistics and the geepack package for GEE models.
 
 ```{r setup, message = FALSE, include = FALSE}
+
+knitr::opts_chunk$set(echo = FALSE)
 
 # list of required packages
 packages <- c(
   "tidycensus", "tidyverse", "downloader", "sf", "classInt", "readr",
   "here", "s2", "pastecs", "tmap", "SpatialEpi", "svDialogs",
-  "geepack"
+  "geepack", "knitr"
 )
 
 # load and install required packages
@@ -81,15 +106,15 @@ package.check <- lapply(
 # save the R processing environment
 writeLines(
   capture.output(sessionInfo()),
-  here("procedure", "environment", "r_environment.txt")
+  here("procedure", "environment", paste0("r-environment-", Sys.Date(), ".txt"))
 )
-
 ```
 
-## Query American Communtity Survey Data
+### Data
 
-This will require an API key for the census, which can be acquired easily here: [api.census.gov/data/key_signup.html](https://api.census.gov/data/key_signup.html)
-This query can take some time to run...
+#### American Community Survey
+
+American Community Survey (ACS) data for sociodemographic subcategories of people with disabilities can be accessed by using the `tidycensus` package to query the Census API. This requires an API key which can be acquired at [api.census.gov/data/key_signup.html](https://api.census.gov/data/key_signup.html)
 
 ```{r Load ACS Data, message = FALSE, eval = FALSE}
 
@@ -125,14 +150,15 @@ acs_pov <- get_acs(
 
 # Query state geographic data
 state <- get_acs(geography = "state", 
-                 variables = c("Total Population" = "B01001_001"),
                  year = 2018, 
+                 variables = c("B01001_001"),
                  geometry = TRUE,
                  keep_geo_vars = TRUE)
 ```
 
-### Filtering and joining the ACS data
-This accomplishes the step 1 and 3 of the workflow diagram
+The original study extent is the lower 48 states and Washington D.C. Therefore, Alaska, Hawai'i and Puerto Rico are removed from the data (workflow diagram step 1).
+Data on people with disabilities in poverty is derived from a different census table (C18130) than data on people with disabilities and age, race, ethnicity, age, and biological sex (S1810).
+Therefore, join the poverty data to the other data using the GEOID (workflow diagram step 3).
 
 ```{r filter and join acs data, message = FALSE, eval = FALSE}
 
@@ -146,10 +172,7 @@ rm(acs_pov)
 
 ```
 
-
-## Save raw data
-
-Optionally, you may save the raw data to data/raw/public/acs.gpkg
+Save the raw ACS data to `data/raw/public/acs.gpkg`
 
 ```{r save ACS data, message = F, eval = FALSE}
 # Save downloaded acs data to acs.gpkg
@@ -164,24 +187,18 @@ write_sf(
 )
 ```
 
-## Load raw data
-
-Optionally, you may load the raw data and begin processing here
+Load the raw ACS data.
+Optionally, begin processing here.
 
 ```{r load ACS data, message = F}
-
 acs <- read_sf(here("data", "raw", "public", "acs.gpkg"), layer = "acs")
 state <- read_sf(here("data", "raw", "public", "acs.gpkg"), layer = "state")
-
 ```
 
-## Preprocess ACS data
-This accomplishes the step 4 the workflow diagram
-
-Calculate percentages for each sub-category of disability and remove raw census data from the data frame
+Calculate independent socio-demographic variables of people with disabilities as percentages for each sub-category of disability (race, ethnicity, poverty, age, and biological sex) and remove raw census data from the data frame (workflow diagram step 4).
+Reproject the data into an Albers equal area conic projection.
 
 ```{r Preprocess ACS data, message = FALSE}
-
 # calculate percentages
 acs_derived <- mutate(acs,
   dis_pct = S1810_C02_001E / S1810_C01_001E * 100,
@@ -216,18 +233,16 @@ acs_derived <- acs_derived %>%
     county_st = NAME,
     contains("pct")
   ) %>%
-  st_transform(5070)
-
+  st_transform(5070) %>% 
+  st_make_valid()
 ```
 
-## Load COVID-19 data
-This accomplishes the step 2 of the workflow diagram
+#### COVID-19 rates
 
-This data has been provided directly with the research compendium because it is no longer available online in the state in which it was downloaded on August 1, 2020.
-The data was provided by the original author, Jayajit Chakraborty.
+Data on COVID-19 rates from the Johns Hopkins University dashboard have been provided directly with the research compendium because the data is no longer available online in the state in which it was downloaded on August 1, 2020.
+The dashboard and cumulative counts of COVID-19 cases and deaths were continually updated, so an exact reproduction required communication with the original author, Jayajit Chakraborty, for assistance with provision of data from August 1, 2020.
 
 ```{r load covid data}
-
 covid <- read_sf(here("data", "raw", "public", "covidcase080120.gpkg"))
 covid <- select(covid,
   fips = FIPS,
@@ -235,15 +250,21 @@ covid <- select(covid,
   cases = Confirmed,
   x = X, y = Y
 )
-covid$covid_rate <- covid$cases / covid$pop * 100000
-covid_table <- st_drop_geometry(covid)
-
 ```
 
-### Join COVID data to ACS data
-This accomplishes the step 5 of the workflow diagram
+Calculate the COVID incidence rate as the cases per 100,000 people (workflow step 2).
+*Unplanned Deviation* Initially the descriptive statistics for the COVID rate were slightly different,
+but we have resolved the difference by rounding the rate to 0 decimal places.
 
-```{r join data and reorder columns}
+```{r covid rate}
+covid$covid_rate <- round(covid$cases / covid$pop * 100000, 2)
+```
+
+Join dependent COVID data to independent ACS sociodemographic data.
+
+```{r join covid to acs}
+# create a non-spatial table of COVID data for use in joining and cluster analysis
+covid_table <- st_drop_geometry(covid)
 
 # Join COVID data to acs data
 acs_covid <- left_join(acs_derived,
@@ -256,14 +277,28 @@ acs_covid <- select(
   acs_covid, geoid, statefp, county, county_st, covid_rate,
   everything()
 )
-
 ```
 
+#### Missing Data
 
-## Map Covid Rates
+There is one county with missing disability and poverty data.
+This was not mentioned in the original study or our pre-analyis plan.
+However, we replace the missing data with zeros, producing results identical to Chakraborty's.
+
+```{r missing data}
+# county with missing data
+filter(acs_covid, is.na(bpov_pct))
+
+# replace NA with 0 for missing data
+acs_covid[is.na(acs_covid$bpov_pct), ]$bpov_pct <- 0
+acs_covid[is.na(acs_covid$apov_pct), ]$apov_pct <- 0
+```
+
+#### Map Disability and COVID-19 Incidence
+
+Map the county level distribution of COVID-19 incidence rates, comparing to Figure 1 of the original study.
 
 ```{r map covid rates}
-
 tm1 <- tm_shape(acs_covid) +
   tm_polygons("covid_rate",
     title = "COVID-19 Cases per 100,000\n(01/22/2020 ~ 08/01/2020)",
@@ -274,7 +309,6 @@ tm1 <- tm_shape(acs_covid) +
   ) +
   tm_shape(state) +
   tm_borders("grey", lwd = .8) +
-  tmap_options(check.and.fix = TRUE) +  
   tm_layout(
     legend.position = c("left", "bottom"),
     legend.title.size = 0.8,
@@ -284,13 +318,11 @@ tm1 <- tm_shape(acs_covid) +
 tm1
 
 tmap_save(tm1, here("results", "figures", "covid_rates.png"))
-
 ```
 
-## Map Disability Rates
+In a planned deviation from the original study, we also map the spatial distribution of disability rates.
 
 ```{r map disability rates}
-
 tm2 <- tm_shape(acs_covid) +
   tm_polygons("dis_pct",
     title = "Percent with Disability\n(ACS 2014-2018)",
@@ -301,39 +333,22 @@ tm2 <- tm_shape(acs_covid) +
   ) +
   tm_shape(state) +
   tm_borders("grey", lwd = .8) +
-  tmap_options(check.and.fix = TRUE) +
   tm_layout(
   legend.position = c("left", "bottom"),
   legend.title.size = 0.8,
   legend.text.size = 0.5)
 
-
 tm2
 
 tmap_save(tm2, here("results", "figures", "disability_rates.png"))
-
 ```
 
-## Missing Data
+#### Descriptive Statistics
 
-There is one county with missing disability and poverty data. Below, we replace
-the missing data with zeros, producing results identical to Chakraborty's.
-
-```{r missing data}
-
-# county with missing data
-filter(acs_covid, is.na(bpov_pct))
-
-# replace NA with 0 for missing data
-acs_covid[is.na(acs_covid$bpov_pct), ]$bpov_pct <- 0
-acs_covid[is.na(acs_covid$apov_pct), ]$apov_pct <- 0
-
-```
-
-## Descriptive Statistics
+Calculate descriptive statistics for dependent covid rate and independent socio-demographic characteristics, reproducing the min, max, mean, and SD columns of Table 1.
+In addition to the original study, also calculate the Shapiro Wilk test for normality.
 
 ```{r descriptive statistics}
-
 acs_covid_stats <- acs_covid %>%
   st_drop_geometry() %>%
   select(where(is.numeric)) %>%
@@ -344,22 +359,34 @@ acs_covid_stats <- acs_covid %>%
   select(min, max, mean, SD = std.dev, ShapiroWilk = normtest.W, p = normtest.p)
 
 acs_covid_stats
-
 ```
 
-## Calculate Pearson's R Correlation Coefficients
+Compare reproduced descriptive statistics to original descriptive statistics by subtracting the reproduced statistics from the original study statistics.
+Identical results will result in zero.
 
-These results are identical in direction and significance to Chakraborty's,
-but differ slightly in magnitude.
+```{r compare descriptive stats}
+# load original table 1 results
+table1 <- read.csv(here("data", "raw", "public", "chakraborty", "table1.csv"))
+# subtract original results from reproduced results
+select(acs_covid_stats, min, max, mean, SD) - 
+  select(table1, min, max, mean, SD)
+```
+The descriptive statistics are identical except for the precision for the descriptive statistics of the COVID incidence rate.
+
+### Analytical Methods
+
+#### Bivariate Parametric Correlation Analysis
+
+Calculate Pearson's R Correlation Coefficient of each independent variable and the COVID-19 incidence rate, reproducing the Pearson's R column of Table 1.
+These results are identical in direction and significance to Chakraborty's, but differ slightly in magnitude.
 
 ```{r pearsons correlation}
-
 df <- sum(!is.na(acs_covid$dis_pct)) - 2
 
 pearsons_r <- acs_covid %>%
   select(where(is.numeric)) %>%
   st_drop_geometry() %>%
-  cor(method = "pearson", use = "pairwise.complete.obs") %>%
+  cor(method = "pearson", use = "everything") %>%
   as.data.frame() %>%
   select(r = covid_rate) %>%
   mutate(
@@ -371,26 +398,68 @@ pearsons_r <- acs_covid %>%
   filter(variable != "covid_rate")
 
 pearsons_r
-# this estimation of t gives similar, but not identical, result to corr.test
-# consider trying the rstatix package for this!
-
 ```
 
-## Calculate Spearman's Rho Correlation Coefficients
+Compare the reproduced Pearson's *r* correlation coefficients to the original study's Pearson's *r* correlation coefficients.
 
-Try a non-parametric correlation test because variables do not have
-normal distributions (see Shapiro-Wilk test results above).
-The direction of several of the variables changes with the non-parametric
-test.
+```{r compare pearsons correlation}
+# calculate number of significance stars at p<0.01 and P<0.05 levels.
+pearsons_r <- mutate(pearsons_r, rp_r_stars = as.numeric(as.character(cut(p,
+  breaks = c(-0.1, 0.01, 0.05, 1),
+  labels = c(2, 1, 0)
+))))
+
+correlations <- table1 %>% filter(variable != "covid_rate") %>% 
+  select(variable,  or_r = r, or_r_stars = rpstars) %>% 
+  left_join(select(pearsons_r, variable, rp_r = r, rp_r_stars), by = "variable") 
+
+correlations <- correlations %>% bind_cols(rename_with(correlations[,4:5] - correlations[,2:3],
+                                                      ~ paste0(.x, "diff")))
+
+correlations %>% kable()
+```
+
+The reproduced Pearson's *r* coefficients are very similar to the original study within a range 0.006.
+*Unplanned Deviation* We should expect identical results for this correlation test, so we loaded the original author's data from `Aug1GEEdata.csv` to re-test the statistic.
+
+```{r original data pearson correlation}
+original_gee <- read.csv(here("data", "raw", "public", "chakraborty", "Aug1GEEdata.csv"))
+original_gee %>%
+  select(Incidence, PerDisable, starts_with("PD")) %>% 
+  cor(method = "pearson", use = "everything") %>%
+  as.data.frame()  %>%
+  rownames_to_column("or_variable") %>%
+  filter(or_variable != "Incidence")  %>%
+  select(or_variable, unplanned_r = Incidence) %>% 
+  bind_cols(correlations[,1:2]) %>% 
+  mutate(unplanned_r = round(unplanned_r, 3), diff = unplanned_r - or_r) %>% 
+  kable()
+```
+
+The author's original data produces coefficients identical to the original publication!
+Is it possible that some of the data values have been transposed to different counties, such that
+the descriptive statistics are all consistent but the correlation coefficients are in error?
+*Deviation* We re-calculate the COVID-19 incidence rate with the original author's data and select for unequal results.
+
+```{r compare incidence rate}
+original_gee <- original_gee %>% mutate(recalc_incidence = round(Cases / Total_POP * 100000, 2))
+original_gee %>% filter(recalc_incidence != Incidence) %>% 
+  select(COUNTY_FIPS, Countyname, Total_POP, Cases, Incidence, recalc_incidence)
+```
+
+We found that 13 counties had incorrect COVID-19 incidence scores, and the scores seem to be swapped with other counties, such that the overall descriptive statistics were accurate but the correlation coefficients were inaccurate.
+
+#### Bivariate Nonparametric Correlation Analysis
+
+Calculate Spearman's Rho Correlation Coefficients, deviating from the original study and using a non-parametric correlation test because the variables do not have normal distributions (see Shapiro-Wilk test results above).
 
 ```{r spearmans correlation}
-
 df <- sum(!is.na(acs_covid$dis_pct)) - 2
 
 spearmans_rho <- acs_covid %>%
   select(where(is.numeric)) %>%
   st_drop_geometry() %>%
-  cor(method = "spearman", use = "pairwise.complete.obs") %>%
+  cor(method = "spearman", use = "everything") %>%
   as.data.frame() %>%
   select(rho = covid_rate) %>%
   mutate(
@@ -400,22 +469,37 @@ spearmans_rho <- acs_covid %>%
   round(3) %>%
   rownames_to_column("variable") %>%
   filter(variable != "covid_rate")
-
-spearmans_rho
-
 ```
 
+Compare the Spearman's *rho* correlation coefficients to the reproduced Pearson's *r* correlation coefficients.
+
+```{r compare spearmans correlation}
+# calculate number of significance stars at p<0.01 and P<0.05 levels.
+spearmans_rho <- mutate(spearmans_rho, rp_rho_stars = as.numeric(as.character(cut(p,
+  breaks = c(-0.1, 0.01, 0.05, 1),
+  labels = c(2, 1, 0)
+))))
+
+correlations <- correlations %>% 
+  left_join(select(spearmans_rho, variable, rp_rho = rho, rp_rho_stars), by = "variable")
+
+correlations <- correlations %>% bind_cols(rename_with(correlations[,8:9] - correlations[,2:3],
+                                                      ~ paste0(.x, "diff")))
+
+correlations %>% kable()
+```
+
+
 ## Kulldorf Spatial Scan Cluster Detection
+
 This accomplishes the step 6 of the workflow diagram
 
 Note that the statistic is a Monte Carlo simulation with 999 iterations.
-Therefore, if you wish to exactly reproduce the same results as our reproduction
-attempt, please **do not run this section**.
+Therefore, if you wish to exactly reproduce the same results as our reproduction attempt, please **do not run this section**.
 Instead, load the scan results below.
 This code block can take more than 10-20 minutes to run.
 
 ```{r SpatialEpi Kulldorff spatial scan, eval = FALSE}
-
 covid_geo <- covid_table %>%
   select(x, y) %>%
   latlong2grid()
@@ -440,7 +524,6 @@ covid_kulldorff <- kulldorff(
 )
 
 rm(covid_table, covid_geo, expected.cases)
-
 ```
 
 ## Save scan results
@@ -470,6 +553,7 @@ print(paste0("Secondary clusters: ", length(covid_kulldorff$secondary.clusters))
 ```
 
 ## Summarize spatial scan clusters by county
+
 This accomplishes the step 7 and 8 of the workflow diagram
 
 Summarize the results of the Kulldorff spatial scan cluster detection by cluster
@@ -514,8 +598,7 @@ covid <- covid %>%
 
 ```
 
-Summarize the results of the Kulldorff spatial scan cluster detection by county
-Code each county `0` if it is not in a cluster and `1` if it is in a cluster.
+Summarize the results of the Kulldorff spatial scan cluster detection by county Code each county `0` if it is not in a cluster and `1` if it is in a cluster.
 
 ```{r summarize Kulldorff results by county}
 
@@ -529,7 +612,6 @@ covid <- covid %>%
   ) 
 
 ```
-
 
 ### How did the classification work?
 
@@ -552,7 +634,6 @@ cat("\n",
 
 ```
 
-
 ```{r}
 cat("Classes of cluster risk and frequency of counties",
   format(covid %>% st_drop_geometry %>% count(cluster_class)), sep="\n")
@@ -560,7 +641,7 @@ cat("Classes of cluster risk and frequency of counties",
 
 ## Map Relative Risk Scores
 
-Note that relative risk is > 1 only if the county was in a cluster
+Note that relative risk is \> 1 only if the county was in a cluster
 
 ```{r prepare original relative risk scores}
 
@@ -573,7 +654,6 @@ covid_temp <- covid %>%
   mutate(rr_original = if_else(is.na(REL_RISK), 0, REL_RISK))
 
 ```
-
 
 ```{r map original relative risk scores}
 
@@ -602,7 +682,6 @@ tmap_save(tm4, here("results", "figures", "rr_original.png"))
 
 ```
 
-
 ```{r map cluster based relative risk scores}
 
 tm5 <- tm_shape(covid) +
@@ -627,7 +706,6 @@ tm5
 tmap_save(tm5, here("results", "figures", "rr_reproduction_cluster.png"))
 
 ```
-
 
 ```{r map local relative risk score}
 
@@ -654,8 +732,8 @@ tmap_save(tm3, here("results", "figures", "rr_reproduction_loc.png"))
 
 ```
 
-
 ## Preprocess data for GEE modelling
+
 This accomplishes the step 9 and 10 of the workflow diagram
 
 ```{r preprocess data for GEE model }
@@ -733,19 +811,16 @@ hist(cluster_summary$n) # improve labels for this graph
 ```
 
 ## GEE Models
+
 This accomplishes the step 11 of the workflow diagram
 
 Generalized Estimating Equation parameters:
 
-"The **‘exchangeable’ correlation matrix** was selected for the results reported here, since this speci-fication yielded the best statistical fit based on the QIC (quasi- likelihood under the independence) model criterion."
-(Chakraborty 2021, Methods paragraph 5)
+"The **'exchangeable' correlation matrix** was selected for the results reported here, since this specification yielded the best statistical fit based on the QIC (quasi- likelihood under the independence) model criterion." (Chakraborty 2021, Methods paragraph 5)
 
-"The **gamma distribution** with **logarithmic link function** was chosen for all GEEs since this model specification provided the lowest QIC value."
-(Chakraborty 2021, Methods paragraph 5)
+"The **gamma distribution** with **logarithmic link function** was chosen for all GEEs since this model specification provided the lowest QIC value." (Chakraborty 2021, Methods paragraph 5)
 
-Useful Reference:
-https://data.library.virginia.edu/getting-started-with-generalized-estimating-equations/
-
+Useful Reference: <https://data.library.virginia.edu/getting-started-with-generalized-estimating-equations/>
 
 ```{r glm model}
 race_glm <- glm(
@@ -799,7 +874,6 @@ rownames(glm_results) <- coefrows
 glm_results
 
 ```
-
 
 ```{r gee models}
 
@@ -887,9 +961,7 @@ QIC_results
 
 ```
 
-
 ```{r preprocess original gee data}
-
 original_gee <- read.csv(here("data", "raw", "public", "chakraborty", "Aug1GEEdata.csv"))
 
 original_processed <- original_gee %>%
@@ -898,7 +970,6 @@ original_processed <- original_gee %>%
   arrange(id)
 
 ```
-
 
 ```{r gee model with author provided data}
 
@@ -974,5 +1045,3 @@ QIC_results_original <- data.frame(
   select(QIC)
 QIC_results_original
 ```
-
-

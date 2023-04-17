@@ -1,4 +1,4 @@
-﻿variable,min,max,mean,SD,r,rpstars
+﻿variable,min,max,mean,SD,r,stars
 covid_rate,0,14257,967,1004,,
 dis_pct,3.83,33.71,15.95,4.4,-0.056,2
 white_pct,0.85,33.26,13.55,4.63,-0.326,2

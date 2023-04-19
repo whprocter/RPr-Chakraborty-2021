@@ -152,9 +152,9 @@ state <- get_acs(geography = "state",
                  keep_geo_vars = TRUE)
 ```
 
-The original study extent is the lower 48 states and Washington D.C. Therefore, Alaska, Hawai'i and Puerto Rico are removed from the data (workflow diagram step 1).
+The original study extent is the lower 48 states and Washington D.C. Therefore, Alaska, Hawai'i and Puerto Rico are removed from the data (workflow step 1).
 Data on people with disabilities in poverty is derived from a different census table (C18130) than data on people with disabilities and age, race, ethnicity, age, and biological sex (S1810).
-Therefore, join the poverty data to the other data using the GEOID (workflow diagram step 3).
+Therefore, join the poverty data to the other data using the GEOID (workflow step 3).
 
 ```{r filter and join acs data, message = FALSE, eval = FALSE}
 # Remove Alaska, Hawaii & Puerto Rico
@@ -189,7 +189,7 @@ acs <- read_sf(here("data", "raw", "public", "acs.gpkg"), layer = "acs")
 state <- read_sf(here("data", "raw", "public", "acs.gpkg"), layer = "state")
 ```
 
-Calculate independent socio-demographic variables of people with disabilities as percentages for each sub-category of disability (race, ethnicity, poverty, age, and biological sex) and remove raw census data from the data frame (workflow diagram step 4).
+Calculate independent socio-demographic variables of people with disabilities as percentages for each sub-category of disability (race, ethnicity, poverty, age, and biological sex) and remove raw census data from the data frame (workflow step 4).
 Reproject the data into an Albers equal area conic projection.
 
 ```{r Preprocess ACS data, message = FALSE}
@@ -247,8 +247,7 @@ covid <- select(covid,
 ```
 
 Calculate the COVID incidence rate as the cases per 100,000 people (workflow step 2).
-*Unplanned Deviation* Initially the descriptive statistics for the COVID rate were slightly different,
-but we have resolved the difference by rounding the rate to 0 decimal places.
+*Unplanned Deviation* Initially the descriptive statistics for the COVID rate were slightly different, but we have resolved the difference by rounding the rate to 0 decimal places.
 
 ```{r covid rate}
 covid$covid_rate <- round(covid$cases / covid$pop * 100000, 2)
@@ -312,8 +311,7 @@ tmap_save(tm1, here("results", "figures", "covid_rates.png"))
 
 ## Map Disability
 
-**Planned deviation**: We also map the spatial distribution of the percent of
-people with any disability.
+**Planned deviation**: We also map the spatial distribution of the percent of people with any disability.
 
 ```{r map disability rates, message = FALSE}
 tm2 <- tm_shape(acs_covid) +
@@ -356,8 +354,7 @@ acs_covid_stats %>% kable()
 ```
 
 Compare reproduced descriptive statistics to original descriptive statistics.
-Difference is calculated as 'reproduction study - original study'
-Identical results will result in zero.
+Difference is calculated as 'reproduction study - original study' Identical results will result in zero.
 
 ```{r compare descriptive stats}
 # load original table 1 results
@@ -367,6 +364,7 @@ table1 <- read.csv(here("data", "raw", "public", "chakraborty", "table1.csv"))
   select(table1, min, max, mean, SD)) %>% 
   kable()
 ```
+
 The descriptive statistics are identical, except that the original study seems to have rounded the COVID-19 statistics to zero decimal places.
 
 # Analytical Methods
@@ -397,8 +395,7 @@ pearsons_r %>% kable()
 
 Compare the reproduced Pearson's *r* correlation coefficients to the original study's Pearson's *r* correlation coefficients.
 Stars indicates the significance level with two stars for `p < 0.01` and one star for `p < 0.05`.
- is calculated as `reproduction study - original study`
-Direction difference is calculated as `(reproduction > 0) - (original > 0)`, giving 0 if both coefficients have the same direction, 1 if the reproduction is positive and the original is negative, and -1 if the reproduction is negative but the original is positive.
+is calculated as `reproduction study - original study` Direction difference is calculated as `(reproduction > 0) - (original > 0)`, giving 0 if both coefficients have the same direction, 1 if the reproduction is positive and the original is negative, and -1 if the reproduction is negative but the original is positive.
 
 ```{r compare pearsons correlation}
 # calculate number of significance stars at p<0.01 and P<0.05 levels.
@@ -449,7 +446,7 @@ original_gee %>%
 ```
 
 The author's original data produced coefficients identical to the original publication!
-Considering the bitwise reproduction of descriptive statistics along with the accurate recalculation of correlation statistics from original data, could it be possible that the data values are correct but have been reassigned / transposed to different counties? 
+Considering the bitwise reproduction of descriptive statistics along with the accurate recalculation of correlation statistics from original data, could it be possible that the data values are correct but have been reassigned / transposed to different counties?
 
 *Unplanned Deviation*: We re-calculate the COVID-19 incidence rate with the original author's data and select for unequal results.
 
@@ -514,8 +511,8 @@ correlations <- correlations %>% mutate(rp_rho_dir_diff = (rp_rho > 0) - (rp_r >
 correlations %>% select(variable, rp_r, rp_stars, starts_with("rp_rho")) %>%  kable()
 ```
 
-Three variables change significance levels, with Native American and Other races gaining significance and age 18-34 losing significance. 
-Two correlations change direction, with both Native American race and Female households switching from positive correlations to negative correlations. 
+Three variables change significance levels, with Native American and Other races gaining significance and age 18-34 losing significance.
+Two correlations change direction, with both Native American race and Female households switching from positive correlations to negative correlations.
 Instabilities between the parametric and non-parametic correlations reflect variables with very skewed distributions and/or weak correlations at the county level.
 In such distributions, the tails and outliers have more weight in parametric tests than in non-parametric tests.
 This is illustrated with a scatterplot and linear regression below.
@@ -530,15 +527,12 @@ plot(acs_covid$native_pct,
 lines(abline(lm(acs_covid$covid_rate ~ acs_covid$native_pct)))
 ```
 
-## Kulldorff Spatial Scan Cluster Detection
+## Kulldorff Spatial Scan Statistic
 
-We use a Kulldorff spatial scan statistic  
-accomplishes the step 6 of the workflow diagram
-
-The Kulldorf spatial scan uses a Monte Carlo simulation with 999 iterations.
-Therefore, the code can take several minutes to run and may not produce identical results each time.
+We use a Kulldorff spatial scan statistic to detect spatial clusters of high COVID-19 incidence (workflow step 6).
+The statistic uses a Monte Carlo simulation with 999 iterations.
+Therefore, the code may not produce identical results each time.
 If you wish to exactly reproduce the same results as our reproduction attempt, please **do not run this section**.
-Instead, load the scan results in the "
 This code block can take more than 10 minutes to run.
 
 ```{r SpatialEpi Kulldorff spatial scan, eval = FALSE}
@@ -598,27 +592,16 @@ print(paste0("Number of Secondary clusters: ",
              length(covid_kulldorff$secondary.clusters)), 
       quote = FALSE)
 ```
-**Unplanned deviation**: 
-The `SpatialEpi` implementation of Kulldorff spatial scan statistics provides output in the form of a collection of data frames, one for each cluster.
-Therefore, we need still to process the Kulldorff results to calculate local relative risk, cluster ID's, and cluster relative risk for each county.
 
-First, calculate the local relative risk for each county (step 7 of the workflow diagram).
-
-```{r local relative risk}
-total_pop <- sum(acs_covid$pop) 
-total_cases <- sum(acs_covid$cases)
-
-acs_covid <- acs_covid %>% 
-  mutate( 
-    rr_loc = (cases / pop) / ((total_cases - cases) / (total_pop - pop))
-  ) 
-```
-
-Second, assign unique cluster ID's to each county within a cluster.
+The `SpatialEpi` implementation of Kulldorff spatial scan statistics provides output in the form of hierarchical lists analogous to the text output of SaTScan, but does not ouput a data frame.
+Therefore, additional steps are required to append the Kulldorff scan results to the `acs_covid` simple features data frame.
+This can be done by assigning unique cluster ID's to each county within a cluster.
 Clusters include the county at the center of a cluster and all of the other counties within the cluster radius.
-`SpatialEpi` finds only non-overlapping clusters, such that each county is part of at most one cluster.
+The default SatSCan setting is to find only non-overlapping clusters, such that each county is part of at most one cluster.
+SpatialEpi is also implemented to find only non-overlapping clusters.
+Therefore, we use the FIPS code of the county at the center of each cluster as the unique cluster ID.
 
-```{r assign cluster IDs}
+```{r assign cluster IDs, message = FALSE}
 # list of primary cluster locations (counties)
 cluster_locations <- covid_kulldorff$most.likely.cluster$location.IDs.included
 
@@ -637,14 +620,51 @@ for (i in secondary) {
     mutate(clusterID = covid_table[[cluster_locations[1], "fips"]])
   clusters <- clusters %>% rbind(new_clusters)
 }
-
-# join clusterID to acs_covid geodataframe
-acs_covid <- acs_covid[,1:29] %>% left_join(clusters, by = "fips")
-
-rm(new_clusters, cluster_locations, clusters)
 ```
 
-Calculate the relative risk score of each cluster (step 7 of workflow diagram).
+Join the Kulldorff spatial scan cluster IDs to the acs_covid simple features dataframe.
+Although this is workflow step 9, the order of operations between steps 7 and 8 and step 9 is not important.
+
+```{r join clusterID to acs_covid, message = FALSE}
+acs_covid <- acs_covid[,1:29] %>% 
+  left_join(clusters, by = "fips") %>% 
+  mutate(isCluster = case_when(
+    clusterID == fips ~ "center",
+    !is.na(clusterID) ~ "inside",
+    .default = "outside"
+  ))
+
+rm(new_clusters, cluster_locations, clusters)
+
+tmap_mode("view")
+tm_basemap("OpenStreetMap.HOT") +
+  tm_shape(acs_covid) + 
+  tm_fill(alpha=0.7, col="isCluster", palette="-Oranges", popup.vars=c("fips","clusterID"))
+```
+
+The SaTScan software implementation of the Kulldorff spatial scan statistic calculates two relative risk scores:
+
+-   local relative risk is the incidence rate of population within a location divided by the incidence rate of the population outside of the location
+-   cluster relative risk is the incidence rate of the population within the cluster divided by the incidence rate of the population outside of the cluster
+
+For the purposes of interpreting the spatial scan statistic, a *location* is a *county* an a *cluster* is a *collection of counties* with high incidence rates, defined in the shape of a circle with a center and a radius.
+
+The original study discusses classifying the relative risk of counties, suggesting that the local relative risk should be used.
+
+The spatial scan statistic is based on case counts and total population, and is therefore unaffected by the inconsistency in calculated COVID Incidence rates.
+
+The `SpatialEpi` implementation of Kulldorff spatial scan statistics does not calculate local relative risk or cluster relative risk.
+Therefore, the next step is to calculate local relative risk (workflow step 7).
+
+```{r local relative risk}
+total_pop <- sum(acs_covid$pop) 
+total_cases <- sum(acs_covid$cases)
+
+acs_covid <- acs_covid %>% 
+  mutate(rr_loc = (cases / pop) / ((total_cases - cases) / (total_pop - pop))  ) 
+```
+
+**Unplanned deviation**: Also calculate the relative risk score of each cluster so that we can test whether cluster-based risk classifications are better controls for the spatial/regional heterogeneity of COVID-19 risk.
 
 ```{r cluster relative risk}
 # Calculate cluster-based relative risk for counties in a cluster
@@ -652,15 +672,16 @@ acs_covid <- acs_covid %>%
   group_by(clusterID) %>%
   mutate(
     rr_cluster = ifelse(is.na(clusterID), NA, 
-      (sum(cases) / sum(pop)) / 
-        ((total_cases - sum(cases)) / (total_pop - sum(pop))))) %>% 
+      (sum(cases) / sum(pop)) / ((total_cases - sum(cases)) / (total_pop - sum(pop))) 
+    )
+  ) %>% 
   ungroup()
 ```
 
-Reclassify relative risk on a scale from 1 to 6 (step 8 of the workflow diagram).
+Reclassify relative risk on a scale from 1 to 6 (workflow step 8).
 Counties falling outside of any cluster are assigned a score of 1.
 
-```{r classify local relative risk}
+```{r classify relative risk}
 # class breaks
 breaks <- c(-Inf,1,2,3,4,5,Inf)
 
@@ -673,10 +694,10 @@ acs_covid <- acs_covid %>%
 rm(breaks)
 ```
 
-### How did the classification work?
+Summarize results of the local county-based relative risk classification.
 
-```{r classification results}
-# Count frequency of each class of COVID risk
+```{r local classification results}
+# Count frequency of each class of local COVID risk
 cat("Classes of local risk and frequency of counties",
   format(acs_covid %>% st_drop_geometry %>% count(loc_class)), sep="\n")
 
@@ -686,40 +707,126 @@ cat("\n",
     sum(is.na(acs_covid$clusterID) & acs_covid$rr_loc < 1),
     "counties lie inside of a cluster, but have a local relative risk < 1"
     ) 
-
-# There's a relative risk score for both county & cluster (in SatScan)
-# This reproduction uses county-based relative risk scores based on
-# paragraph 4 of the methods section of the paper and Desjardins et al
-
 ```
 
+Summarize results of the cluster-based relative risk classification.
 
-
-```{r}
+```{r cluster classification results}
 cat("Classes of cluster risk and frequency of counties",
   format(acs_covid %>% st_drop_geometry %>% count(cluster_class)), sep="\n")
 # better to use kable() for these outputs? Check knit results...
 ```
 
-The original study reported 102 unique clusters having a range of 1 to 245 counties in each cluster.
+Create unique cluster IDs as combinations of the relative risk class and the state.
 
-Need to report number of unique clusters after combining risk class with state ID.
+```{r make gee clusters}
+acs_covid <- acs_covid %>% mutate(
+  locID = as.integer(statefp) * 10 + loc_class,
+  clusID = as.integer(statefp) * 10 + cluster_class
+  )
+```
 
-## Map Relative Risk Scores
+The original study reported `102` unique clusters having a range of `1` to `245` counties in each cluster.
+
+### Report number of unique clusters and histogram of counties per cluster
+
+```{r report unique clusters}
+cluster_summary <- acs_covid %>% filter(cases > 0) %>% 
+  st_drop_geometry() %>%
+  count(locID)
+cat(length(cluster_summary$n), 
+    "unique clusters based on SpatialEpi local relative risk\n"
+    )
+summary(cluster_summary$n)
+cat("\r\n")
+#hist(cluster_summary$n) # improve labels for this graph
+
+cluster_summary <- acs_covid %>% filter(cases > 0) %>% 
+  st_drop_geometry() %>%
+  count(clusID)
+cat(length(cluster_summary$n), 
+    "unique clusters based on spatialEpi cluster relative risk\n"
+    )
+summary(cluster_summary$n)
+```
+
+**Unplanned deviation**: Upon failing to reproduce an identical number of GEE clusters using SpatialEpi in R, we reproduced the procedure in the free but not open SaTScan software.
+The input data files (case, Coordinates.geo, and Population.pop), parameter file (sat_scan_runfile.prm), and output data files (sat_scan_compare.txt, sat_scan_compare.col.shp, and sat_scan_compare.gis.shp) are found in the `data/derived/public/satscan` directory.
+
+We viewed the SatSCAN outputs in QGIS Desktop and discovered that the spatial ouptut includes two shapefiles: 
+
+- col cluster polygon shapefile containing a circle for each cluster, where each polygon is a circle defined by the cluster center and radius. Contains variable `REL_RISK` for relative risk **(LOCAL OR CLUSTER RISK???)**
+- gis location point shapefile contains one point for each county in a cluster. Contains variables `LOC_RR` for local relative risk  and `CLU_RR` for cluster relative risk
+
+Considering that the author-provided `Aug1GEEdata.csv` data contains a `REL_RISK` column, and author-provided `SatScan_results.txt` indicates a geographic cluster file but no location file, we can expect that the original study used the `col` polygon cluster shapefile representing the centers of each cluster.
+
+Load and verify the SatSCan reproduction results.
+
+**NOTE** Unfortunately, our satscan results appear to have geographic overlap even though the text output does not. Redo?
+
+```{r load and process satscan reproduction}
+satscan_col <- read_sf(here("data", "derived", "public", "satscan", "sat_scan_compare.col.shp"))
+satscan_col_t <- satscan_col %>% st_drop_geometry()
+satscan_gis <- read_sf(here("data", "derived", "public", "satscan", "sat_scan_compare.gis.shp")) %>% st_drop_geometry()
+
+acs_covid <- acs_covid[, 1:which(colnames(acs_covid)=="clusID")] %>% 
+  left_join(satscan_gis[, c("LOC_ID", "CLU_RR", "LOC_RR")], by = join_by(fips == LOC_ID)) %>% 
+  left_join(satscan_col_t[, c("LOC_ID", "REL_RISK")], by = join_by(fips == LOC_ID))
+
+breaks <- c(-Inf,1,2,3,4,5,Inf)
+
+acs_covid <- acs_covid %>% 
+  mutate( 
+    ss_loc_class = ifelse(is.na(LOC_RR), 1, cut(LOC_RR, breaks, labels=FALSE)),
+    ss_cluster_class = ifelse(is.na(CLU_RR), 1, cut(CLU_RR, breaks, labels=FALSE)),
+    ss_center_class = ifelse(is.na(REL_RISK), 1, cut(REL_RISK, breaks, labels=FALSE)),
+    ss_locID = as.integer(statefp) * 10 + ss_loc_class,
+    ss_clusID = as.integer(statefp) * 10 + ss_cluster_class,
+    ss_centerID = as.integer(statefp) * 10 + ss_center_class
+  ) 
+
+rm(breaks)
+
+cluster_summary <- acs_covid %>% filter(cases > 0) %>% 
+  st_drop_geometry() %>%
+  count(ss_locID)
+cat(length(cluster_summary$n), 
+    "unique clusters based on SaTScan local relative risk\n"
+    )
+summary(cluster_summary$n)
+cat("\r\n")
+
+cluster_summary <- acs_covid %>% filter(cases > 0) %>% 
+  st_drop_geometry() %>%
+  count(ss_clusID)
+cat(length(cluster_summary$n), 
+    "unique clusters based on SaTScan cluster relative risk\n"
+    )
+summary(cluster_summary$n)
+cat("\r\n")
+
+cluster_summary <- acs_covid %>% filter(cases > 0) %>% 
+  st_drop_geometry() %>%
+  count(ss_centerID)
+cat(length(cluster_summary$n), 
+    "unique clusters based on SaTScan cluster center relative risk\n"
+    )
+summary(cluster_summary$n)
+```
+
+
+
+
+
+
+### Map Relative Risk Scores
+
+**Unplanned deviation**: Considering the inconsistent clustering results, we attempted to reproduce the original results using the original free (but not open source) SatSCan software.
+We viewed the SatSCAN outputs in QGIS Desktop and discovered that the spatial ouptut includes two shapefiles: - gis point shapefile contains one point for each county in a cluster - col polygon shapefile containing a circle for each cluster, where each polygon is a circle defined by the cluster center and radius.
 
 Note that relative risk is \> 1 only if the county was in a cluster
 
-```{r prepare original relative risk scores}
 
-original_cluster <- read_sf(here("data", "derived", "public", "satscan", "sat_scan_compare.col.shp"))
-cluster_table <- st_drop_geometry(original_cluster)
-
-covid <- left_join(covid, cluster_table, by = c("fips" = "LOC_ID"))
-
-covid_temp <- covid %>%
-  mutate(rr_original = if_else(is.na(REL_RISK), 0, REL_RISK))
-
-```
 
 ```{r map original relative risk scores}
 
@@ -843,37 +950,16 @@ rm(covid_clusters)
 
 ```
 
-## Save preprocessed GEE data inputs
-
 Optionally, you may save the preprocessed to `data/raw/public/gee_data.gpkg`
 
 ```{r save preprocessed COVID cluster data, eval = FALSE}
-
 write_sf(gee_data, here("data", "derived", "public", "gee_data.gpkg"))
-
 ```
-
-## Load preprocessed GEE input data
 
 Optionally, you may load the preprocessed data from `data/raw/public/gee_data.gpkg`
 
 ```{r load preprocessed COVID cluster data, eval = FALSE}
-
 gee_data <- read_sf(here("data", "derived", "public", "gee_data.gpkg"))
-
-```
-
-# Report number of unique clusters and histogram of counties per cluster
-
-```{r report unique clusters}
-
-cluster_summary <- gee_data %>%
-  st_drop_geometry() %>%
-  count(id)
-cat(length(cluster_summary$n), "unique clusters\n")
-summary(cluster_summary$n)
-hist(cluster_summary$n) # improve labels for this graph
-
 ```
 
 ## GEE Models

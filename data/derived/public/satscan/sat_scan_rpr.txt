@@ -1,10 +1,10 @@
                                  _____________________________
 
-                                         SaTScan v10.0
+                                         SaTScan v10.1
                                  _____________________________
 
 
-Program run on: Tue Aug 10 13:09:13 2021
+Program run on: Wed Apr 19 22:02:00 2023
 
 Purely Spatial analysis
 scanning for clusters with high rates
@@ -13,11 +13,11 @@ ________________________________________________________________________________
 
 SUMMARY OF DATA
 
-Study period.......................: 2020/1/22 to 2020/8/1
+Study period.......................: 2000/1/1 to 2000/12/31
 Number of locations................: 3108
 Population, averaged over time.....: 325009505
 Total number of cases..............: 4483338
-Annual cases / 100000..............: 2610.5
+Annual cases / 100000..............: 1376.6
 _______________________________________________________________________________________________
 
 CLUSTERS DETECTED
@@ -30,7 +30,7 @@ CLUSTERS DETECTED
   Population............: 16949211
   Number of cases.......: 469091
   Expected cases........: 233805.60
-  Annual cases / 100000.: 5237.6
+  Annual cases / 100000.: 2761.9
   Observed / expected...: 2.01
   Relative risk.........: 2.12
   Log likelihood ratio..: 97983.066700
@@ -43,7 +43,7 @@ CLUSTERS DETECTED
   Population............: 12986739
   Number of cases.......: 359554
   Expected cases........: 179145.35
-  Annual cases / 100000.: 5239.5
+  Annual cases / 100000.: 2762.9
   Observed / expected...: 2.01
   Relative risk.........: 2.09
   Log likelihood ratio..: 73915.560866
@@ -112,7 +112,7 @@ CLUSTERS DETECTED
   Population............: 56901941
   Number of cases.......: 1093125
   Expected cases........: 784932.84
-  Annual cases / 100000.: 3635.5
+  Annual cases / 100000.: 1917.1
   Observed / expected...: 1.39
   Relative risk.........: 1.52
   Log likelihood ratio..: 67061.638033
@@ -125,7 +125,7 @@ CLUSTERS DETECTED
   Population............: 6618826
   Number of cases.......: 218360
   Expected cases........: 91303.28
-  Annual cases / 100000.: 6243.3
+  Annual cases / 100000.: 3292.2
   Observed / expected...: 2.39
   Relative risk.........: 2.46
   Log likelihood ratio..: 65199.895371
@@ -138,7 +138,7 @@ CLUSTERS DETECTED
   Population............: 4825877
   Number of cases.......: 138008
   Expected cases........: 66570.48
-  Annual cases / 100000.: 5411.9
+  Annual cases / 100000.: 2853.8
   Observed / expected...: 2.07
   Relative risk.........: 2.11
   Log likelihood ratio..: 29758.134770
@@ -172,7 +172,7 @@ CLUSTERS DETECTED
   Population............: 12781451
   Number of cases.......: 274862
   Expected cases........: 176313.50
-  Annual cases / 100000.: 4069.7
+  Annual cases / 100000.: 2146.0
   Observed / expected...: 1.56
   Relative risk.........: 1.60
   Log likelihood ratio..: 24627.871706
@@ -186,7 +186,7 @@ CLUSTERS DETECTED
   Population............: 17275225
   Number of cases.......: 311931
   Expected cases........: 238302.79
-  Annual cases / 100000.: 3417.1
+  Annual cases / 100000.: 1801.9
   Observed / expected...: 1.31
   Relative risk.........: 1.33
   Log likelihood ratio..: 10998.313770
@@ -202,7 +202,7 @@ CLUSTERS DETECTED
   Population............: 4762444
   Number of cases.......: 102911
   Expected cases........: 65695.45
-  Annual cases / 100000.: 4089.4
+  Annual cases / 100000.: 2156.4
   Observed / expected...: 1.57
   Relative risk.........: 1.58
   Log likelihood ratio..: 9131.693827
@@ -215,7 +215,7 @@ CLUSTERS DETECTED
   Population............: 12470476
   Number of cases.......: 228820
   Expected cases........: 172023.77
-  Annual cases / 100000.: 3472.4
+  Annual cases / 100000.: 1831.1
   Observed / expected...: 1.33
   Relative risk.........: 1.35
   Log likelihood ratio..: 8862.568453
@@ -228,7 +228,7 @@ CLUSTERS DETECTED
    Population............: 5180493
    Number of cases.......: 105493
    Expected cases........: 71462.22
-   Annual cases / 100000.: 3853.7
+   Annual cases / 100000.: 2032.1
    Observed / expected...: 1.48
    Relative risk.........: 1.49
    Log likelihood ratio..: 7187.763625
@@ -250,7 +250,7 @@ CLUSTERS DETECTED
    Population............: 12140834
    Number of cases.......: 217334
    Expected cases........: 167476.52
-   Annual cases / 100000.: 3387.7
+   Annual cases / 100000.: 1786.4
    Observed / expected...: 1.30
    Relative risk.........: 1.31
    Log likelihood ratio..: 7067.154947
@@ -265,7 +265,7 @@ CLUSTERS DETECTED
    Population............: 12886874
    Number of cases.......: 226589
    Expected cases........: 177767.76
-   Annual cases / 100000.: 3327.5
+   Annual cases / 100000.: 1754.7
    Observed / expected...: 1.27
    Relative risk.........: 1.29
    Log likelihood ratio..: 6440.653099
@@ -280,7 +280,7 @@ CLUSTERS DETECTED
    Population............: 2549207
    Number of cases.......: 53686
    Expected cases........: 35164.99
-   Annual cases / 100000.: 3985.5
+   Annual cases / 100000.: 2101.6
    Observed / expected...: 1.53
    Relative risk.........: 1.53
    Log likelihood ratio..: 4232.215919
@@ -293,7 +293,7 @@ CLUSTERS DETECTED
    Population............: 251446
    Number of cases.......: 9865
    Expected cases........: 3468.57
-   Annual cases / 100000.: 7424.7
+   Annual cases / 100000.: 3915.2
    Observed / expected...: 2.84
    Relative risk.........: 2.85
    Log likelihood ratio..: 3919.541742
@@ -306,7 +306,7 @@ CLUSTERS DETECTED
    Population............: 1166301
    Number of cases.......: 28236
    Expected cases........: 16088.52
-   Annual cases / 100000.: 4581.6
+   Annual cases / 100000.: 2416.0
    Observed / expected...: 1.76
    Relative risk.........: 1.76
    Log likelihood ratio..: 3751.569706
@@ -321,7 +321,7 @@ CLUSTERS DETECTED
    Population............: 11028732
    Number of cases.......: 185753
    Expected cases........: 152135.65
-   Annual cases / 100000.: 3187.4
+   Annual cases / 100000.: 1680.8
    Observed / expected...: 1.22
    Relative risk.........: 1.23
    Log likelihood ratio..: 3598.160673
@@ -336,7 +336,7 @@ CLUSTERS DETECTED
    Population............: 411564
    Number of cases.......: 12730
    Expected cases........: 5677.31
-   Annual cases / 100000.: 5853.5
+   Annual cases / 100000.: 3086.7
    Observed / expected...: 2.24
    Relative risk.........: 2.25
    Log likelihood ratio..: 3232.133953
@@ -349,7 +349,7 @@ CLUSTERS DETECTED
    Population............: 909308
    Number of cases.......: 22416
    Expected cases........: 12543.43
-   Annual cases / 100000.: 4665.2
+   Annual cases / 100000.: 2460.1
    Observed / expected...: 1.79
    Relative risk.........: 1.79
    Log likelihood ratio..: 3152.571469
@@ -363,7 +363,7 @@ CLUSTERS DETECTED
    Population............: 155726
    Number of cases.......: 6432
    Expected cases........: 2148.16
-   Annual cases / 100000.: 7816.4
+   Annual cases / 100000.: 4121.8
    Observed / expected...: 2.99
    Relative risk.........: 3.00
    Log likelihood ratio..: 2772.015343
@@ -376,7 +376,7 @@ CLUSTERS DETECTED
    Population............: 2637772
    Number of cases.......: 49976
    Expected cases........: 36386.70
-   Annual cases / 100000.: 3585.5
+   Annual cases / 100000.: 1890.7
    Observed / expected...: 1.37
    Relative risk.........: 1.38
    Log likelihood ratio..: 2290.846838
@@ -391,7 +391,7 @@ CLUSTERS DETECTED
    Population............: 800421
    Number of cases.......: 18334
    Expected cases........: 11041.39
-   Annual cases / 100000.: 4334.7
+   Annual cases / 100000.: 2285.8
    Observed / expected...: 1.66
    Relative risk.........: 1.66
    Log likelihood ratio..: 2010.623835
@@ -404,7 +404,7 @@ CLUSTERS DETECTED
    Population............: 86902
    Number of cases.......: 3437
    Expected cases........: 1198.77
-   Annual cases / 100000.: 7484.7
+   Annual cases / 100000.: 3946.8
    Observed / expected...: 2.87
    Relative risk.........: 2.87
    Log likelihood ratio..: 1382.534717
@@ -417,7 +417,7 @@ CLUSTERS DETECTED
    Population............: 65256
    Number of cases.......: 2860
    Expected cases........: 900.17
-   Annual cases / 100000.: 8294.1
+   Annual cases / 100000.: 4373.7
    Observed / expected...: 3.18
    Relative risk.........: 3.18
    Log likelihood ratio..: 1346.733236
@@ -430,7 +430,7 @@ CLUSTERS DETECTED
    Population............: 6854008
    Number of cases.......: 110486
    Expected cases........: 94547.49
-   Annual cases / 100000.: 3050.6
+   Annual cases / 100000.: 1608.7
    Observed / expected...: 1.17
    Relative risk.........: 1.17
    Log likelihood ratio..: 1302.700492
@@ -443,7 +443,7 @@ CLUSTERS DETECTED
    Population............: 167643
    Number of cases.......: 5165
    Expected cases........: 2312.55
-   Annual cases / 100000.: 5830.5
+   Annual cases / 100000.: 3074.6
    Observed / expected...: 2.23
    Relative risk.........: 2.23
    Log likelihood ratio..: 1298.817878
@@ -462,7 +462,7 @@ CLUSTERS DETECTED
    Population............: 6636859
    Number of cases.......: 105250
    Expected cases........: 91552.04
-   Annual cases / 100000.: 3001.1
+   Annual cases / 100000.: 1582.6
    Observed / expected...: 1.15
    Relative risk.........: 1.15
    Log likelihood ratio..: 998.528875
@@ -475,7 +475,7 @@ CLUSTERS DETECTED
    Population............: 58086
    Number of cases.......: 2345
    Expected cases........: 801.27
-   Annual cases / 100000.: 7640.0
+   Annual cases / 100000.: 4028.8
    Observed / expected...: 2.93
    Relative risk.........: 2.93
    Log likelihood ratio..: 974.704096
@@ -488,7 +488,7 @@ CLUSTERS DETECTED
    Population............: 114106
    Number of cases.......: 3584
    Expected cases........: 1574.03
-   Annual cases / 100000.: 5944.1
+   Annual cases / 100000.: 3134.4
    Observed / expected...: 2.28
    Relative risk.........: 2.28
    Log likelihood ratio..: 939.536219
@@ -501,7 +501,7 @@ CLUSTERS DETECTED
    Population............: 532647
    Number of cases.......: 11279
    Expected cases........: 7347.59
-   Annual cases / 100000.: 4007.3
+   Annual cases / 100000.: 2113.2
    Observed / expected...: 1.54
    Relative risk.........: 1.54
    Log likelihood ratio..: 904.160664
@@ -514,7 +514,7 @@ CLUSTERS DETECTED
    Population............: 1093901
    Number of cases.......: 20502
    Expected cases........: 15089.80
-   Annual cases / 100000.: 3546.8
+   Annual cases / 100000.: 1870.3
    Observed / expected...: 1.36
    Relative risk.........: 1.36
    Log likelihood ratio..: 875.012858
@@ -527,7 +527,7 @@ CLUSTERS DETECTED
    Population............: 37955
    Number of cases.......: 1740
    Expected cases........: 523.57
-   Annual cases / 100000.: 8675.7
+   Annual cases / 100000.: 4574.9
    Observed / expected...: 3.32
    Relative risk.........: 3.32
    Log likelihood ratio..: 873.423206
@@ -540,7 +540,7 @@ CLUSTERS DETECTED
    Population............: 7411
    Number of cases.......: 736
    Expected cases........: 102.23
-   Annual cases / 100000.: 18794.2
+   Annual cases / 100000.: 9910.6
    Observed / expected...: 7.20
    Relative risk.........: 7.20
    Log likelihood ratio..: 819.136785
@@ -554,7 +554,7 @@ CLUSTERS DETECTED
    Population............: 998496
    Number of cases.......: 18620
    Expected cases........: 13773.74
-   Annual cases / 100000.: 3529.0
+   Annual cases / 100000.: 1860.9
    Observed / expected...: 1.35
    Relative risk.........: 1.35
    Log likelihood ratio..: 769.785700
@@ -567,7 +567,7 @@ CLUSTERS DETECTED
    Population............: 165324
    Number of cases.......: 4373
    Expected cases........: 2280.56
-   Annual cases / 100000.: 5005.7
+   Annual cases / 100000.: 2639.6
    Observed / expected...: 1.92
    Relative risk.........: 1.92
    Log likelihood ratio..: 754.995991
@@ -580,7 +580,7 @@ CLUSTERS DETECTED
    Population............: 104062
    Number of cases.......: 3061
    Expected cases........: 1435.48
-   Annual cases / 100000.: 5566.7
+   Annual cases / 100000.: 2935.4
    Observed / expected...: 2.13
    Relative risk.........: 2.13
    Log likelihood ratio..: 692.692058
@@ -593,7 +593,7 @@ CLUSTERS DETECTED
    Population............: 122482
    Number of cases.......: 3324
    Expected cases........: 1689.58
-   Annual cases / 100000.: 5135.9
+   Annual cases / 100000.: 2708.3
    Observed / expected...: 1.97
    Relative risk.........: 1.97
    Log likelihood ratio..: 615.196002
@@ -606,7 +606,7 @@ CLUSTERS DETECTED
    Population............: 17139
    Number of cases.......: 929
    Expected cases........: 236.42
-   Annual cases / 100000.: 10257.8
+   Annual cases / 100000.: 5409.2
    Observed / expected...: 3.93
    Relative risk.........: 3.93
    Log likelihood ratio..: 578.798274
@@ -619,7 +619,7 @@ CLUSTERS DETECTED
    Population............: 21535
    Number of cases.......: 1004
    Expected cases........: 297.06
-   Annual cases / 100000.: 8822.9
+   Annual cases / 100000.: 4652.5
    Observed / expected...: 3.38
    Relative risk.........: 3.38
    Log likelihood ratio..: 515.790196
@@ -632,7 +632,7 @@ CLUSTERS DETECTED
    Population............: 10881
    Number of cases.......: 692
    Expected cases........: 150.10
-   Annual cases / 100000.: 12035.4
+   Annual cases / 100000.: 6346.5
    Observed / expected...: 4.61
    Relative risk.........: 4.61
    Log likelihood ratio..: 515.713494
@@ -645,7 +645,7 @@ CLUSTERS DETECTED
    Population............: 33033
    Number of cases.......: 1289
    Expected cases........: 455.67
-   Annual cases / 100000.: 7384.6
+   Annual cases / 100000.: 3894.1
    Observed / expected...: 2.83
    Relative risk.........: 2.83
    Log likelihood ratio..: 507.112399
@@ -658,7 +658,7 @@ CLUSTERS DETECTED
    Population............: 766763
    Number of cases.......: 13738
    Expected cases........: 10577.10
-   Annual cases / 100000.: 3390.7
+   Annual cases / 100000.: 1788.0
    Observed / expected...: 1.30
    Relative risk.........: 1.30
    Log likelihood ratio..: 432.353187
@@ -671,7 +671,7 @@ CLUSTERS DETECTED
    Population............: 205560
    Number of cases.......: 4521
    Expected cases........: 2835.59
-   Annual cases / 100000.: 4162.2
+   Annual cases / 100000.: 2194.8
    Observed / expected...: 1.59
    Relative risk.........: 1.59
    Log likelihood ratio..: 423.875192
@@ -684,7 +684,7 @@ CLUSTERS DETECTED
    Population............: 23709
    Number of cases.......: 942
    Expected cases........: 327.05
-   Annual cases / 100000.: 7519.0
+   Annual cases / 100000.: 3965.0
    Observed / expected...: 2.88
    Relative risk.........: 2.88
    Log likelihood ratio..: 381.620265
@@ -697,7 +697,7 @@ CLUSTERS DETECTED
    Population............: 566880
    Number of cases.......: 10241
    Expected cases........: 7819.82
-   Annual cases / 100000.: 3418.8
+   Annual cases / 100000.: 1802.8
    Observed / expected...: 1.31
    Relative risk.........: 1.31
    Log likelihood ratio..: 341.860296
@@ -710,7 +710,7 @@ CLUSTERS DETECTED
    Population............: 61607
    Number of cases.......: 1708
    Expected cases........: 849.84
-   Annual cases / 100000.: 5246.6
+   Annual cases / 100000.: 2766.7
    Observed / expected...: 2.01
    Relative risk.........: 2.01
    Log likelihood ratio..: 334.161202
@@ -725,7 +725,7 @@ CLUSTERS DETECTED
    Population............: 440143
    Number of cases.......: 8156
    Expected cases........: 6071.55
-   Annual cases / 100000.: 3506.8
+   Annual cases / 100000.: 1849.2
    Observed / expected...: 1.34
    Relative risk.........: 1.34
    Log likelihood ratio..: 323.198250
@@ -738,7 +738,7 @@ CLUSTERS DETECTED
    Population............: 32412
    Number of cases.......: 1074
    Expected cases........: 447.11
-   Annual cases / 100000.: 6270.8
+   Annual cases / 100000.: 3306.7
    Observed / expected...: 2.40
    Relative risk.........: 2.40
    Log likelihood ratio..: 314.348190
@@ -751,7 +751,7 @@ CLUSTERS DETECTED
    Population............: 1152633
    Number of cases.......: 19036
    Expected cases........: 15899.98
-   Annual cases / 100000.: 3125.4
+   Annual cases / 100000.: 1648.1
    Observed / expected...: 1.20
    Relative risk.........: 1.20
    Log likelihood ratio..: 291.829623
@@ -764,7 +764,7 @@ CLUSTERS DETECTED
    Population............: 1430926
    Number of cases.......: 23010
    Expected cases........: 19738.88
-   Annual cases / 100000.: 3043.2
+   Annual cases / 100000.: 1604.7
    Observed / expected...: 1.17
    Relative risk.........: 1.17
    Log likelihood ratio..: 258.399639
@@ -777,7 +777,7 @@ CLUSTERS DETECTED
    Population............: 259666
    Number of cases.......: 4987
    Expected cases........: 3581.96
-   Annual cases / 100000.: 3634.5
+   Annual cases / 100000.: 1916.6
    Observed / expected...: 1.39
    Relative risk.........: 1.39
    Log likelihood ratio..: 245.501022
@@ -790,7 +790,7 @@ CLUSTERS DETECTED
    Population............: 14350
    Number of cases.......: 581
    Expected cases........: 197.95
-   Annual cases / 100000.: 7662.1
+   Annual cases / 100000.: 4040.4
    Observed / expected...: 2.94
    Relative risk.........: 2.94
    Log likelihood ratio..: 242.548545
@@ -803,7 +803,7 @@ CLUSTERS DETECTED
    Population............: 316739
    Number of cases.......: 5761
    Expected cases........: 4369.25
-   Annual cases / 100000.: 3442.1
+   Annual cases / 100000.: 1815.1
    Observed / expected...: 1.32
    Relative risk.........: 1.32
    Log likelihood ratio..: 201.496039
@@ -816,7 +816,7 @@ CLUSTERS DETECTED
    Population............: 6423
    Number of cases.......: 331
    Expected cases........: 88.60
-   Annual cases / 100000.: 9752.5
+   Annual cases / 100000.: 5142.7
    Observed / expected...: 3.74
    Relative risk.........: 3.74
    Log likelihood ratio..: 193.854721
@@ -829,7 +829,7 @@ CLUSTERS DETECTED
    Population............: 16999
    Number of cases.......: 593
    Expected cases........: 234.49
-   Annual cases / 100000.: 6601.7
+   Annual cases / 100000.: 3481.2
    Observed / expected...: 2.53
    Relative risk.........: 2.53
    Log likelihood ratio..: 191.675051
@@ -842,7 +842,7 @@ CLUSTERS DETECTED
    Population............: 40011
    Number of cases.......: 1064
    Expected cases........: 551.93
-   Annual cases / 100000.: 5032.5
+   Annual cases / 100000.: 2653.8
    Observed / expected...: 1.93
    Relative risk.........: 1.93
    Log likelihood ratio..: 186.335363
@@ -855,7 +855,7 @@ CLUSTERS DETECTED
    Population............: 16748
    Number of cases.......: 580
    Expected cases........: 231.03
-   Annual cases / 100000.: 6553.7
+   Annual cases / 100000.: 3455.9
    Observed / expected...: 2.51
    Relative risk.........: 2.51
    Log likelihood ratio..: 184.922296
@@ -868,7 +868,7 @@ CLUSTERS DETECTED
    Population............: 1753893
    Number of cases.......: 27067
    Expected cases........: 24194.05
-   Annual cases / 100000.: 2920.5
+   Annual cases / 100000.: 1540.1
    Observed / expected...: 1.12
    Relative risk.........: 1.12
    Log likelihood ratio..: 165.124604
@@ -881,7 +881,7 @@ CLUSTERS DETECTED
    Population............: 1577240
    Number of cases.......: 24438
    Expected cases........: 21757.21
-   Annual cases / 100000.: 2932.2
+   Annual cases / 100000.: 1546.2
    Observed / expected...: 1.12
    Relative risk.........: 1.12
    Log likelihood ratio..: 159.567003
@@ -894,7 +894,7 @@ CLUSTERS DETECTED
    Population............: 21528
    Number of cases.......: 647
    Expected cases........: 296.97
-   Annual cases / 100000.: 5687.5
+   Annual cases / 100000.: 2999.2
    Observed / expected...: 2.18
    Relative risk.........: 2.18
    Log likelihood ratio..: 153.815182
@@ -907,7 +907,7 @@ CLUSTERS DETECTED
    Population............: 18883
    Number of cases.......: 586
    Expected cases........: 260.48
-   Annual cases / 100000.: 5872.9
+   Annual cases / 100000.: 3096.9
    Observed / expected...: 2.25
    Relative risk.........: 2.25
    Log likelihood ratio..: 149.615409
@@ -920,7 +920,7 @@ CLUSTERS DETECTED
    Population............: 11169
    Number of cases.......: 378
    Expected cases........: 154.07
-   Annual cases / 100000.: 6404.7
+   Annual cases / 100000.: 3377.4
    Observed / expected...: 2.45
    Relative risk.........: 2.45
    Log likelihood ratio..: 115.324896
@@ -933,7 +933,7 @@ CLUSTERS DETECTED
    Population............: 35205
    Number of cases.......: 827
    Expected cases........: 485.63
-   Annual cases / 100000.: 4445.5
+   Annual cases / 100000.: 2344.2
    Observed / expected...: 1.70
    Relative risk.........: 1.70
    Log likelihood ratio..: 98.899448
@@ -946,7 +946,7 @@ CLUSTERS DETECTED
    Population............: 72801
    Number of cases.......: 1451
    Expected cases........: 1004.25
-   Annual cases / 100000.: 3771.8
+   Annual cases / 100000.: 1989.0
    Observed / expected...: 1.44
    Relative risk.........: 1.45
    Log likelihood ratio..: 87.256696
@@ -959,7 +959,7 @@ CLUSTERS DETECTED
    Population............: 28558
    Number of cases.......: 674
    Expected cases........: 393.94
-   Annual cases / 100000.: 4466.4
+   Annual cases / 100000.: 2355.2
    Observed / expected...: 1.71
    Relative risk.........: 1.71
    Log likelihood ratio..: 81.905960
@@ -972,7 +972,7 @@ CLUSTERS DETECTED
    Population............: 159256
    Number of cases.......: 2791
    Expected cases........: 2196.85
-   Annual cases / 100000.: 3316.6
+   Annual cases / 100000.: 1748.9
    Observed / expected...: 1.27
    Relative risk.........: 1.27
    Log likelihood ratio..: 73.985119
@@ -985,7 +985,7 @@ CLUSTERS DETECTED
    Population............: 2036
    Number of cases.......: 106
    Expected cases........: 28.09
-   Annual cases / 100000.: 9852.6
+   Annual cases / 100000.: 5195.5
    Observed / expected...: 3.77
    Relative risk.........: 3.77
    Log likelihood ratio..: 62.873672
@@ -998,7 +998,7 @@ CLUSTERS DETECTED
    Population............: 134591
    Number of cases.......: 2349
    Expected cases........: 1856.61
-   Annual cases / 100000.: 3302.9
+   Annual cases / 100000.: 1741.7
    Observed / expected...: 1.27
    Relative risk.........: 1.27
    Log likelihood ratio..: 60.208993
@@ -1011,7 +1011,7 @@ CLUSTERS DETECTED
    Population............: 954670
    Number of cases.......: 14432
    Expected cases........: 13169.18
-   Annual cases / 100000.: 2860.9
+   Annual cases / 100000.: 1508.6
    Observed / expected...: 1.10
    Relative risk.........: 1.10
    Log likelihood ratio..: 58.878158
@@ -1024,7 +1024,7 @@ CLUSTERS DETECTED
    Population............: 10980
    Number of cases.......: 299
    Expected cases........: 151.46
-   Annual cases / 100000.: 5153.4
+   Annual cases / 100000.: 2717.5
    Observed / expected...: 1.97
    Relative risk.........: 1.97
    Log likelihood ratio..: 55.815577
@@ -1037,7 +1037,7 @@ CLUSTERS DETECTED
    Population............: 325923
    Number of cases.......: 5214
    Expected cases........: 4495.94
-   Annual cases / 100000.: 3027.5
+   Annual cases / 100000.: 1596.5
    Observed / expected...: 1.16
    Relative risk.........: 1.16
    Log likelihood ratio..: 54.569359
@@ -1050,7 +1050,7 @@ CLUSTERS DETECTED
    Population............: 143538
    Number of cases.......: 2461
    Expected cases........: 1980.03
-   Annual cases / 100000.: 3244.7
+   Annual cases / 100000.: 1711.0
    Observed / expected...: 1.24
    Relative risk.........: 1.24
    Log likelihood ratio..: 54.213877
@@ -1063,7 +1063,7 @@ CLUSTERS DETECTED
    Population............: 54033
    Number of cases.......: 1039
    Expected cases........: 745.36
-   Annual cases / 100000.: 3639.0
+   Annual cases / 100000.: 1918.9
    Observed / expected...: 1.39
    Relative risk.........: 1.39
    Log likelihood ratio..: 51.471076
@@ -1076,7 +1076,7 @@ CLUSTERS DETECTED
    Population............: 64569
    Number of cases.......: 1183
    Expected cases........: 890.70
-   Annual cases / 100000.: 3467.2
+   Annual cases / 100000.: 1828.4
    Observed / expected...: 1.33
    Relative risk.........: 1.33
    Log likelihood ratio..: 43.447670
@@ -1089,7 +1089,7 @@ CLUSTERS DETECTED
    Population............: 30802
    Number of cases.......: 631
    Expected cases........: 424.90
-   Annual cases / 100000.: 3876.8
+   Annual cases / 100000.: 2044.3
    Observed / expected...: 1.49
    Relative risk.........: 1.49
    Log likelihood ratio..: 43.436096
@@ -1102,7 +1102,7 @@ CLUSTERS DETECTED
    Population............: 27271
    Number of cases.......: 569
    Expected cases........: 376.19
-   Annual cases / 100000.: 3948.5
+   Annual cases / 100000.: 2082.1
    Observed / expected...: 1.51
    Relative risk.........: 1.51
    Log likelihood ratio..: 42.638776
@@ -1115,7 +1115,7 @@ CLUSTERS DETECTED
    Population............: 54993
    Number of cases.......: 1026
    Expected cases........: 758.60
-   Annual cases / 100000.: 3530.7
+   Annual cases / 100000.: 1861.8
    Observed / expected...: 1.35
    Relative risk.........: 1.35
    Log likelihood ratio..: 42.407035
@@ -1128,7 +1128,7 @@ CLUSTERS DETECTED
    Population............: 11237
    Number of cases.......: 276
    Expected cases........: 155.01
-   Annual cases / 100000.: 4648.2
+   Annual cases / 100000.: 2451.1
    Observed / expected...: 1.78
    Relative risk.........: 1.78
    Log likelihood ratio..: 38.240224
@@ -1141,7 +1141,7 @@ CLUSTERS DETECTED
    Population............: 13338
    Number of cases.......: 312
    Expected cases........: 183.99
-   Annual cases / 100000.: 4426.8
+   Annual cases / 100000.: 2334.3
    Observed / expected...: 1.70
    Relative risk.........: 1.70
    Log likelihood ratio..: 36.765259
@@ -1154,7 +1154,7 @@ CLUSTERS DETECTED
    Population............: 33406
    Number of cases.......: 644
    Expected cases........: 460.82
-   Annual cases / 100000.: 3648.3
+   Annual cases / 100000.: 1923.8
    Observed / expected...: 1.40
    Relative risk.........: 1.40
    Log likelihood ratio..: 32.365485
@@ -1167,7 +1167,7 @@ CLUSTERS DETECTED
    Population............: 90382
    Number of cases.......: 1537
    Expected cases........: 1246.77
-   Annual cases / 100000.: 3218.2
+   Annual cases / 100000.: 1697.0
    Observed / expected...: 1.23
    Relative risk.........: 1.23
    Log likelihood ratio..: 31.436321
@@ -1180,7 +1180,7 @@ CLUSTERS DETECTED
    Population............: 97892
    Number of cases.......: 1644
    Expected cases........: 1350.37
-   Annual cases / 100000.: 3178.2
+   Annual cases / 100000.: 1675.9
    Observed / expected...: 1.22
    Relative risk.........: 1.22
    Log likelihood ratio..: 29.842756
@@ -1193,7 +1193,7 @@ CLUSTERS DETECTED
    Population............: 181516
    Number of cases.......: 2897
    Expected cases........: 2503.92
-   Annual cases / 100000.: 3020.4
+   Annual cases / 100000.: 1592.7
    Observed / expected...: 1.16
    Relative risk.........: 1.16
    Log likelihood ratio..: 29.372717
@@ -1206,7 +1206,7 @@ CLUSTERS DETECTED
    Population............: 81455
    Number of cases.......: 1370
    Expected cases........: 1123.63
-   Annual cases / 100000.: 3182.9
+   Annual cases / 100000.: 1678.4
    Observed / expected...: 1.22
    Relative risk.........: 1.22
    Log likelihood ratio..: 25.234188
@@ -1219,7 +1219,7 @@ CLUSTERS DETECTED
    Population............: 85039
    Number of cases.......: 1415
    Expected cases........: 1173.07
-   Annual cases / 100000.: 3148.9
+   Annual cases / 100000.: 1660.5
    Observed / expected...: 1.21
    Relative risk.........: 1.21
    Log likelihood ratio..: 23.396714
@@ -1232,7 +1232,7 @@ CLUSTERS DETECTED
    Population............: 24949
    Number of cases.......: 468
    Expected cases........: 344.16
-   Annual cases / 100000.: 3549.9
+   Annual cases / 100000.: 1871.9
    Observed / expected...: 1.36
    Relative risk.........: 1.36
    Log likelihood ratio..: 20.007476
@@ -1245,7 +1245,7 @@ CLUSTERS DETECTED
    Population............: 36859
    Number of cases.......: 630
    Expected cases........: 508.45
-   Annual cases / 100000.: 3234.6
+   Annual cases / 100000.: 1705.7
    Observed / expected...: 1.24
    Relative risk.........: 1.24
    Log likelihood ratio..: 13.493798
@@ -1258,7 +1258,7 @@ CLUSTERS DETECTED
    Population............: 22895
    Number of cases.......: 407
    Expected cases........: 315.82
-   Annual cases / 100000.: 3364.2
+   Annual cases / 100000.: 1774.0
    Observed / expected...: 1.29
    Relative risk.........: 1.29
    Log likelihood ratio..: 12.051363
@@ -1271,7 +1271,7 @@ CLUSTERS DETECTED
    Population............: 6221
    Number of cases.......: 134
    Expected cases........: 85.82
-   Annual cases / 100000.: 4076.3
+   Annual cases / 100000.: 2149.5
    Observed / expected...: 1.56
    Relative risk.........: 1.56
    Log likelihood ratio..: 11.531553
@@ -1284,7 +1284,7 @@ CLUSTERS DETECTED
    Population............: 302838
    Number of cases.......: 4491
    Expected cases........: 4177.49
-   Annual cases / 100000.: 2806.4
+   Annual cases / 100000.: 1479.9
    Observed / expected...: 1.08
    Relative risk.........: 1.08
    Log likelihood ratio..: 11.491050
@@ -1297,7 +1297,7 @@ CLUSTERS DETECTED
    Population............: 26625
    Number of cases.......: 461
    Expected cases........: 367.28
-   Annual cases / 100000.: 3276.7
+   Annual cases / 100000.: 1727.9
    Observed / expected...: 1.26
    Relative risk.........: 1.26
    Log likelihood ratio..: 11.054567
@@ -1310,7 +1310,7 @@ CLUSTERS DETECTED
    Population............: 263378
    Number of cases.......: 3919
    Expected cases........: 3633.16
-   Annual cases / 100000.: 2815.9
+   Annual cases / 100000.: 1484.9
    Observed / expected...: 1.08
    Relative risk.........: 1.08
    Log likelihood ratio..: 10.969335
@@ -1323,7 +1323,7 @@ CLUSTERS DETECTED
    Population............: 94632
    Number of cases.......: 1462
    Expected cases........: 1305.40
-   Annual cases / 100000.: 2923.7
+   Annual cases / 100000.: 1541.7
    Observed / expected...: 1.12
    Relative risk.........: 1.12
    Log likelihood ratio..: 9.041336
@@ -1336,7 +1336,7 @@ CLUSTERS DETECTED
    Population............: 4131
    Number of cases.......: 91
    Expected cases........: 56.99
-   Annual cases / 100000.: 4168.8
+   Annual cases / 100000.: 2198.3
    Observed / expected...: 1.60
    Relative risk.........: 1.60
    Log likelihood ratio..: 8.579624
@@ -1349,7 +1349,7 @@ CLUSTERS DETECTED
    Population............: 96854
    Number of cases.......: 1484
    Expected cases........: 1336.05
-   Annual cases / 100000.: 2899.6
+   Annual cases / 100000.: 1529.0
    Observed / expected...: 1.11
    Relative risk.........: 1.11
    Log likelihood ratio..: 7.907440
@@ -1362,7 +1362,7 @@ CLUSTERS DETECTED
    Population............: 102665
    Number of cases.......: 1565
    Expected cases........: 1416.21
-   Annual cases / 100000.: 2884.8
+   Annual cases / 100000.: 1521.2
    Observed / expected...: 1.11
    Relative risk.........: 1.11
    Log likelihood ratio..: 7.558312
@@ -1375,7 +1375,7 @@ CLUSTERS DETECTED
    Population............: 24582
    Number of cases.......: 413
    Expected cases........: 339.10
-   Annual cases / 100000.: 3179.5
+   Annual cases / 100000.: 1676.6
    Observed / expected...: 1.22
    Relative risk.........: 1.22
    Log likelihood ratio..: 7.525487
@@ -1386,12 +1386,12 @@ PARAMETER SETTINGS
 
 Input
 -----
-  Case File        : /Users/drewderyk/Desktop/GitHub/RPr-Chakraborty2020/data/satscans/case
-  Population File  : /Users/drewderyk/Desktop/GitHub/RPr-Chakraborty2020/data/satscans/Population.pop
+  Case File        : C:\Users\josep\Documents\GitHub\hegsrr\RPr-Chakraborty-2021\data\derived\public\satscan\case
+  Population File  : C:\Users\josep\Documents\GitHub\hegsrr\RPr-Chakraborty-2021\data\derived\public\satscan\Population.pop
   Time Precision   : None
-  Start Time       : 2020/1/22
-  End Time         : 2020/8/1
-  Coordinates File : /Users/drewderyk/Desktop/GitHub/RPr-Chakraborty2020/data/satscans/Coordinates.geo
+  Start Time       : 2000/1/1
+  End Time         : 2000/12/31
+  Coordinates File : C:\Users\josep\Documents\GitHub\hegsrr\RPr-Chakraborty-2021\data\derived\public\satscan\Coordinates.geo
   Coordinates      : Latitude/Longitude
 
 Analysis
@@ -1402,11 +1402,11 @@ Analysis
 
 Output
 ------
-  Main Results File     : /Users/drewderyk/Desktop/GitHub/RPr-Chakraborty2020/data/satscans/sat_scan_compare.txt
-  Shapefile (Cluster)   : /Users/drewderyk/Desktop/GitHub/RPr-Chakraborty2020/data/satscans/sat_scan_compare.col.shp
-  Cluster File          : /Users/drewderyk/Desktop/GitHub/RPr-Chakraborty2020/data/satscans/sat_scan_compare.col.dbf
-  Location File         : /Users/drewderyk/Desktop/GitHub/RPr-Chakraborty2020/data/satscans/sat_scan_compare.gis.dbf
-  Shapefile (Locations) : /Users/drewderyk/Desktop/GitHub/RPr-Chakraborty2020/data/satscans/sat_scan_compare.gis.shp
+  Main Results File     : C:\Users\josep\Documents\GitHub\hegsrr\RPr-Chakraborty-2021\data\derived\public\satscan\sat_scan_rpr.txt
+  Shapefile (Cluster)   : C:\Users\josep\Documents\GitHub\hegsrr\RPr-Chakraborty-2021\data\derived\public\satscan\sat_scan_rpr.col.shp
+  Cluster File          : C:\Users\josep\Documents\GitHub\hegsrr\RPr-Chakraborty-2021\data\derived\public\satscan\sat_scan_rpr.col.dbf
+  Location File         : C:\Users\josep\Documents\GitHub\hegsrr\RPr-Chakraborty-2021\data\derived\public\satscan\sat_scan_rpr.gis.dbf
+  Shapefile (Locations) : C:\Users\josep\Documents\GitHub\hegsrr\RPr-Chakraborty-2021\data\derived\public\satscan\sat_scan_rpr.gis.shp
 
 Data Checking
 -------------
@@ -1424,6 +1424,11 @@ Locations Network
   Use Locations Network File : No
   Locations Network File     : 
   Locations Network Purpose  : Network Definition
+
+Line List
+---------
+  Line list data, file wizard. : Yes
+  Events Cache File            : 
 
 Spatial Window
 --------------
@@ -1465,8 +1470,13 @@ Spatial Output
 
 Other Output
 ------------
-  Report Critical Values  : No
-  Report Monte Carlo Rank : No
+  Cluster Significant by P-value Cutoff : No
+  Report Critical Values                : No
+  Report Monte Carlo Rank               : No
+
+Alerts
+------
+  Send Summary of Analysis Results by Email : No
 
 Run Options
 -----------
@@ -1475,6 +1485,6 @@ Run Options
   Logging Analysis  : No
 _______________________________________________________________________________________________
 
-Program completed  : Tue Aug 10 13:10:32 2021
-Total Running Time : 1 minute 19 seconds
+Program completed  : Wed Apr 19 22:02:51 2023
+Total Running Time : 51 seconds
 Processor Usage    : 8 processors

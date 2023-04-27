@@ -35,8 +35,11 @@ A successful reproduction should be able to generate identical results as publis
 The replication study data and code will be made available in a GitHub repository to the greatest extent that licensing and file sizes permit.
 The repository will be made public at [github.com/HEGSRR/RPr-Chakraborty2021]().
 
-Chakraborty, J. 2021. Social inequities in the distribution of COVID-19: An intra-categorical analysis of people with disabilities in the U.S.
-*Disability and Health Journal* 14:1-5. [DOI:[10.1016/j.dhjo.2020.101007](DOI:%5B10.1016/j.dhjo.2020.101007){.uri}]()
+Chakraborty, J.
+2021.
+Social inequities in the distribution of COVID-19: An intra-categorical analysis of people with disabilities in the U.S.
+*Disability and Health Journal* 14:1-5.
+[DOI:[10.1016/j.dhjo.2020.101007](DOI:%5B10.1016/j.dhjo.2020.101007){.uri}]()
 
 ## Keywords
 
@@ -332,7 +335,7 @@ tm_covid_rates
 
 ## Map Disability
 
-**Planned deviation for reproduction**: We also map the spatial distribution of the percent of people with any disability.
+**Unplanned deviation for reproduction**: We also map the spatial distribution of the percent of people with any disability to improve our understanding of the geographic patterns and relationships of between the overarching independent variable (percentage of people with disability) and the dependent variable (COVID-19 incidence rate).
 
 ```{r map-disability-rates, message = FALSE}
 tm_disability_rates <- tm_shape(acs_covid) +
@@ -419,8 +422,7 @@ pearsons_r %>% kable()
 
 Compare the reproduced Pearson's *r* correlation coefficients to the original study's Pearson's *r* correlation coefficients.
 Stars indicates the significance level with two stars for `p < 0.01` and one star for `p < 0.05`.
-Correlation difference `rp_r_diff` is calculated between the reproduction study `rp_r` and original study `or_r` as `rp_r_diff = rp_r - or_r`
-Direction difference `rp_dir_diff` is calculated as `(rp_r > 0) - (or_r > 0)`, giving `0` if both coefficients have the same direction, `1` if the reproduction is positive and the original is negative, and `-1` if the reproduction is negative but the original is positive.
+Correlation difference `rp_r_diff` is calculated between the reproduction study `rp_r` and original study `or_r` as `rp_r_diff = rp_r - or_r` Direction difference `rp_dir_diff` is calculated as `(rp_r > 0) - (or_r > 0)`, giving `0` if both coefficients have the same direction, `1` if the reproduction is positive and the original is negative, and `-1` if the reproduction is negative but the original is positive.
 
 ```{r compare-pearsons-correlation}
 # calculate number of significance stars at p<0.01 and P<0.05 levels.
@@ -581,8 +583,8 @@ The "P-value Cutoff" for significant clusters option did not appear in the v9.6 
 
 SaTScan software can also output two versions of geographic data:
 
-- The `col` cluster polygon shapefile contains a circle for each cluster, where each polygon is a circle defined by the cluster center and radius. The attributes include a variable `REL_RISK` for cluster relative risk
-- The `gis` location point shapefile contains one point for each county in a cluster. The attributes include variables `LOC_RR` for local relative risk and `CLU_RR` for cluster relative risk
+-   The `col` cluster polygon shapefile contains a circle for each cluster, where each polygon is a circle defined by the cluster center and radius. The attributes include a variable `REL_RISK` for cluster relative risk
+-   The `gis` location point shapefile contains one point for each county in a cluster. The attributes include variables `LOC_RR` for local relative risk and `CLU_RR` for cluster relative risk
 
 The SaTScan software implementation of the Kulldorff spatial scan statistic calculates two relative risk scores for locations:
 
@@ -597,8 +599,7 @@ This suggests that in the original study, the `col` polygon cluster shapefile an
 
 The spatial scan statistic is based on case counts and total population, and is therefore unaffected by errors in the COVID Incidence rate.
 
-**Planned deviation for reproduction**: 
-We opted to use the SpatialEpi package in R, selecting open source software with R integration over SatSCan software, which is free but not open.
+**Planned deviation for reproduction**: We opted to use the SpatialEpi package in R, selecting open source software with R integration over SatSCan software, which is free but not open.
 The Kulldorff spatial scan statistic model in SpatialEpi also supports a discrete Poisson spatial model, and uses the GINI coefficient to select secondary clusters with no geographical overlap that maximize the difference between locations inside of clusters and locations outside of clusters.
 We expected that this set of software options could reproduce identical results compared to SaTScan.
 
@@ -610,10 +611,8 @@ start_time <- Sys.time()
 covid_geo <- covid_table %>%
   select(x, y) %>%
   latlong2grid()
-# latlong2grid approximates an equidistant grid measured in kilometers
-# need to look more into the methods of this, but it surely is not as good
-# as a geodesic calculation. SaTScan uses spherical or ellipsoidal distance
-# Latitude is multiplied by 111.133 and Longitude is multiplied by 86.97357
+# latlong2grid creates approximate equidistant cylindrical grid
+# could probably reproject to epsg 5070 and create table with x and y
 
 # calculate expected cases with one strata
 expected.cases <- expected(covid_table$pop, covid_table$cases, 1)
@@ -705,8 +704,7 @@ rm(cluster_locations, secondary, i, new_clusters)
 Join the Kulldorff spatial scan cluster IDs to the acs_covid simple features dataframe.
 Although this is workflow step 9, the order of operations between steps 7 and 8 and step 9 is not important.
 
-**Unplanned deviation for reproduction**:
-The original study does not include a visualization of the spatial distribution of COVID-19 clusters.
+**Unplanned deviation for reproduction**: The original study does not include a visualization of the spatial distribution of COVID-19 clusters.
 Therefore, calculate a new field `isCluster` to visualize counties in COVID-19 clusters, and to further distinguish counties at the center of a cluster from the counties that are part of a cluster, but are not the cluster center.
 
 ```{r join-clusterID-to-acs_covid}
@@ -719,8 +717,7 @@ acs_covid <- acs_covid[, 1:which(colnames(acs_covid) == "y")] %>%
   ))
 ```
 
-**Unplanned deviation for reproduction**:
-Map the `SpatialEpi` cluster results.
+**Unplanned deviation for reproduction**: Map the `SpatialEpi` cluster results.
 
 ```{r map-clusters}
 tm_spatialepi_clusters <-
@@ -744,8 +741,7 @@ tm_spatialepi_clusters <-
 tm_spatialepi_clusters
 ```
 
-**Unplanned deviation for reproduction**:
-The `SpatialEpi` implementation of Kulldorff spatial scan statistics does not calculate cluster relative risk.
+**Unplanned deviation for reproduction**: The `SpatialEpi` implementation of Kulldorff spatial scan statistics does not calculate cluster relative risk.
 Therefore, the next step is to calculate cluster relative risk (workflow step 7).
 
 ```{r relative-risk}
@@ -801,7 +797,7 @@ acs_covid <- acs_covid %>% mutate(
 
 The original study reported `102` unique clusters having a range of `1` to `245` counties in each cluster.
 
-### Report number of unique clusters and histogram of counties per cluster
+Next, we find the number of unique clusters and frequency counties per cluster in our reproduction study for comparison to the original study.
 
 ```{r report unique clusters}
 cluster_summary <- acs_covid %>%
@@ -860,14 +856,57 @@ rm(author_col)
 
 Our SaTScan results exactly reproduced the author-provided SaTScan results data.
 
-**Unplanned deviation for reproduction**:
-Visualize the spatial distribution of the author-provided Kulldorff COVID-19 Clusters.
+**Planned deviation for reproduction**: Visualize the spatial distribution of the author-provided Kulldorff COVID-19 Clusters.
 
-##Visualize HERE
+```{r map--author-clusters}
+author_clusters <- acs_covid %>% 
+  inner_join(satscan_rpr_t, by = join_by(fips == LOC_ID)) %>% 
+  mutate(GINI_CLUST = ifelse(GINI_CLUST == 'T', 'Optimized GINI cluster', 'Hierarchical cluster'))
 
+gini_circle <- satscan_rpr_col %>% filter(GINI_CLUST == 'T')
+hier_circle <- satscan_rpr_col %>% filter(GINI_CLUST == 'F')
 
-**Unplanned deviation for reproduction**:
-Can we also use our SaTScan results to exactly reproduce the author-reported frequency of original GEE classes and maximum counties per class?
+tm_author_clusters <-
+  tm_shape(state) +
+    tm_fill("gray98") +
+  tm_shape(author_clusters) +
+  tm_fill(col = "GINI_CLUST", 
+          palette = c("tomato", "thistle"), 
+          popup.vars = c("fips", "clusterID"), 
+          colorNA = NULL,
+          title = "SaTScan Kulldorff COVID-19 Clusters") +
+        tm_borders("white", lwd = 0.2, alpha = 0.2) +
+  tm_shape(state) +
+    tm_borders("grey", lwd = 0.5) +
+  tm_shape(gini_circle) +
+    tm_borders(col = "thistle") +
+  tm_shape(hier_circle) +
+    tm_borders(col = "tomato") +
+  tm_layout(
+    legend.position = c("left", "bottom"),
+    legend.title.size = 0.8,
+    legend.text.size = 0.5
+  )
+
+tm_author_clusters
+
+rm(author_clusters, gini_circle, hier_circle)
+```
+
+Note that this version of data only includes the 96 counties defining cluster centers, visualized with fill colors above.
+The data excludes all of the non-center counties in clusters with more than one county.
+The extent of these larger clusters is visualized by unfilled circles defined by cluster radii.
+
+Additionally, the SaTScan software confusingly merges two sets of clusters in the results when the user uses the (default) option for GINI-optimized clusters.
+One set of results is a hierarchical non-overlapping set of clusters.
+These clusters are noted with `GINI_CLUST = F` in the results.
+The second set of results is a set of hierarchical non-overlapping clusters designed to maximize the GINI coefficient of inequality between counties within clusters and counties outside of clusters.
+These clusters are noted with `GINI_CLUST = T` in the results.
+
+Merged together as they are, the two sets of secondary clusters overlap one another geographically, causing ambiguity in terms of which cluster-based relative risk score should be used at each location.
+
+**Unplanned deviation for reproduction**: Can we also use these reproduced SaTScan results to exactly reproduce the author-reported frequency of original GEE classes and maximum counties per class?
+If the results match, it will confirm that the problems identified above have propagated through the original study analysis.
 
 ```{r reproduce-gee-clusters}
 acs_covid <- acs_covid[, 1:which(colnames(acs_covid) == "clusID")] %>% 
@@ -891,20 +930,12 @@ summary(cluster_summary$n)
 ```
 
 Using SaTScan Kulldorff clusters, we have exactly reproduced the author-reported frequency of original GEE classes and maximum counties per class.
-Note that this version of data only includes the 96 counties defining cluster centers, excluding all of the counties in a cluster, but not at the cluster's center.
-
-Additionally, the SaTScan software confusingly merges two sets of clusters in the results when the user uses the (default) option for GINI-optimized clusters, and the two sets may overlap geographically even if the non-geographic overlap option is used.
-One set of results is a hierarchical non-overlapping set of clusters determined by iteratively selecting the secondary cluster with the greatest log-likelihood ratio that does not overlap any selected clusters, from a set of clusters with the maximum log-likelihood ratio at each location.
-These clusters are noted with `GINI_CLUST = F` in the results.
-
-The second set of results is found by finding numerous hierarchical non-overlapping sets of clusters based on the method above, but each with the constraint of a different maximum cluster size.
-The set of clusters with the highest GINI ratio is selected.
-These clusters are noted with `GINI_CLUST = T` in the results.
-
-Taken together as they are, the two sets of secondary clusters may overlap geographically, causing ambiguity in terms of which cluster-based relative risk score should be used at each location.
 
 **Unplanned Deviation for Reanalysis:**
-If we load the local SaTSCan results inclusive of all counties in a clusters and filter the results to focus on the standard hierarchical set of clusters, is there consistency between the SaTScan and SpatialEpi results?
+
+At this point it is clear that the best decision will be to shift from a *reproduction* study to a *reanalysis* study, intentionally altering decisions in the methodology to achieve a more valid outcome.
+Given the shifting goal, how sensitive is this study to the choice of computational environment for the Kulldorff scan statistics?
+To answer this question, we must load the local SaTSCan results inclusive of all counties within clusters, filter the results to focus on the standard hierarchical set of clusters, and compare the SaTScan and SpatialEpi results.
 
 ```{r spatial-cluster-compare, message = F}
 # load local SaTScan reproduced data
@@ -928,7 +959,7 @@ acs_covid <- acs_covid %>%
 tm_spatialepi_satscan <-  
   tm_shape(acs_covid) +
     tm_fill(col = "xcluster", 
-            palette = c("wheat","tomato", "palegreen2"),
+            palette = c("wheat","tomato", "thistle"),
             colorNA = NULL,
             title = "Comparison of SaTScan and SpatialEpi Clusters") +
     tm_borders("white", lwd = 0.2, alpha = 0.2) +
@@ -943,48 +974,69 @@ tm_spatialepi_satscan <-
 tm_spatialepi_satscan
 ```
 
-The map above confirms that there are differences between the SaTScan and SpatialEpi computational environments for calculating secondary clusters
+The map above confirms that there are differences between the SaTScan and SpatialEpi computational environments for calculating secondary clusters.
+Using our data outputs, technical documentation, and the code repository for SpatialEpi, we summarize our understanding of the computational differences for default settings in the table below.
 
-least one source of difference in differences in GEE clusters may be differences in Kulldorff spatial scan statistic calculations between SaTScan and SpatialEpi is both differences in user decisions and options and logical implementation of the selection of secondary clusters.
+|                     | SaTScan Hierarchical Clusters |       SaTScan GINI Clusters        | SpatialEpi Clusters |
+|:----------------:|:----------------:|:----------------:|:----------------:|
+| possible shapes | circle (default) or ellipse | circle (default) or ellipse  | circle |
+| possible cluster centers | locations with rates > normal | locations with rates > normal | all locations |
+| maximum cluster size |         50% of cases          | varies, not exceeding 50% of cases |  50% of population  |
+|     maximum *p* of cluster  |   1.00              |                1.00                |        0.05         |
+| distance | spherical great circle | spherical great circle | spherical equidistant cylindrical projection |
 
-**Planned Deviation:**
-Visualize the spatial distribution of COVID-19 risk classes used in the original study.
+To further interrogate the differences in sets of secondary clusters, we must understand that theoretically each location (county), may be the center of many different circular clusters defined by different radii, starting with a radius of 0 and the one county at the center, and expanding until the maximum cluster size is reached. 
 
-```{r original-risk-map, warning = FALSE, message = FALSE}
-tmap_mode(mode = "plot")
-tm4 <- tm_shape(acs_covid) +
-  tm_polygons("ss_cluster_class",
-    title = "COVID-19 Risk Class",
-    breaks = c(0, 1, 2, 3, 4, 5, 8),
-    border.alpha = .2,
-    lwd = 0.2,
-    palette = "YlOrBr",
-    labels = c("1 - lowest risk", "2", "3", "4", "5", "6 - highest risk")
-  ) +
-  tm_shape(satscan_rpr_col) +
-  tm_borders("red", lwd = .5) +
-  tm_shape(state) +
-  tm_borders("grey", lwd = .8) +
-  tmap_options(check.and.fix = TRUE) +
-  tm_layout(
-    legend.position = c("left", "bottom"),
-    legend.title.size = 0.8,
-    legend.text.size = 0.5
-  )
+**SaTScan Hierarchical Clusters**
 
-tm4
+- Select locations (counties) with above-normal COVID incidence rates
+- For each location, find log-likelihood of all possible cluster sizes (from minimum of 2 cases to maximum of 50% of cases) with *p* < 1
+- For each location, select the cluster with the maximum log-likelihood, resulting in one possible cluster for each location with above-normal COVID incidence rates
+- Sort the remaining clusters by log-likelihood from greatest to least
+- Select the most likely cluster
+- Select secondary clusters by iterating over the remaining clusters, adding new clusters to the set of secondary clusters if they do not geographically overlap any of the clusters already identified as most likely or secondary.
 
-tmap_save(tm4, here("results", "figures", "rr_original.png"))
-```
+**SaTScan GINI-Optimized Clusters**
 
-There are two issues with this conceptualization of COVID-19 risk.
+- Follow the same procedure as SaTScan Hierarchical clusters, but iterate the procedure with different maximum cluster sizes. By default the cluster sizes include 1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 30, 35, 40, 45, and 50 percent of cases. With the default setting, the result is 17 different sets of clusters.
+- For each set of clusters, calculate the GINI coefficient of the COVID-19 incidence inside the clusters vs outside the clusters.
+- Select the set of clusters with the highest GINI coefficient (i.e. the most difference between COVID-19 incidence inside the clusters vs outside the clusters).
+
+**SpatialEpi Clusters**
+
+- For all locations, calculate the log likelihood of all the possible clusters below the maximum cluster size (50% of population) 
+- Select the clusters with *p* < 0.05
+- Sort the remaining clusters by log-likelihood from greatest to least
+- Select the most likely cluster
+- Select secondary clusters by iterating over the remaining clusters, adding new clusters to the set of secondary clusters if they do not geographically overlap any of the clusters already identified as most likely or secondary.
+
+The differences between these three approaches have very significant impacts on the results (see the differences in results in the **two maps** above) and it is impossible to control for all of the differences with the available parameters.
+Most fundamentally, SaTScan develops sets of secondary clusters from a universe of just one most likely cluster per location with no default limitation its statistical significance, whereas SpatialEpi may consider multiple possible cluster sizes for each location with a default limitation of maximum 0.05 *p* for each cluster.
+These fundamental differences are evident in the spatial distribution of clusters.
+For example, New York City is the most likely cluster in all analyses.
+For the counties near New York, the radius of the most likely cluster is large and geographically overlaps New York City.
+Therefore, if only the most significant cluster radius is considered for a possible secondary cluster for locations near New York City, all such clusters are disqualified by their geographical overlap. 
+This is what happens in the SaTScan Hierarchical Clusters model, for which the next nearest clusters are in Ohio and Virginia.
+In the SaTScan GINI-optimized model, the maximum cluster size is apparently smaller, such that the most likely cluster in New York City is also smaller. 
+This change allows for two other non-overlapping secondary clusters in Rhode Island and New Jersey.
+In contrast, the SpatialEpi algorithm still considers a variety of cluster sizes for each location, allowing it to detect smaller clusters adjacent to more significant ones.
+
+Of course, the *relative risk* score of each cluster is contingent on the cluster size, so each difference in geographic configuration of clusters also impacts the cluster risk classification of individual locations. 
+The most stable results are for the most likely clusters in distinct regions (New York City, Southeast U.S., Southern California & Nevada), while the most variability appears for secondary clusters close enough for their most likely radius to overlap the more likely clusters. 
+The circular shape could be considered a major limitation of Kulldorff cluster detection, for which the SaTScan methodology enhances the limitation by constraining the possibility of nearby clusters while the SpatialEpi methodology can detect smaller adjacent secondary clusters.
+
+The high significance threshold in the default SaTScan analysis allows the inclusion of many small clusters with low likelihoods, adding noise to the results.
+This could be controlled by overriding the maximum *p* value parameter.
+This problem does not exist in the SpatialEpi implementation, and the SpatialEpi parameter *alpha level* parameter cannot be practically increased to `1` to match the SatSCan default.
+This is because counties are not filtered by those with higher than normal rates and therefore an *alpha value* of `1` results in *all* counties being included as clusters.
+
+There are two issues with the original study's conceptualization of COVID-19 high-risk clusters.
 First, only the 96 counties at the center of a cluster are considered in the risk classification.
 Second, two sets of secondary clusters are included in the SaTScan output: hierarchical clusters and clusters optimized by GINI coefficient.
 The two sets result in geographically overlapping clusters.
 
-**Unplanned deviation for reanalysis**:
-It would be more intuitive to include risk levels for all counties within a cluster (i.e. all counties within any of the circles above), rather than only the county at the center of a cluster.
-It would also be more intuitive to choose one set of secondary clusters based on a single method, where the GINI coefficient method is designed to optimize difference between counties within clusters and couties outside.
+**Unplanned deviation for reanalysis**: It would be more intuitive to include risk levels for all counties within a cluster (i.e. all counties within any of the circles above), rather than only the county at the center of a cluster.
+It would also be more intuitive to choose one set of secondary clusters based on a single method, where the GINI coefficient method is designed to optimize difference between counties within clusters and counties outside.
 Therefore, we will also calculate the final models using the `clusID` GEE clusters based on our SpatialEpi Kulldorff cluster relative risk.
 Before doing so, let us investigate whether the SaTScan and SpatialEpi results align?
 
@@ -1013,33 +1065,25 @@ table(ss_se$se_class, ss_se$ss_class, dnn=c("SpatialEpi", "SaTScan"))
 # rm(satscan_gis, ss_se)
 ```
 
-**Can we explain the differences here?** 
-SaTScan first finds the highest likelihood cluster for each location.
+**Can we explain the differences here?** SaTScan first finds the highest likelihood cluster for each location.
 Then, these are sorted from highest likelihood to lowest likelihood.
-Clusters are added sequentially if they do not overlap any previously added clusters and if their *p* < 1.0.
-(pg 68)
-Clusters must contain < 0.5 population
+Clusters are added sequentially if they do not overlap any previously added clusters and if their *p* \< 1.0.
+(pg 68) Clusters must contain \< 0.5 population
 
 SpatialEpi orders clusters by log-likelihood (line 186).
 The algorithm excludes clusters with any geographic overlap with existing clusters (line 199).
-The algorithm stops on the first cluster encountered with *p* > *alpha.level*, with default level of `0.05`
-Clusters must contain < 0.5 population.
+The algorithm stops on the first cluster encountered with *p* \> *alpha.level*, with default level of `0.05` Clusters must contain \< 0.5 population.
 
 The main differences:
 
-- selection of one cluster per location by SaTScan
-- different threshold for maximum *p* value
-- SaTScan includes only high likelihood ratios / relative risk > 1
-- different methods and precision for calculating distance
+-   selection of one cluster per location by SaTScan
+-   different threshold for maximum *p* value
+-   SaTScan includes only high likelihood ratios / relative risk \> 1
+-   different methods and precision for calculating distance
 
-
-
-https://github.com/rudeboybert/SpatialEpi/blob/master/R/kulldorff.R
+<https://github.com/rudeboybert/SpatialEpi/blob/master/R/kulldorff.R>
 
 ```{r reanalyze-gee-clusters}
-
-
-
 
 acs_covid <- acs_covid[, 1:which(colnames(acs_covid) == "clusID")] %>%
   left_join(satscan_gis[, c("LOC_ID", "CLU_RR", "LOC_RR")], by = join_by(fips == LOC_ID)) %>%
@@ -1092,13 +1136,10 @@ cat(
 summary(cluster_summary$n)
 ```
 
-
-
 ```{r satscan-gis}
 satscan_gis <- read_sf(here("data", "derived", "public", "satscan", "sat_scan_rpr.gis.shp")) %>% st_drop_geometry()
 
 ```
-
 
 ### Map Relative Risk Scores
 
@@ -1106,10 +1147,6 @@ satscan_gis <- read_sf(here("data", "derived", "public", "satscan", "sat_scan_rp
 We viewed the SatSCAN outputs in QGIS Desktop and discovered that the spatial ouptut includes two shapefiles: - gis point shapefile contains one point for each county in a cluster - col polygon shapefile containing a circle for each cluster, where each polygon is a circle defined by the cluster center and radius.
 
 Note that relative risk is \> 1 only if the county was in a cluster
-
-
-
-
 
 ```{r map cluster based relative risk scores}
 tm5 <- tm_shape(covid) +
@@ -1441,7 +1478,6 @@ QIC_results_original <- data.frame(
   select(QIC)
 QIC_results_original
 ```
-
 
 ```{r save-figures, eval = F}
 # save figures as image files

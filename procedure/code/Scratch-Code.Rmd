@@ -23,6 +23,34 @@ covid_rate_map
 
 
 
+```{r original-risk-map, warning = FALSE, message = FALSE}
+tmap_mode(mode = "plot")
+tm4 <- tm_shape(acs_covid) +
+  tm_polygons("ss_cluster_class",
+    title = "COVID-19 Risk Class",
+    breaks = c(0, 1, 2, 3, 4, 5, 8),
+    border.alpha = .2,
+    lwd = 0.2,
+    palette = "YlOrBr",
+    labels = c("1 - lowest risk", "2", "3", "4", "5", "6 - highest risk")
+  ) +
+  tm_shape(satscan_rpr_col) +
+  tm_borders("red", lwd = .5) +
+  tm_shape(state) +
+  tm_borders("grey", lwd = .8) +
+  tmap_options(check.and.fix = TRUE) +
+  tm_layout(
+    legend.position = c("left", "bottom"),
+    legend.title.size = 0.8,
+    legend.text.size = 0.5
+  )
+
+tm4
+
+tmap_save(tm4, here("results", "figures", "rr_original.png"))
+```
+
+
 ```{r setup, include = F}
 packages = c("tidycensus", "tidyverse", "downloader", "haven", "stars", "dplyr", "sf", "rdhs", "classInt", "readr", "ggplot2", "here", "s2", "pastecs", "cartography", "vtable", "SpatialEpi", "svDialogs", "geepack")
 setdiff(packages, rownames(installed.packages()))

@@ -86,7 +86,7 @@ This reproduction study uses R, including the SpatialEpi package for the Kulldor
 packages <- c(
   "tidycensus", "tidyverse", "downloader", "sf", "classInt", "readr",
   "here", "s2", "pastecs", "tmap", "SpatialEpi", "svDialogs",
-  "geepack", "knitr", "foreign"
+  "geepack", "knitr", "kableExtra", "foreign"
 )
 
 # load and install required packages
@@ -476,8 +476,7 @@ original_gee %>%
 ```
 
 The author's original data produced coefficients identical to the original publication!
-
-could it be possible that the data values are correct but have been reassigned / transposed to different counties?
+Is it possible that the data values are correct but have been reassigned / transposed to different counties?
 
 *Unplanned Deviation for Reproduction*: Considering the precise bitwise reproduction of descriptive statistics and of correlation statistics from author-provided data, we decided to recalculate the COVID-19 incidence rate with author-provided case and population data for comparison to the author-provided incidence rate.
 
@@ -861,7 +860,7 @@ Our SaTScan results exactly reproduced the author-provided SaTScan results data.
 ```{r map--author-clusters}
 author_clusters <- acs_covid %>% 
   inner_join(satscan_rpr_t, by = join_by(fips == LOC_ID)) %>% 
-  mutate(GINI_CLUST = ifelse(GINI_CLUST == 'T', 'Optimized GINI cluster', 'Hierarchical cluster'))
+  mutate(GINI_CLUST = ifelse(GINI_CLUST == 'T', 'Optimized GINI', 'Hierarchical'))
 
 gini_circle <- satscan_rpr_col %>% filter(GINI_CLUST == 'T')
 hier_circle <- satscan_rpr_col %>% filter(GINI_CLUST == 'F')
@@ -870,23 +869,30 @@ tm_author_clusters <-
   tm_shape(state) +
     tm_fill("gray98") +
   tm_shape(author_clusters) +
-  tm_fill(col = "GINI_CLUST", 
-          palette = c("tomato", "thistle"), 
-          popup.vars = c("fips", "clusterID"), 
-          colorNA = NULL,
-          title = "SaTScan Kulldorff COVID-19 Clusters") +
-        tm_borders("white", lwd = 0.2, alpha = 0.2) +
+  tm_polygons(col = "GINI_CLUST",
+              border.col = "white",
+              lwd = 0.5,
+              palette = c("tomato", "thistle3"), 
+              popup.vars = c("fips", "clusterID"), 
+              colorNA = NULL,
+              title = "SaTScan Kulldorff COVID-19 Clusters:\nCluster Centers") +
   tm_shape(state) +
     tm_borders("grey", lwd = 0.5) +
   tm_shape(gini_circle) +
-    tm_borders(col = "thistle") +
+    tm_borders(col = "thistle4") +
   tm_shape(hier_circle) +
     tm_borders(col = "tomato") +
   tm_layout(
     legend.position = c("left", "bottom"),
     legend.title.size = 0.8,
     legend.text.size = 0.5
-  )
+  ) +
+  tm_add_legend('symbol', 
+              	col = NA,
+              	border.col = c("tomato", "thistle4"),
+              	size = 0.7,
+              	labels = c('Hierarchical','Optimized GINI'),
+              	title="Cluster Extents")
 
 tm_author_clusters
 
@@ -935,7 +941,7 @@ Using SaTScan Kulldorff clusters, we have exactly reproduced the author-reported
 
 At this point it is clear that the best decision will be to shift from a *reproduction* study to a *reanalysis* study, intentionally altering decisions in the methodology to achieve a more valid outcome.
 Given the shifting goal, how sensitive is this study to the choice of computational environment for the Kulldorff scan statistics?
-To answer this question, we must load the local SaTSCan results inclusive of all counties within clusters, filter the results to focus on the standard hierarchical set of clusters, and compare the SaTScan and SpatialEpi results.
+To answer this question, we must load the local SaTSCan results inclusive of all counties within clusters, filter the results to focus on the standard hierarchical set of clusters, and compare the spatial distributions of the SaTScan and SpatialEpi results.
 
 ```{r spatial-cluster-compare, message = F}
 # load local SaTScan reproduced data
@@ -948,21 +954,30 @@ satscan_rpr_t <- satscan_rpr_gis %>%
 acs_covid <- acs_covid[, 1:which(colnames(acs_covid) == "clusID")] %>% 
   left_join(satscan_rpr_t, by = join_by(fips == LOC_ID))
 
-acs_covid <- acs_covid %>% 
+acs_covid_clusters <- acs_covid %>% 
   mutate(xcluster = case_when(
     !is.na(CLU_RR) & is.na(isCluster) ~ "SaTScan only",
     !is.na(CLU_RR) & !is.na(isCluster) ~ "Both SaTScan and SpatialEpi",
     is.na(CLU_RR) & !is.na(isCluster) ~ "SpatialEpi only",
     .default = NA
-  ))
+  )) %>% 
+  filter(!is.na(xcluster)) %>% 
+  group_by(xcluster) %>% 
+  mutate(xn = n()) %>% 
+  ungroup() %>% 
+  mutate(xcluster = paste0(xcluster, " (", xn, " counties)"))
 
 tm_spatialepi_satscan <-  
-  tm_shape(acs_covid) +
-    tm_fill(col = "xcluster", 
-            palette = c("wheat","tomato", "thistle"),
+    tm_shape(state) +
+      tm_fill("gray98") +
+    tm_shape(acs_covid_clusters) +
+    tm_polygons(col = "xcluster", 
+            palette = c("wheat","tomato", "thistle3"),
             colorNA = NULL,
-            title = "Comparison of SaTScan and SpatialEpi Clusters") +
-    tm_borders("white", lwd = 0.2, alpha = 0.2) +
+            title = "SaTScan and SpatialEpi Clusters",
+            border.col = "white",
+            lwd = 0.2,
+            border.alpha = 0.3) +
   tm_shape(state) +
     tm_borders("grey", lwd = 0.5) +
   tm_layout(
@@ -972,9 +987,11 @@ tm_spatialepi_satscan <-
   )
 
 tm_spatialepi_satscan
+rm(acs_covid_clusters)
 ```
 
 The map above confirms that there are differences between the SaTScan and SpatialEpi computational environments for calculating secondary clusters.
+
 Using our data outputs, technical documentation, and the code repository for SpatialEpi, we summarize our understanding of the computational differences for default settings in the table below.
 
 |                     | SaTScan Hierarchical Clusters |       SaTScan GINI Clusters        | SpatialEpi Clusters |
@@ -1014,12 +1031,12 @@ The differences between these three approaches have very significant impacts on 
 Most fundamentally, SaTScan develops sets of secondary clusters from a universe of just one most likely cluster per location with no default limitation its statistical significance, whereas SpatialEpi may consider multiple possible cluster sizes for each location with a default limitation of maximum 0.05 *p* for each cluster.
 These fundamental differences are evident in the spatial distribution of clusters.
 For example, New York City is the most likely cluster in all analyses.
-For the counties near New York, the radius of the most likely cluster is large and geographically overlaps New York City.
-Therefore, if only the most significant cluster radius is considered for a possible secondary cluster for locations near New York City, all such clusters are disqualified by their geographical overlap. 
+For counties near New York, the radius of the most likely cluster is large and geographically overlaps New York City.
+Therefore, if only the most significant cluster radius is considered as a possible secondary cluster for counties near New York City, all such clusters are disqualified by their geographical overlap. 
 This is what happens in the SaTScan Hierarchical Clusters model, for which the next nearest clusters are in Ohio and Virginia.
 In the SaTScan GINI-optimized model, the maximum cluster size is apparently smaller, such that the most likely cluster in New York City is also smaller. 
 This change allows for two other non-overlapping secondary clusters in Rhode Island and New Jersey.
-In contrast, the SpatialEpi algorithm still considers a variety of cluster sizes for each location, allowing it to detect smaller clusters adjacent to more significant ones.
+In contrast, the SpatialEpi algorithm still considers a variety of possible cluster sizes for each county, allowing for detection of smaller clusters adjacent to more significant ones.
 
 Of course, the *relative risk* score of each cluster is contingent on the cluster size, so each difference in geographic configuration of clusters also impacts the cluster risk classification of individual locations. 
 The most stable results are for the most likely clusters in distinct regions (New York City, Southeast U.S., Southern California & Nevada), while the most variability appears for secondary clusters close enough for their most likely radius to overlap the more likely clusters. 
@@ -1027,13 +1044,15 @@ The circular shape could be considered a major limitation of Kulldorff cluster d
 
 The high significance threshold in the default SaTScan analysis allows the inclusion of many small clusters with low likelihoods, adding noise to the results.
 This could be controlled by overriding the maximum *p* value parameter.
+Combining all of the default parameters, SaTSCan includes small clusters of relatively low-risk counties in the Midwest, but excludes relatively high-risk counties adjacent to the major clusters of New York, the Southeast, and Southern California/Nevada. 
 This problem does not exist in the SpatialEpi implementation, and the SpatialEpi parameter *alpha level* parameter cannot be practically increased to `1` to match the SatSCan default.
-This is because counties are not filtered by those with higher than normal rates and therefore an *alpha value* of `1` results in *all* counties being included as clusters.
+This is because SpatialEpi does not filter counties by those with local relative risk greater than 1---therefore an *alpha value* of `1` results in *all* counties being included as clusters.
 
-There are two issues with the original study's conceptualization of COVID-19 high-risk clusters.
+In sum, there are three construct validity issues with the original study COVID-19 high-risk clusters as implemented in SaTScan.
 First, only the 96 counties at the center of a cluster are considered in the risk classification.
 Second, two sets of secondary clusters are included in the SaTScan output: hierarchical clusters and clusters optimized by GINI coefficient.
 The two sets result in geographically overlapping clusters.
+Third, the geographic patterns and cluster relative risk scores of secondary clusters are very sensitive to changes in data and to subjective parameters.
 
 **Unplanned deviation for reanalysis**: It would be more intuitive to include risk levels for all counties within a cluster (i.e. all counties within any of the circles above), rather than only the county at the center of a cluster.
 It would also be more intuitive to choose one set of secondary clusters based on a single method, where the GINI coefficient method is designed to optimize difference between counties within clusters and counties outside.
@@ -1050,17 +1069,14 @@ ss_se <- acs_covid %>%
   select(fips, rr_cluster, se_class = cluster_class) %>% 
   full_join(satscan_gis, by = "fips") %>% 
   mutate(
-    se_cluster = ifelse(is.na(rr_cluster), "no", "yes"),
-    ss_cluster = ifelse(is.na(CLU_RR), "no", "yes"),
     ss_class = ifelse(is.na(CLU_RR), 1, cut(CLU_RR, breaks, labels = FALSE))
   )
 
-cat("COVID-19 Cluster Detection by County\n\n")
-table(ss_se$se_cluster, ss_se$ss_cluster, dnn=c("SpatialEpi", "SaTScan"))
-
-cat("\n\n\nCOVID-19 Risk Class by County\n\n")
-
-table(ss_se$se_class, ss_se$ss_class, dnn=c("SpatialEpi", "SaTScan"))
+table(ss_se$se_class, ss_se$ss_class, dnn=c("SpatialEpi", "SaTScan")) %>% 
+  kable(row.names = TRUE, caption = "COVID-19 Risk Class by County", align = "c") %>% 
+  column_spec(2:4, width = "4em") %>% 
+  column_spec(1, bold = TRUE) %>% 
+  add_header_above(c("SpatialEpi" = 1, "SatScan" = 3)) 
 
 # rm(satscan_gis, ss_se)
 ```

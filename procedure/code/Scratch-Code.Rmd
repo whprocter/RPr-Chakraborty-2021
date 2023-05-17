@@ -243,3 +243,118 @@ gee_models$model <- geeglm(paste(gee_models$formula, collapse = " "),
   corstr = "exchangeable" # use exchangeable correlation matrix)
 )
 ```
+
+
+## I think the next two code blocks are garbage.
+
+```{r reanalyze-gee-clusters}
+# what is this doing?
+# should I just join satscan results to acs_covid in the block above?
+
+acs_covid <- acs_covid[, 1:which(colnames(acs_covid) == "clusID")] %>%
+  left_join(satscan_gis, by = "fips") %>%
+  left_join(satscan_col_t[, c("LOC_ID", "REL_RISK")], by = join_by(fips == LOC_ID))
+
+breaks <- c(-Inf, 1, 2, 3, 4, 5, Inf)
+
+acs_covid <- acs_covid %>%
+  mutate(
+    ss_loc_class = ifelse(is.na(LOC_RR), 1, cut(LOC_RR, breaks, labels = FALSE)),
+    ss_cluster_class = ifelse(is.na(CLU_RR), 1, cut(CLU_RR, breaks, labels = FALSE)),
+    ss_center_class = ifelse(is.na(REL_RISK), 1, cut(REL_RISK, breaks, labels = FALSE)),
+    ss_locID = as.integer(statefp) * 10 + ss_loc_class,
+    ss_clusID = as.integer(statefp) * 10 + ss_cluster_class,
+    ss_centerID = as.integer(statefp) * 10 + ss_center_class
+  )
+
+rm(breaks)
+
+cluster_summary <- acs_covid %>%
+  filter(cases > 0) %>%
+  st_drop_geometry() %>%
+  count(ss_locID)
+cat(
+  length(cluster_summary$n),
+  "unique clusters based on SaTScan local relative risk\n"
+)
+summary(cluster_summary$n)
+cat("\r\n")
+
+cluster_summary <- acs_covid %>%
+  filter(cases > 0) %>%
+  st_drop_geometry() %>%
+  count(ss_clusID)
+cat(
+  length(cluster_summary$n),
+  "unique clusters based on SaTScan cluster relative risk\n"
+)
+summary(cluster_summary$n)
+cat("\r\n")
+
+cluster_summary <- acs_covid %>%
+  filter(cases > 0) %>%
+  st_drop_geometry() %>%
+  count(ss_centerID)
+cat(
+  length(cluster_summary$n),
+  "unique clusters based on SaTScan cluster center relative risk\n"
+)
+summary(cluster_summary$n)
+```
+
+
+
+```{r glm-models}
+# sort data frame by GEE cluster ID (precondition for GEE model)
+gee_data <- gee_data %>% arrange(id)
+
+# run GLM models
+race_glm <- glm(
+  covid_rate ~ z_white_pct + z_black_pct + z_native_pct + z_asian_pct + z_other_pct,
+  data = gee_data,
+  family = Gamma(link = "log")
+)
+
+ethnicity_glm <- glm(
+  covid_rate ~ z_non_hisp_white_pct + z_hisp_pct + z_non_hisp_non_white_pct,
+  data = gee_data,
+  family = Gamma(link = "log")
+)
+
+pov_glm <- glm(
+  covid_rate ~ z_bpov_pct + z_apov_pct,
+  data = gee_data,
+  family = Gamma(link = "log")
+)
+
+age_glm <- glm(
+  covid_rate ~ z_pct_5_17 + z_pct_18_34 + z_pct_35_64 + z_pct_65_74 + z_pct_75,
+  data = gee_data,
+  family = Gamma(link = "log")
+)
+
+sex_glm <- glm(
+  covid_rate ~ z_male_pct + z_female_pct,
+  data = gee_data,
+  family = Gamma(link = "log")
+)
+
+# Combine and format results
+glm_results <- rbind(
+  coef(summary(race_glm)),
+  coef(summary(ethnicity_glm)),
+  coef(summary(pov_glm)),
+  coef(summary(age_glm)),
+  coef(summary(sex_glm))
+) %>%
+  round(3)
+
+coefrows <- rownames(glm_results)
+coefrows[1] <- "Race Intercept"
+coefrows[7] <- "Ethnicity Intercept"
+coefrows[11] <- "Poverty Status Intercept"
+coefrows[14] <- "Age Intercept"
+coefrows[20] <- "Biological Sex Intercept"
+rownames(glm_results) <- coefrows
+glm_results
+```

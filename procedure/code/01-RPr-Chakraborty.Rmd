@@ -1359,38 +1359,33 @@ Generalized Estimating Equation parameters:
 
 Useful Reference: <https://data.library.virginia.edu/getting-started-with-generalized-estimating-equations/>
 
-### FUNCTION NOT WORKING YET
+### Function to call one GEE model
 
-```{r gee-function}
-# function for calculating GEE models
-# gee_data is a data frame of input data
-# gee_id is a string naming the column with unique GEE cluster IDs
-# covid_rate is a string naming the column with outcome y-variable (i.e. the COVID rate)
-
-gee_rpr <- function(gee_data, id, covid_rate = "covid_rate") {
-  
-  gee_data <- gee_data %>% 
-    st_drop_geometry() %>% 
-    mutate(gee_id = gee_data$id
-  
-  # sort data by GEE cluster ID
-  gee_data <- gee_data %>% arrange(gee_id)
-  
-  # try using as.formula() function to build the formula from strings
-  
-  # race model
-  race_gee <- geeglm(
-    covid_rate ~ z_white_pct + z_black_pct + z_native_pct + z_asian_pct + z_other_pct,
-    data = gee_data, # data frame
-    id = gee_id, # cluster IDs
+```{r gee-functions}
+onegee <- function(gee_data, ind_vars, dep_var, id) {
+  gee_data <- gee_data %>% arrange({{ id }})
+  geemodel <- geeglm(
+    formula = as.formula(paste(dep_var, "~", ind_vars)),
+    data = gee_data,
+    id = {{ id }}, # cluster IDs
     family = Gamma(link = "log"),
     corstr = "exchangeable"
   )
-  
-  race_gee
+  return(geemodel)
 }
 ```
-    
+
+```{r fun-test}
+racemodel <- onegee(gee_data, 
+                    ind_vars = "z_white_pct + z_black_pct + z_native_pct + z_asian_pct + z_other_pct", 
+                    dep_var = "covid_rate",
+                    id = statefp)
+```
+
+
+#### Use functions to do this so we can iterate over study parameters
+
+```{r gee-models}    
   # Wald and P calculated in summary only;
   # coef() extracts coefficients table from the summary, same as $coefficients
   

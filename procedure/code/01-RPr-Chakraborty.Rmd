@@ -508,6 +508,38 @@ original_gee %>%
 We found that 13 counties had incorrect COVID-19 incidence scores, and the scores seem to be transposed from other counties, such that the overall descriptive statistics were accurate but the correlation coefficients were inaccurate.
 This finding implies that subsequent analyses using the COVID-19 Incidence rate will be slightly different and more accurate in this reproduction study than in the original study.
 
+**Unplanned deviation for reproduction:**
+Join the original author's Incidence data into our reproduction data frame so that we can later test for sensitivity to this error.
+Then report any counties for which the reproduced COVID incidence rate differs from the original author's COVID incidence rate.
+
+```{r join-incidence-rate}
+original_incidence <- original_gee %>% 
+  select(COUNTY_FIPS, or_incidence = Incidence) %>% 
+  mutate(fips = 
+           ifelse(COUNTY_FIPS >= 10000, 
+                  as.character(COUNTY_FIPS), 
+                  paste0("0", COUNTY_FIPS)
+                  )
+         )
+  # calculates a text version of FIPS code for joining, while adding back
+  # the leading '0' if the code was less than 10000 
+
+acs_covid <- acs_covid %>% 
+  left_join(original_incidence, by = "fips")
+
+rm(original_incidence)
+
+acs_covid %>%
+  st_drop_geometry %>% 
+  filter(covid_rate != or_incidence) %>%
+  arrange(fips) %>% 
+  select(county_st, covid_rate, or_incidence) %>% 
+  kable() %>% kable_styling()
+```
+
+The join worked, highlighting the same 13 counties with inconsistent incidence rates.
+This also confirms that our reproduced dependent variable is identical to the original dependent variable with the exception of these three counties.
+
 ## Bivariate nonparametric correlation analysis
 
 **Unplanned Deviation for Reproduction**: 
@@ -904,14 +936,14 @@ Then, we find the number of unique clusters and frequency counties per cluster i
 ```{r make-gee-clusters}
 # calculate clusters
 acs_covid <- acs_covid %>% mutate(
-  clusID = as.integer(statefp) * 10 + cluster_class
+  rp_clusID = as.integer(statefp) * 10 + cluster_class
 )
 
 # summarize clustering results
 cluster_summary <- acs_covid %>%
   filter(cases > 0) %>%
   st_drop_geometry() %>%
-  count(clusID)
+  count(rp_clusID)
 cat(
   length(cluster_summary$n),
   "unique clusters based on spatialEpi CLUSTER relative risk\n"
@@ -1308,19 +1340,14 @@ To complete the reproduction/reanalysis study, we will therefore calculate and c
 3. SpatialEpi cluster classification in geepack
 4. SpatialEpi binary clusters in geepack
 
-
-
 ### Unique GEE cluster IDs
 
 First, calculate GEE cluster IDs.
 
 We have already calculated:
-- `clusID` based on our SpatialEpi clusters 
+- `rp_clusID` based on our SpatialEpi clusters 
 - `ss_clusID` based on our SaTScan cluster centers, and shown to be identical to the original author's data
 - `gini_clusID` based on our SaTScan GINI-optimized clusters
-
-However, if we want to test the original study data in geepack, we need to pre-calculate the unique GEE cluster ID as `or_clusID`
-This step is implied in the "check number of unique clusters and number of counties per cluster" step of the workflow diagram.
 
 ### Filter and standardize data
 
@@ -1328,10 +1355,11 @@ Second, filter the data for non-zero COVID-19 rates and z-score standardize the 
 This accomplishes step 10 of the workflow diagram.
 
 **Unplanned deviation for reproduction:**
-We assumed that we should filtered for COVID rates > 0 first and then calculate z-scores, however after comparing data in the next code block, we realized that the original study had first calculated z-scores and then filtered for COVID rates > 0.
+We assumed that we should filtered for COVID rates > 0 first and then calculate z-scores, however after comparing data in the next code block, we realized that the original study had *first* calculated z-scores and *then* filtered for COVID rates > 0. Therefore, we placed the z-score standardization first and the filtering next in the following codeblock.
 
 ```{r filter-standardize}
 gee_data <- acs_covid %>%
+# filter(covid_rate > 0) %>% # moved filtering to after z-score calculation
   mutate(
     z_white_pct = scale(white_pct),
     z_black_pct = scale(black_pct),
@@ -1351,13 +1379,15 @@ gee_data <- acs_covid %>%
     z_male_pct = scale(male_pct),
     z_female_pct = scale(female_pct)
   ) %>%  
-  filter(covid_rate > 0) #moved filtering to after z-score calculation
+  filter(covid_rate > 0) #moved filtering from before z-score calculation
 ```
 
-Compare independent variables for GEE models.
+Compare independent variables for GEE models by subtracting the original values from the reproduced values, and finding the average and standard deviation of difference for each variable.
 
 ```{r compare-indp-vars}
-
+# subtract original data matrix (table) from reproduced data matrix (table)
+# select, filter, and arrange (sort) data to make identical matrix sizes with 
+# identical order of observations (counties)
 gee_diff <- 
   (gee_data %>% 
     st_drop_geometry() %>%  
@@ -1369,15 +1399,18 @@ gee_diff <-
     select(starts_with("ZPD"))) %>% 
   round(digits = 3)
 
+# print results
 cat("Summary of difference between reproduction independent variables and original independent variables")
 cat("\n")
 cat("Mean:\n")
 colMeans(gee_diff) %>% round(digits = 3)
 cat("\nStandard deviation:\n")
 apply(gee_diff, 2, sd) %>% round(digits = 3)
-
 ```
 
+When we had first filtered for COVID rates > 0 first and then z-score standardized second, the means of differences ranged from -0.012 to 0.004, and standard deviations of differences ranged from 0.000 to 0.016.
+
+After changing the order to first z-score standardize and then filter for COVID rates > 0, we observed no mean difference between our reproduced variables and the original variables, and we find no standard deviation > 0.001 for the difference between reproduction independent variables and original variables.
 There are no major differences between the independent variables.
 
 #### Save final derived data
@@ -1407,12 +1440,6 @@ Generalized Estimating Equation parameters:
 
 Useful Reference: <https://data.library.virginia.edu/getting-started-with-generalized-estimating-equations/>
 
-```{r load-table2}
-table2 <- read.csv(here("data", "raw", "public", "chakraborty", "table2.csv"))
-table2 <- table2 %>% arrange(row_i_first)
-table2[, 3:ncol(table2)] %>% kable() %>% kable_styling()
-```
-
 ### GEE Function
 
 Define a function for calculating and summarizing five GEE models
@@ -1441,6 +1468,7 @@ onegee <- function(gee_data, dep_var, id) {
   )
   
   gee_models <- data.frame(model_names, ind_vars)
+  gee_model <- list()
   
   # empty data frame for storing model outputs
   coefficients <- data.frame()
@@ -1450,7 +1478,7 @@ onegee <- function(gee_data, dep_var, id) {
   for(i in 1:nrow(gee_models)){
 
     # run model
-    gee_model <- geeglm(
+    gee_model[[i]] <- geeglm(
       formula = as.formula(paste(dep_var, "~", gee_models[i, "ind_vars"])),
       data = gee_data,
       id = {{ id }}, # cluster IDs
@@ -1459,13 +1487,13 @@ onegee <- function(gee_data, dep_var, id) {
     )
 
     # tidy and save variable coefficients, margins of error, significance...
-    gee_table <- tidy(gee_model, conf.int = TRUE)
+    gee_table <- tidy(gee_model[[i]], conf.int = TRUE)
     gee_table[1, 1] <- paste(gee_models[i, 1], "model intercept")
     coefficients <- coefficients %>% rbind(gee_table)
 
     # QIC: quasi-likelihood under the independence model information criterion
-    QIC(gee_model)
-    qics[i, 2] <- QIC(gee_model)[1]
+    QIC(gee_model[[i]])
+    qics[i, 2] <- QIC(gee_model[[i]])[1]
   }
   
   coefficients$stars <- as.numeric(
@@ -1478,52 +1506,122 @@ onegee <- function(gee_data, dep_var, id) {
   )
   
   # reorder columns to match table2 in publication
-  coefficients <- coefficients %>% select(1:3, 6:7, 4, 8, 5)
+  coefficients <- coefficients %>% 
+    select(1:3, 6:7, 4, 8, 5) %>% 
+    column_to_rownames("term") %>% 
+    round(digits = 3)
   
   # combine coefficient results and QIC results into a list
   return_data <- list(
     "coefficients" = coefficients,
-    "QICs" = qics)
+    "QICs" = qics,
+    "models" = gee_model
+    )
   
   return(return_data)
 }
 ```
 
-Test the gee function
+### Original Clusters and Original COVID-19 Rate
 
-```{r fun-test}
-racemodel <- onegee(gee_data, 
+Calculate GEE models with:
+- Clustering: SaTScan cluster centers & State ID
+- Dependent variable: original COVID-19 incidence (including errors).
+
+```{r gee-original-clusters-original-incidence}
+gee_or_clus_ordep <- onegee(gee_data, 
+                    dep_var = "or_incidence",
+                    id = ss_clusID)
+gee_or_clus_ordep$coefficients %>% 
+  kable(caption = "Original Cluster IDs and Original COVID-19 Incidence") %>% 
+  kable_styling()
+```
+
+### Original Clusters and Fixed COVID-19 Rate
+
+Calculate GEE models with:
+- Clustering: SaTScan cluster centers & State ID
+- Dependent variable: reproduced COVID-19 incidence (fixed errors).
+
+```{r gee-original-clusters-reproduced-incidence}
+gee_or_clus_rpdep <- onegee(gee_data, 
                     dep_var = "covid_rate",
-                    id = id)
-racemodel$coefficients %>% kable() %>% kable_styling()
+                    id = ss_clusID)
+gee_or_clus_rpdep$coefficients %>% 
+  kable(caption = "Original Cluster IDs and Reproduced COVID-19 Incidence") %>% 
+  kable_styling()
 ```
 
+### GINI Clusters and Fixed COVID-19 Rate
 
+Calculate GEE models with:
+- Clustering: Reproduced SaTScan GEE clusters & State ID
+- Dependent variable: reproduced COVID-19 incidence (fixed errors).
 
-```{r preprocess original gee data}
-original_processed <- original_gee %>%
-  filter(Incidence > 0) %>%
-  mutate(id = as.integer(COUNTY_FIPS) * 10 + RISK_BIN) %>%
-  arrange(id)
+```{r gee-spatialepi-clusters-reproduced-incidence}
+gee_gini_clus_rpdep <- onegee(gee_data, 
+                    dep_var = "covid_rate",
+                    id = gini_clusID)
+gee_gini_clus_rpdep$coefficients %>% 
+  kable(caption = "Reproduced SaTScan GINI Cluster IDs and Reproduced COVID-19 Incidence") %>% 
+  kable_styling()
 ```
 
-```{r gee model with author provided data}
-# Re-run original author's data from original_gee
+### SpatialEpi Clusters and Fixed COVID-19 Rate
 
+Calculate GEE models with:
+- Clustering: Reproduced SpatialEpi clusters & State ID
+- Dependent variable: reproduced COVID-19 incidence (fixed errors).
 
-
+```{r gee-spatialepi-clusters-reproduced-incidence}
+gee_rp_clus_rpdep <- onegee(gee_data, 
+                    dep_var = "covid_rate",
+                    id = rp_clusID)
+gee_rp_clus_rpdep$coefficients %>% 
+  kable(caption = "Reproduced SpatialEpi Cluster IDs and Reproduced COVID-19 Incidence") %>% 
+  kable_styling()
 ```
 
 ### Compare GEE results
 
+Load digitized version of Table 2 from the original publication.
+
 ```{r load-table2}
+table2 <- read.csv(here("data", "raw", "public", "chakraborty", "table2.csv"))
+table2 <- table2 %>% 
+  arrange(row_i_first) %>% 
+  column_to_rownames("variable")
 
+table2[, 3:ncol(table2)] %>% 
+  kable(caption = "Original Publication Table 2") %>% 
+  kable_styling()
+```
+
+### To Do
+
+```{r Reproduced-r-original-SPSS-diff}
+(gee_or_clus_ordep$coefficients[, 1:6] - table2[, 3:ncol(table2)]) %>% 
+  kable(caption = "Reproduced model minus Original model") %>% 
+  kable_styling()
 ```
 
 
-```{r join-gee-results}
+Subtract the results of GEE models for with reproduced COVID-19 incidence (fixed errors) from original COVID-19 incidence (with errors).
 
+```{r incidence-difference}
+(gee_or_clus_rpdep$coefficients - gee_or_clus_ordep$coefficients) %>% 
+  kable(caption = "Reproduced model minus Original model") %>% 
+  kable_styling()
 ```
+
+First, here are two notes about interpreting the difference between models:
+- A positive number for the difference of coefficients indicates that the reproduction found a greater coefficient.
+- A positive number for the p-value indicates that the reproduction found a larger p-value, for a *less statistically signficant* result.
+
+As a result of fixing the COVID-19 incidence rate errors, the significance level of one variable (Asian people with disabilities) decreased.
+The statistical significance of the Age 35-64 group increased by 0.08, but the variable remained above the 0.05 significance level.
+
+Overall, the impact of errors in COVID-19 incidence rates for 13 counties appears to have been minimial in the context of an overall sample size of 3108 counties.
 
 
 ```{r save-figures, eval = F}

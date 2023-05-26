@@ -1214,11 +1214,10 @@ We can check by calculating cluster relative risk classes based on the SaTScan G
 
 ```{r compare-spatialepi-satscan}
 acs_covid <- acs_covid %>%
-  mutate(gini_class = ifelse(
-    is.na(gini_rr),
-    1,
-    cut(gini_rr, breaks, labels = FALSE)
-  ))
+  mutate(
+    gini_class = ifelse(is.na(gini_rr), 1, cut(gini_rr, breaks, labels = FALSE)),
+    gini_clusID = as.integer(statefp) * 10 + gini_class 
+  )
 
 table(acs_covid$cluster_class, acs_covid$gini_class) %>%
   kable(row.names = TRUE, caption = "COVID-19 Risk Class by County", align = "c") %>%
@@ -1310,24 +1309,30 @@ To complete the reproduction/reanalysis study, we will therefore calculate and c
 4. SpatialEpi binary clusters in geepack
 
 
-First, calculate any additional GEE cluster IDs that may be required.
+
+### Unique GEE cluster IDs
+
+First, calculate GEE cluster IDs.
+
+We have already calculated:
+- `clusID` based on our SpatialEpi clusters 
+- `ss_clusID` based on our SaTScan cluster centers, and shown to be identical to the original author's data
+- `gini_clusID` based on our SaTScan GINI-optimized clusters
+
+However, if we want to test the original study data in geepack, we need to pre-calculate the unique GEE cluster ID as `or_clusID`
 This step is implied in the "check number of unique clusters and number of counties per cluster" step of the workflow diagram.
 
-```{r geeclusters-arrange}
-# calculate GEE cluster IDs and sort by the IDs (a requirement of the gee function)
-acs_covid <- acs_covid %>% 
-  mutate(id = as.integer(statefp) * 10 + cluster_class) 
-```
+### Filter and standardize data
 
 Second, filter the data for non-zero COVID-19 rates and z-score standardize the independent variables.
 This accomplishes step 10 of the workflow diagram.
 
+**Unplanned deviation for reproduction:**
+We assumed that we should filtered for COVID rates > 0 first and then calculate z-scores, however after comparing data in the next code block, we realized that the original study had first calculated z-scores and then filtered for COVID rates > 0.
+
 ```{r filter-standardize}
 gee_data <- acs_covid %>%
-  filter(covid_rate > 0) %>%
   mutate(
-    z_bpov_pct = scale(bpov_pct),
-    z_apov_pct = scale(apov_pct),
     z_white_pct = scale(white_pct),
     z_black_pct = scale(black_pct),
     z_native_pct = scale(native_pct),
@@ -1336,6 +1341,8 @@ gee_data <- acs_covid %>%
     z_non_hisp_white_pct = scale(non_hisp_white_pct),
     z_hisp_pct = scale(hisp_pct),
     z_non_hisp_non_white_pct = scale(non_hisp_non_white_pct),
+    z_bpov_pct = scale(bpov_pct),
+    z_apov_pct = scale(apov_pct),
     z_pct_5_17 = scale(pct_5_17),
     z_pct_18_34 = scale(pct_18_34),
     z_pct_35_64 = scale(pct_35_64),
@@ -1343,8 +1350,35 @@ gee_data <- acs_covid %>%
     z_pct_75 = scale(pct_75),
     z_male_pct = scale(male_pct),
     z_female_pct = scale(female_pct)
-  )
+  ) %>%  
+  filter(covid_rate > 0) #moved filtering to after z-score calculation
 ```
+
+Compare independent variables for GEE models.
+
+```{r compare-indp-vars}
+
+gee_diff <- 
+  (gee_data %>% 
+    st_drop_geometry() %>%  
+    arrange(as.integer(fips)) %>%
+    select(starts_with("z_"))  -
+  original_gee %>% 
+    filter(Cases > 0) %>% 
+    arrange(COUNTY_FIPS) %>% 
+    select(starts_with("ZPD"))) %>% 
+  round(digits = 3)
+
+cat("Summary of difference between reproduction independent variables and original independent variables")
+cat("\n")
+cat("Mean:\n")
+colMeans(gee_diff) %>% round(digits = 3)
+cat("\nStandard deviation:\n")
+apply(gee_diff, 2, sd) %>% round(digits = 3)
+
+```
+
+There are no major differences between the independent variables.
 
 #### Save final derived data
 

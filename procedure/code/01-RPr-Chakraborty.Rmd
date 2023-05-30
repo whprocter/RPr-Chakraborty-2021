@@ -167,7 +167,7 @@ saveRDS(acs_pov, here("data", "raw", "public", "acs_pov.RDS"))
 saveRDS(state, here("data", "raw", "public", "state.RDS"))
 ```
 
-```{r load-acs}
+```{r load-acs} 
 acs <- readRDS(here("data", "raw", "public", "acs.RDS"))
 acs_pov <- readRDS(here("data", "raw", "public", "acs_pov.RDS"))
 state <- readRDS(here("data", "raw", "public", "state.RDS"))
@@ -760,7 +760,7 @@ Next, calculate a new field `isCluster` to identify counties in COVID-19 cluster
 Additionally, distinguish between counties defining the center of a cluster from counties constituting other parts of a cluster by comparing the cluster ID (equivalent to the center county's fips code) to the county fips code.
 
 ```{r join-clusterID-to-acs_covid}
-acs_covid <- acs_covid[, 1:which(colnames(acs_covid) == "y")] %>%
+acs_covid <- acs_covid[, 1:which(colnames(acs_covid) == "or_incidence")] %>%
   left_join(clusters, by = "fips") %>%
   mutate(isCluster = case_when(
     clusterID == fips ~ "center of cluster",
@@ -858,7 +858,7 @@ class_freq$label <- paste0(class_freq$loc_class,
                            ")")
 
 # Map Local Relative Risk scores
-tm_spaitalepi_local_risk_class <- tm_shape(acs_covid) +
+tm_spatialepi_local_risk_class <- tm_shape(acs_covid) +
   tm_polygons("loc_class",
     title = "Local Relative Risk Class",
     border.col = "white",
@@ -878,7 +878,7 @@ tm_spaitalepi_local_risk_class <- tm_shape(acs_covid) +
 
 rm(class_freq)
 
-tm_spaitalepi_local_risk_class
+tm_spatialepi_local_risk_class
 ```
 
 Next, map the cluster relative risk scores for comparison.
@@ -897,7 +897,7 @@ class_freq$label <- paste0(class_freq$cluster_class,
                            ")")
 
 # map cluster relative risk scores
-tm_spaitalepi_cluster_risk_class <- tm_shape(acs_covid) +
+tm_spatialepi_cluster_risk_class <- tm_shape(acs_covid) +
   tm_polygons("cluster_class",
     title = "Cluster Relative Risk Class",
     border.col = "white",
@@ -917,12 +917,12 @@ tm_spaitalepi_cluster_risk_class <- tm_shape(acs_covid) +
 
 rm(class_freq)
 
-tm_spaitalepi_cluster_risk_class
-tm_spaitalepi_local_risk_class
+tm_spatialepi_cluster_risk_class
+tm_spatialepi_local_risk_class
 ```
 
 Comparing the cluster and local relative risk classifications for regions like the Southeast, it is apparent that some areas of high risk are represented with large clusters that have an averaging effect on the cluster-based relative risk score. 
-This is effect is more pronounced for clusters with low compactness (e.g. the Southeast cluster stretched over the "black belt" region from Louisiana and Arkansas to Georgia) than clusters with higher compactness (e.g. New York City) because the circular shape of clusters includes more low-risk counties.
+This effect is more pronounced for clusters with low compactness (e.g. the Southeast cluster stretched over the "black belt" region from Louisiana and Arkansas to Georgia) than clusters with higher compactness (e.g. New York City) because the circular shape of clusters includes more low-risk counties.
 
 ### Compare clusters
 
@@ -1014,7 +1014,7 @@ satscan_rpr_col_t <- satscan_rpr_col %>%
   select(fips = LOC_ID, GINI_CLUST, REL_RISK)
 
 # join
-acs_covid <- acs_covid[, 1:which(colnames(acs_covid) == "loc_class")] %>% 
+acs_covid <- acs_covid[, 1:which(colnames(acs_covid) == "rp_clusID")] %>%
   left_join(satscan_rpr_col_t, by = "fips")
 
 rm(satscan_rpr_col_t)
@@ -1135,7 +1135,7 @@ satscan_rpr_gis_t <- read_sf(
   select(fips = LOC_ID, CLU_RR, GINI_CLUST)
 
 # check if there are any duplicated counties
-cat("Joining", 
+cat("SaTScan combined GIS output has", 
     length(satscan_rpr_gis_t$fips), 
     "records with",
     length(unique(satscan_rpr_gis_t$fips)),
@@ -1144,12 +1144,27 @@ cat("Joining",
 satscan_rpr_gini <- satscan_rpr_gis_t %>% filter(GINI_CLUST == "T") %>% select(fips, gini_rr = CLU_RR)
 satscan_rpr_hier <- satscan_rpr_gis_t %>% filter(GINI_CLUST == "F") %>% select(fips, hier_rr = CLU_RR)
 
+# check if there are any duplicated counties
+cat("\n\nSaTScan Hierarchical clusters include", 
+    length(satscan_rpr_hier$fips), 
+    "records with",
+    length(unique(satscan_rpr_hier$fips)),
+    "unique county values")
+
+cat("\n\nSaTScan GINI-optimized clusters include", 
+    length(satscan_rpr_gini$fips), 
+    "records with",
+    length(unique(satscan_rpr_gini$fips)),
+    "unique county values")
+
 acs_covid <- acs_covid[, 1:which(colnames(acs_covid) == "ss_clusID")] %>%
   left_join(satscan_rpr_gini, by = "fips") %>% 
   left_join(satscan_rpr_hier, by = "fips")
 
 rm(satscan_rpr_gis_t, satscan_rpr_gini, satscan_rpr_hier)
 ```
+It was necessary to divide the Hierarchical clusters from the GINI clusters to avoid duplicates and geographic overlap.
+
 Compare the SaTScan Hierarchical clusters to the SpatialEpi clusters.
 
 ```{r hierarchical-cluster-comparison-map, message = F}
@@ -1529,9 +1544,9 @@ Calculate GEE models with:
 - Dependent variable: original COVID-19 incidence (including errors).
 
 ```{r gee-original-clusters-original-incidence}
-gee_or_clus_ordep <- onegee(gee_data, 
+gee_or_clus_ordep <- gee_data %>% onegee(
                     dep_var = "or_incidence",
-                    id = ss_clusID)
+                    id = gee_data$ss_clusID)
 gee_or_clus_ordep$coefficients %>% 
   kable(caption = "Original Cluster IDs and Original COVID-19 Incidence") %>% 
   kable_styling()
@@ -1546,7 +1561,7 @@ Calculate GEE models with:
 ```{r gee-original-clusters-reproduced-incidence}
 gee_or_clus_rpdep <- onegee(gee_data, 
                     dep_var = "covid_rate",
-                    id = ss_clusID)
+                    id = gee_data$ss_clusID)
 gee_or_clus_rpdep$coefficients %>% 
   kable(caption = "Original Cluster IDs and Reproduced COVID-19 Incidence") %>% 
   kable_styling()
@@ -1561,7 +1576,7 @@ Calculate GEE models with:
 ```{r gee-spatialepi-clusters-reproduced-incidence}
 gee_gini_clus_rpdep <- onegee(gee_data, 
                     dep_var = "covid_rate",
-                    id = gini_clusID)
+                    id = gee_data$gini_clusID)
 gee_gini_clus_rpdep$coefficients %>% 
   kable(caption = "Reproduced SaTScan GINI Cluster IDs and Reproduced COVID-19 Incidence") %>% 
   kable_styling()
@@ -1576,7 +1591,7 @@ Calculate GEE models with:
 ```{r gee-spatialepi-clusters-reproduced-incidence}
 gee_rp_clus_rpdep <- onegee(gee_data, 
                     dep_var = "covid_rate",
-                    id = rp_clusID)
+                    id = gee_data$rp_clusID)
 gee_rp_clus_rpdep$coefficients %>% 
   kable(caption = "Reproduced SpatialEpi Cluster IDs and Reproduced COVID-19 Incidence") %>% 
   kable_styling()
@@ -1627,8 +1642,14 @@ Overall, the impact of errors in COVID-19 incidence rates for 13 counties appear
 ```{r save-figures, eval = F}
 # save figures as image files
 # obviously this could be made into a for loop
+# add height, width, and dpi parameters to tmap_save to meet criteria for particular publications.
+tmap_options(unit = "in")
+tmap_save(tm_author_clusters, here("results", "figures", "author_clusters.png"))
 tmap_save(tm_covid_rates, here("results", "figures", "covid_rates.png"))
 tmap_save(tm_disability_rates, here("results", "figures", "disability_rates.png"))
-tmap_save(tm_spatialepi_satscan, here("results", "figures", "tm_spatialepi_satscan.png"))
 tmap_save(tm_spatialepi_clusters, here("results", "figures", "tm_spatialepi_clusters.png"))
+tmap_save(tm_spatialepi_gini, here("results", "figures", "tm_spatialepi_gini.png"))
+tmap_save(tm_spatialepi_hier, here("results", "figures", "tm_spatialepi_hier.png"))
+tmap_save(tm_spatialepi_cluster_risk_class, here("results", "figures", "tm_spatialepi_cluster_risk_class.png"))
+tmap_save(tm_spatialepi_local_risk_class, here("results", "figures", "tm_spatialepi_local_risk_class.png"))
 ```

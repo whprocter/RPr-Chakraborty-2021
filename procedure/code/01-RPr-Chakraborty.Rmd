@@ -1573,7 +1573,7 @@ Calculate GEE models with:
 - Clustering: Reproduced SaTScan GEE clusters & State ID
 - Dependent variable: reproduced COVID-19 incidence (fixed errors).
 
-```{r gee-spatialepi-clusters-reproduced-incidence}
+```{r gee-gini-clusters-reproduced-incidence}
 gee_gini_clus_rpdep <- onegee(gee_data, 
                     dep_var = "covid_rate",
                     id = gee_data$gini_clusID)

@@ -86,7 +86,7 @@ This reproduction study uses R, including the SpatialEpi package for the Kulldor
 packages <- c(
   "tidycensus", "tidyverse", "downloader", "sf", "classInt", "readr",
   "here", "s2", "pastecs", "tmap", "SpatialEpi", "svDialogs",
-  "geepack", "knitr", "kableExtra", "foreign", "broom"
+  "geepack", "knitr", "kableExtra", "foreign", "broom", "dotwhisker"
 )
 
 # load and install required packages
@@ -1498,7 +1498,7 @@ onegee <- function(gee_data, dep_var, id) {
       data = gee_data,
       id = {{ id }}, # cluster IDs
       family = Gamma(link = "log"),
-      corstr = "exchangeable"
+      corstr = "exchangeable",
     )
 
     # tidy and save variable coefficients, margins of error, significance...
@@ -1509,6 +1509,8 @@ onegee <- function(gee_data, dep_var, id) {
     # QIC: quasi-likelihood under the independence model information criterion
     QIC(gee_model[[i]])
     qics[i, 2] <- QIC(gee_model[[i]])[1]
+    
+    gee_model[[i]]$model <- NA
   }
   
   coefficients$stars <- as.numeric(
@@ -1604,13 +1606,61 @@ Load digitized version of Table 2 from the original publication.
 ```{r load-table2}
 table2 <- read.csv(here("data", "raw", "public", "chakraborty", "table2.csv"))
 table2 <- table2 %>% 
-  arrange(row_i_first) %>% 
-  column_to_rownames("variable")
+  arrange(row_i_first) #%>% 
+  #column_to_rownames("term")
 
 table2[, 3:ncol(table2)] %>% 
   kable(caption = "Original Publication Table 2") %>% 
   kable_styling()
 ```
+
+
+Make Dotwhisker visualization of model results.
+
+```{r dotwhisker-comparison}
+geewhisker <- table2 %>% mutate(model = "Original Study") %>% select(-c(starts_with("row"), "wald_chi_square", "p_stars"))
+
+geeterms <- table2 %>% select("term")
+
+nextwhisker <- geeterms %>% 
+  bind_cols(gee_or_clus_ordep$coefficients) %>% 
+  select(1:5) %>% 
+  mutate(model = "Switch to R Geepack")
+
+geewhisker <- geewhisker %>% bind_rows(nextwhisker)
+
+nextwhisker <- geeterms %>% 
+  bind_cols(gee_or_clus_rpdep$coefficients) %>% 
+  select(1:5) %>% 
+  mutate(model = "Correct COVID Incidence")
+
+geewhisker <- geewhisker %>% bind_rows(nextwhisker)
+
+nextwhisker <- geeterms %>% 
+  bind_cols(gee_gini_clus_rpdep$coefficients) %>% 
+  select(1:5) %>% 
+  mutate(model = "SaTScan GINI-Optimized Clusters")
+
+geewhisker <- geewhisker %>% bind_rows(nextwhisker)
+
+nextwhisker <- geeterms %>% 
+  bind_cols(gee_rp_clus_rpdep$coefficients) %>% 
+  select(1:5) %>% 
+  mutate(model = "SpatialEpi Clusters")
+
+geewhisker <- geewhisker %>% bind_rows(nextwhisker) %>% 
+  filter(!grepl("intercept", term))
+
+geewhisker_fig <- geewhisker %>% 
+  dwplot() + 
+    scale_colour_grey(start = 0.5, end = 0.9) +
+    theme_bw() +
+    xlab("Coefficient")
+
+geewhisker_fig
+```
+
+
 
 ### To Do
 
@@ -1652,4 +1702,5 @@ tmap_save(tm_spatialepi_gini, here("results", "figures", "tm_spatialepi_gini.png
 tmap_save(tm_spatialepi_hier, here("results", "figures", "tm_spatialepi_hier.png"))
 tmap_save(tm_spatialepi_cluster_risk_class, here("results", "figures", "tm_spatialepi_cluster_risk_class.png"))
 tmap_save(tm_spatialepi_local_risk_class, here("results", "figures", "tm_spatialepi_local_risk_class.png"))
+ggsave(here("results", "figures", "plot_coefficients.png"), geewhisker_fig)
 ```

@@ -1,0 +1,48 @@
+R version 4.2.1 (2022-06-23 ucrt)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 19045)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.utf8  LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8 LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] dotwhisker_0.7.4 broom_1.0.4      foreign_0.8-82   kableExtra_1.3.4
+ [5] knitr_1.42       geepack_1.3.9    svDialogs_1.1.0  SpatialEpi_1.2.8
+ [9] sp_1.6-0         tmap_3.3-3       pastecs_1.3.21   s2_1.1.2        
+[13] here_1.0.1       classInt_0.4-9   sf_1.0-12        downloader_0.4  
+[17] lubridate_1.9.2  forcats_1.0.0    stringr_1.5.0    dplyr_1.1.1     
+[21] purrr_1.0.1      readr_2.1.4      tidyr_1.3.0      tibble_3.2.1    
+[25] ggplot2_3.4.2    tidyverse_2.0.0  tidycensus_1.3.2
+
+loaded via a namespace (and not attached):
+ [1] leafem_0.2.0       colorspace_2.1-0   deldir_1.0-6       ellipsis_0.3.2    
+ [5] class_7.3-20       leaflet_2.1.2      rprojroot_2.0.3    ggstance_0.3.6    
+ [9] parameters_0.21.1  base64enc_0.1-3    dichromat_2.0-0.1  rstudioapi_0.14   
+[13] proxy_0.4-27       farver_2.1.1       fansi_1.0.4        xml2_1.3.3        
+[17] codetools_0.2-18   cachem_1.0.7       Formula_1.2-5      jsonlite_1.8.4    
+[21] tmaptools_3.1-1    png_0.1-8          compiler_4.2.1     httr_1.4.5        
+[25] backports_1.4.1    fastmap_1.1.1      cli_3.6.1          htmltools_0.5.5   
+[29] tools_4.2.1        gtable_0.3.3       glue_1.6.2         wk_0.7.2          
+[33] rappdirs_0.3.3     Rcpp_1.0.10        jquerylib_0.1.4    raster_3.6-20     
+[37] vctrs_0.6.1        spdep_1.2-8        svglite_2.1.1      tigris_2.0.1      
+[41] leafsync_0.1.0     crosstalk_1.2.0    insight_0.19.2     lwgeom_0.2-11     
+[45] xfun_0.38          rvest_1.0.3        timechange_0.2.0   lifecycle_1.0.3   
+[49] XML_3.99-0.14      terra_1.7-18       MASS_7.3-57        scales_1.2.1      
+[53] hms_1.1.3          parallel_4.2.1     RColorBrewer_1.1-3 yaml_2.3.7        
+[57] sass_0.4.5         stringi_1.7.8      bayestestR_0.13.1  highr_0.10        
+[61] e1071_1.7-13       boot_1.3-28        svGUI_1.0.1        spData_2.2.2      
+[65] rlang_1.1.0        pkgconfig_2.0.3    systemfonts_1.0.4  evaluate_0.20     
+[69] lattice_0.20-45    labeling_0.4.2     htmlwidgets_1.6.2  tidyselect_1.2.0  
+[73] table1_1.4.3       plyr_1.8.8         magrittr_2.0.3     R6_2.5.1          
+[77] generics_0.1.3     DBI_1.1.3          pillar_1.9.0       withr_2.5.0       
+[81] units_0.8-1        stars_0.6-1        datawizard_0.7.1   abind_1.4-5       
+[85] crayon_1.5.2       uuid_1.1-0         KernSmooth_2.23-20 utf8_1.2.3        
+[89] tzdb_0.3.0         rmarkdown_2.21     grid_4.2.1         webshot_0.5.4     
+[93] digest_0.6.31      munsell_0.5.0      viridisLite_0.4.1  bslib_0.4.2       

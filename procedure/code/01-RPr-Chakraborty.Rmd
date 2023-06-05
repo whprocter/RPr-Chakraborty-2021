@@ -1455,12 +1455,27 @@ Generalized Estimating Equation parameters:
 
 Useful Reference: <https://data.library.virginia.edu/getting-started-with-generalized-estimating-equations/>
 
+### Original Table 2
+
+Load digitized version of Table 2 from the original publication.
+
+```{r load-table2}
+table2 <- read.csv(here("data", "raw", "public", "chakraborty", "table2.csv"))
+table2 <- table2 %>% 
+  arrange(row_i_first) #%>% 
+  #column_to_rownames("term")
+
+table2[, 3:ncol(table2)] %>% 
+  kable(caption = "Original Publication Table 2") %>% 
+  kable_styling()
+```
+
 ### GEE Function
 
 Define a function for calculating and summarizing five GEE models
 
 ```{r gee-functions}
-onegee <- function(gee_data, dep_var, id) {
+onegee <- function(gee_data, dep_var, id, term_names) {
 
   # sort data frame by clustering variable, a requirement of GEE modeling
   gee_data <- gee_data %>% arrange({{ id }})
@@ -1504,7 +1519,7 @@ onegee <- function(gee_data, dep_var, id) {
     # tidy and save variable coefficients, margins of error, significance...
     gee_table <- tidy(gee_model[[i]], conf.int = TRUE)
     gee_table[1, 1] <- paste(gee_models[i, 1], "model intercept")
-    coefficients <- coefficients %>% rbind(gee_table)
+    coefficients <- coefficients %>% rbind(gee_table) 
 
     # QIC: quasi-likelihood under the independence model information criterion
     QIC(gee_model[[i]])
@@ -1513,6 +1528,7 @@ onegee <- function(gee_data, dep_var, id) {
     gee_model[[i]]$model <- NA
   }
   
+  # calculate significance levels
   coefficients$stars <- as.numeric(
     as.character(
       cut(coefficients$p.value,
@@ -1522,12 +1538,14 @@ onegee <- function(gee_data, dep_var, id) {
     )
   )
   
-  # reorder columns to match table2 in publication
+  # reorder columns to match table2 in publication and round to 3 sig. digits
   coefficients <- coefficients %>% 
-    select(1:3, 6:7, 4, 8, 5) %>% 
-    column_to_rownames("term") %>% 
-    round(digits = 3)
+    select("estimate", "std.error", starts_with("conf"), "stars", "p.value") %>% 
+    round(digits = 3) 
   
+  # add tidy term names
+  coefficients <- bind_cols(term = term_names, coefficients)
+
   # combine coefficient results and QIC results into a list
   return_data <- list(
     "coefficients" = coefficients,
@@ -1548,7 +1566,8 @@ Calculate GEE models with:
 ```{r gee-original-clusters-original-incidence}
 gee_or_clus_ordep <- gee_data %>% onegee(
                     dep_var = "or_incidence",
-                    id = gee_data$ss_clusID)
+                    id = gee_data$ss_clusID,
+                    term_names = table2$term)
 gee_or_clus_ordep$coefficients %>% 
   kable(caption = "Original Cluster IDs and Original COVID-19 Incidence") %>% 
   kable_styling()
@@ -1563,7 +1582,8 @@ Calculate GEE models with:
 ```{r gee-original-clusters-reproduced-incidence}
 gee_or_clus_rpdep <- onegee(gee_data, 
                     dep_var = "covid_rate",
-                    id = gee_data$ss_clusID)
+                    id = gee_data$ss_clusID,
+                    term_names = table2$term)
 gee_or_clus_rpdep$coefficients %>% 
   kable(caption = "Original Cluster IDs and Reproduced COVID-19 Incidence") %>% 
   kable_styling()
@@ -1578,7 +1598,8 @@ Calculate GEE models with:
 ```{r gee-gini-clusters-reproduced-incidence}
 gee_gini_clus_rpdep <- onegee(gee_data, 
                     dep_var = "covid_rate",
-                    id = gee_data$gini_clusID)
+                    id = gee_data$gini_clusID,
+                    term_names = table2$term)
 gee_gini_clus_rpdep$coefficients %>% 
   kable(caption = "Reproduced SaTScan GINI Cluster IDs and Reproduced COVID-19 Incidence") %>% 
   kable_styling()
@@ -1593,7 +1614,8 @@ Calculate GEE models with:
 ```{r gee-spatialepi-clusters-reproduced-incidence}
 gee_rp_clus_rpdep <- onegee(gee_data, 
                     dep_var = "covid_rate",
-                    id = gee_data$rp_clusID)
+                    id = gee_data$rp_clusID,
+                    term_names = table2$term)
 gee_rp_clus_rpdep$coefficients %>% 
   kable(caption = "Reproduced SpatialEpi Cluster IDs and Reproduced COVID-19 Incidence") %>% 
   kable_styling()
@@ -1601,92 +1623,45 @@ gee_rp_clus_rpdep$coefficients %>%
 
 ### Compare GEE results
 
-Load digitized version of Table 2 from the original publication.
+Generate dot-and-whisker plot of coefficients for each of the model variations.
 
-```{r load-table2}
-table2 <- read.csv(here("data", "raw", "public", "chakraborty", "table2.csv"))
-table2 <- table2 %>% 
-  arrange(row_i_first) #%>% 
-  #column_to_rownames("term")
+```{r dotwhisker-comparison, message=FALSE}
+# create summary data frame compatible with dotwhisker package functions
+# starting with original study results
+t2whisker <- table2 %>% 
+  mutate(model = "Original Study") %>% 
+  select(-c(starts_with("row"), "wald_chi_square", "p_stars"))
 
-table2[, 3:ncol(table2)] %>% 
-  kable(caption = "Original Publication Table 2") %>% 
-  kable_styling()
-```
+geewhisker <- bind_rows(
+  mutate(gee_or_clus_ordep$coefficients, 
+         model = "Switch to R Geepack"),
+  mutate(gee_or_clus_rpdep$coefficients, 
+         model = "Correct COVID Incidence"),
+  mutate(gee_gini_clus_rpdep$coefficients, 
+         model = "SaTScan GINI-Optimized Clusters"),
+  mutate(gee_rp_clus_rpdep$coefficients, 
+         model = "SpatialEpi Clusters")) %>% 
+  select(1:5, "model")
 
-
-Make Dotwhisker visualization of model results.
-
-```{r dotwhisker-comparison}
-geewhisker <- table2 %>% mutate(model = "Original Study") %>% select(-c(starts_with("row"), "wald_chi_square", "p_stars"))
-
-geeterms <- table2 %>% select("term")
-
-nextwhisker <- geeterms %>% 
-  bind_cols(gee_or_clus_ordep$coefficients) %>% 
-  select(1:5) %>% 
-  mutate(model = "Switch to R Geepack")
-
-geewhisker <- geewhisker %>% bind_rows(nextwhisker)
-
-nextwhisker <- geeterms %>% 
-  bind_cols(gee_or_clus_rpdep$coefficients) %>% 
-  select(1:5) %>% 
-  mutate(model = "Correct COVID Incidence")
-
-geewhisker <- geewhisker %>% bind_rows(nextwhisker)
-
-nextwhisker <- geeterms %>% 
-  bind_cols(gee_gini_clus_rpdep$coefficients) %>% 
-  select(1:5) %>% 
-  mutate(model = "SaTScan GINI-Optimized Clusters")
-
-geewhisker <- geewhisker %>% bind_rows(nextwhisker)
-
-nextwhisker <- geeterms %>% 
-  bind_cols(gee_rp_clus_rpdep$coefficients) %>% 
-  select(1:5) %>% 
-  mutate(model = "SpatialEpi Clusters")
-
-geewhisker <- geewhisker %>% bind_rows(nextwhisker) %>% 
+geewhisker <- bind_rows(t2whisker, geewhisker) %>% 
   filter(!grepl("intercept", term))
 
+# generate create dot whisker plot
 geewhisker_fig <- geewhisker %>% 
-  dwplot() + 
-    scale_colour_grey(start = 0.5, end = 0.9) +
+  dwplot(dodge_size = 0.6) + 
+    scale_colour_brewer(type = "div", 
+                        palette = "RdYlBu",
+                        name = "Model Variations") +
     theme_bw() +
     xlab("Coefficient")
 
 geewhisker_fig
+
+rm(geewhisker, t2whisker)
 ```
 
 
 
-### To Do
-
-```{r Reproduced-r-original-SPSS-diff}
-(gee_or_clus_ordep$coefficients[, 1:6] - table2[, 3:ncol(table2)]) %>% 
-  kable(caption = "Reproduced model minus Original model") %>% 
-  kable_styling()
-```
-
-
-Subtract the results of GEE models for with reproduced COVID-19 incidence (fixed errors) from original COVID-19 incidence (with errors).
-
-```{r incidence-difference}
-(gee_or_clus_rpdep$coefficients - gee_or_clus_ordep$coefficients) %>% 
-  kable(caption = "Reproduced model minus Original model") %>% 
-  kable_styling()
-```
-
-First, here are two notes about interpreting the difference between models:
-- A positive number for the difference of coefficients indicates that the reproduction found a greater coefficient.
-- A positive number for the p-value indicates that the reproduction found a larger p-value, for a *less statistically signficant* result.
-
-As a result of fixing the COVID-19 incidence rate errors, the significance level of one variable (Asian people with disabilities) decreased.
-The statistical significance of the Age 35-64 group increased by 0.08, but the variable remained above the 0.05 significance level.
-
-Overall, the impact of errors in COVID-19 incidence rates for 13 counties appears to have been minimial in the context of an overall sample size of 3108 counties.
 
 
 ```{r save-figures, eval = F}

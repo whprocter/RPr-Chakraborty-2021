@@ -110,7 +110,7 @@ writeLines(
 knitr::opts_chunk$set(
   echo = FALSE,
   fig.width = 8,
-  fig.path = here("results", "figures")
+  fig.path = paste0(here("results", "figures"), "/")
 )
 ```
 
@@ -320,7 +320,7 @@ tm_covid_rates <- tm_shape(acs_covid) +
     style = "quantile",
     border.alpha = .2,
     lwd = 0.2,
-    palette = "YlOrBr",
+    palette = "Oranges",
   ) +
   tm_shape(state) +
     tm_borders("grey", lwd = .5) +
@@ -344,7 +344,7 @@ tm_disability_rates <- tm_shape(acs_covid) +
     style = "quantile",
     border.alpha = .2,
     lwd = 0.2,
-    palette = "YlOrBr"
+    palette = "Oranges"
   ) +
   tm_shape(state) +
   tm_borders("grey", lwd = .5) +
@@ -918,7 +918,6 @@ tm_spatialepi_cluster_risk_class <- tm_shape(acs_covid) +
 rm(class_freq)
 
 tm_spatialepi_cluster_risk_class
-tm_spatialepi_local_risk_class
 ```
 
 Comparing the cluster and local relative risk classifications for regions like the Southeast, it is apparent that some areas of high risk are represented with large clusters that have an averaging effect on the cluster-based relative risk score. 
@@ -1648,20 +1647,40 @@ geewhisker <- bind_rows(t2whisker, geewhisker) %>%
 
 # generate create dot whisker plot
 geewhisker_fig <- geewhisker %>% 
-  dwplot(dodge_size = 0.6) + 
+  dwplot(dodge_size = 0.6,
+         vline = geom_vline(
+           xintercept = 0,
+           colour = "grey60",
+           linetype = 2
+       )) + 
     scale_colour_brewer(type = "div", 
                         palette = "RdYlBu",
                         name = "Model Variations") +
     theme_bw() +
-    xlab("Coefficient")
+    xlab("Coefficient") 
 
 geewhisker_fig
 
 rm(geewhisker, t2whisker)
 ```
 
+The figure above illustrates five model variations, starting with the results published in the original study.
+The next two models make incremental adjustments to the research design and are most compatible with the goals of a reproduction study.
+Interestingly, the most variance in model results seems to appear with the most insignificant change: switching the computational environment from SPSS to geepack in R.
+This switch decreased the magnitude of most coefficients, reducing the positive Hispanic coefficient below its original confidence interval and increasing the negative Above poverty level and Male coefficients to the limits of their original confidence intervals.
+Compared to the change in computational environment, fixing the error in the COVID-19 incidence rate of 13 counties had very little effect on coefficient estimates.
 
+Our more significant adjustments could be considered reanalyses, in which we re-conceptualized COVID-19 clusters first as all counties included in SaTScan GINI-Optimized clusters, and second as all counties included in SpatialEpi clusters.
+These two changes further decreased the magnitude of most coefficients as they likely more effectively fulfilled the purpose of controlling for spatial dependence.
+The shifts were most signficant for the Ethnicity model, in which the Hispanic and Non-Hispanic white coefficients lost magnitude beyond the original confidence interval and the Hispanic coefficient is no longer significant.
+Secondarily, the negative Above poverty level and Male coefficients both increased beyond the range of the original confidence intervals.
 
+Overall, we can see that some coefficients remained significant and robust to changes in computational environment, data errors, and clustering criteria.
+Robustly positive coefficients included Black, Native American, Non-Hispanic non-White, Below poverty level, and Female.
+The Asian and Age 5-17 coefficients also remained just above 0.
+All of these categories of people with disabilities would be considered intersectional with factors of vulnerability.
+Conversely, some robustly negative coefficients indicate people with disabilities intersecting with non-vulnerable identities, such as white, Non-Hispanic White, Above poverty level, and Male. 
+Counter-intuitively, the two coefficients for elderly people with disability were also robustly negative.
 
 
 ```{r save-figures, eval = F}
@@ -1669,9 +1688,9 @@ rm(geewhisker, t2whisker)
 # obviously this could be made into a for loop
 # add height, width, and dpi parameters to tmap_save to meet criteria for particular publications.
 tmap_options(unit = "in")
-tmap_save(tm_author_clusters, here("results", "figures", "author_clusters.png"))
-tmap_save(tm_covid_rates, here("results", "figures", "covid_rates.png"))
-tmap_save(tm_disability_rates, here("results", "figures", "disability_rates.png"))
+tmap_save(tm_author_clusters, here("results", "figures", "tm_author_clusters.png"))
+tmap_save(tm_covid_rates, here("results", "figures", "tm_covid_rates.png"))
+tmap_save(tm_disability_rates, here("results", "figures", "tm_disability_rates.png"))
 tmap_save(tm_spatialepi_clusters, here("results", "figures", "tm_spatialepi_clusters.png"))
 tmap_save(tm_spatialepi_gini, here("results", "figures", "tm_spatialepi_gini.png"))
 tmap_save(tm_spatialepi_hier, here("results", "figures", "tm_spatialepi_hier.png"))

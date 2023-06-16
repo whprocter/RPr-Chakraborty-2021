@@ -63,7 +63,7 @@ That is, H1 and H2 both encompass five models, including one for each dimension 
 The original study is **observational**, with the **exploratory** objective of determining "whether COVID-19 incidence is significantly greater in counties containing higher percentages of socio-demographically disadvantaged [people with disabilities], based on their race, ethnicity, poverty status, age, and biological sex" (Chakraborty 2021).
 This exploratory objective is broken down into five implicit hypotheses that each of the demographic characteristics of people with disabilities is associated with higher COVID-19 incidence rates.
 
-The **spatial extent** of the study are the 49 contiguous states in the U.S.
+The **spatial extent** of the study are the 48 contiguous states in the U.S.
 The **spatial scale** of the analysis is at the county level.
 Both COVID-19 incidence rates and demographic variables are all measured at the county level.
 The **temporal extent** of the COVID-19 data ranges from 1/22/2020 (when John Hopkins began collecting the data) to 8/1/2020 (when the data was retrieved for the original study).
@@ -635,8 +635,8 @@ SaTScan software can also output two versions of geographic data:
 
 The SaTScan software implementation of the Kulldorff spatial scan statistic calculates two relative risk scores for locations:
 
--   cluster relative risk is the incidence rate of the population within the cluster divided by the incidence rate of the population outside of the cluster. This is calculated as `REL_RISK` in the `col` cluster polygon shapefile and as `CLU_RR` in the `gis` location point shapefile.
--   local relative risk is the incidence rate of population within a location divided by the incidence rate of the population outside of the location. This is calculated as `LOC_RR` in the `gis` location shapefile, and is not calculated in the `col` cluster polygon shapefile.
+-   Cluster relative risk is the incidence rate of the population within the cluster divided by the incidence rate of the population outside of the cluster. This is calculated as `REL_RISK` in the `col` cluster polygon shapefile and as `CLU_RR` in the `gis` location point shapefile.
+-   Local relative risk is the incidence rate of population within a location divided by the incidence rate of the population outside of the location. This is calculated as `LOC_RR` in the `gis` location shapefile, and is not calculated in the `col` cluster polygon shapefile.
 
 For the purposes of interpreting the spatial scan statistic, a *location* is a *county centroid* while a *cluster* is a *collection of counties* with high incidence rates, defined in the shape of a circle with a *center* location (a county centroid) and a *radius*.
 
@@ -1334,7 +1334,7 @@ Combining all of the default parameters, SaTSCan includes small clusters of rela
 This problem does not exist in the SpatialEpi implementation, and the SpatialEpi parameter *alpha level* parameter cannot be practically increased to `1` to match the SatSCan default.
 This is because SpatialEpi does not filter counties by those with local relative risk greater than 1---therefore an *alpha value* of `1` results in *all* counties being included as clusters.
 
-In sum, there are three construct validity issues with the original study COVID-19 high-risk clusters as implemented in SaTScan.
+In sum, there are three construct validity issues with the original study's COVID-19 high-risk clusters as implemented in SaTScan.
 
 1. Two sets of overlapping secondary clusters are included in the SaTScan output: hierarchical clusters and clusters optimized by GINI coefficient.
 2. Only the 96 counties at the center of a cluster are considered in the risk classification.
@@ -1369,7 +1369,7 @@ Second, filter the data for non-zero COVID-19 rates and z-score standardize the 
 This accomplishes step 10 of the workflow diagram.
 
 **Unplanned deviation for reproduction:**
-We assumed that we should filtered for COVID rates > 0 first and then calculate z-scores, however after comparing data in the next code block, we realized that the original study had *first* calculated z-scores and *then* filtered for COVID rates > 0. Therefore, we placed the z-score standardization first and the filtering next in the following codeblock.
+We assumed that we should filter for COVID rates > 0 first and then calculate z-scores, however after comparing data in the next code block, we realized that the original study had *first* calculated z-scores and *then* filtered for COVID rates > 0. Therefore, to align with the original study, in the next code block we first calculate z-scores and then filter for COVID rates > 0.
 
 ```{r filter-standardize}
 gee_data <- acs_covid %>%
@@ -1393,7 +1393,7 @@ gee_data <- acs_covid %>%
     z_male_pct = scale(male_pct),
     z_female_pct = scale(female_pct)
   ) %>%  
-  filter(covid_rate > 0) #moved filtering from before z-score calculation
+  filter(covid_rate > 0) # moved filtering from before z-score calculation
 ```
 
 Compare independent variables for GEE models by subtracting the original values from the reproduced values, and finding the average and standard deviation of difference for each variable.
@@ -1422,7 +1422,7 @@ cat("\nStandard deviation:\n")
 apply(gee_diff, 2, sd) %>% round(digits = 3)
 ```
 
-When we had first filtered for COVID rates > 0 first and then z-score standardized second, the means of differences ranged from -0.012 to 0.004, and standard deviations of differences ranged from 0.000 to 0.016.
+When we had filtered for COVID rates > 0 first and then z-score standardized second, the means of differences ranged from -0.012 to 0.004, and standard deviations of differences ranged from 0.000 to 0.016.
 
 After changing the order to first z-score standardize and then filter for COVID rates > 0, we observed no mean difference between our reproduced variables and the original variables, and we find no standard deviation > 0.001 for the difference between reproduction independent variables and original variables.
 There are no major differences between the independent variables.

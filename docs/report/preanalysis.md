@@ -125,7 +125,7 @@ Variable Name in Study | ACS Variable name
 percent of total civilian non-institutionalized population with a disability | S1810_C03_001E
 **Race** |
 percent w disability: White alone | S1810_C03_004E
-percent w disability: Black alone | S1810_C03_005E
+percent w disability: Black alone | S1810_C0 3_005E
 percent w disability: Native American | S1810_C03_006E
 percent w disability: Asian alone | S1810_C03_007E
 percent w disability: Other race | S1810_C03_009E

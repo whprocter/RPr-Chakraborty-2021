@@ -97,7 +97,7 @@ This reproduction study uses R, including the SpatialEpi package for the Kulldor
 packages <- c(
   "tidycensus", "tidyverse", "downloader", "sf", "classInt", "readr",
   "here", "s2", "pastecs", "tmap", "SpatialEpi", "svDialogs",
-  "geepack", "knitr", "kableExtra", "foreign", "broom", "dotwhisker"
+  "geepack", "knitr", "kableExtra", "foreign", "broom", "dotwhisker", "dotenv"
 )
 
 # load and install required packages
@@ -168,10 +168,10 @@ American Community Survey (ACS) data for sociodemographic subcategories of peopl
 # we could store this in the raw/private or scratch folder and load if the
 # researcher has already entered it once
 census_api_key(
-  dlgInput(
-    "Enter a Census API Key",
+  # dlgInput(
+  #   "Enter a Census API Key",
     Sys.getenv("CENSUS_API_KEY")
-  )$res,
+  # )$res,
   overwrite = TRUE
 )
 
@@ -356,7 +356,7 @@ However, we replace the missing data with zeros, producing results identical to 
 
 ```{r missing data}
 # county with missing data
-filter(acs_covid, is.na(bpov_pct)) %>% st_drop_geometry() kable()
+filter(acs_covid, is.na(bpov_pct)) %>% st_drop_geometry() %>% kable()
 
 # replace NA with 0 for missing data
 acs_covid[is.na(acs_covid$bpov_pct), ]$bpov_pct <- 0

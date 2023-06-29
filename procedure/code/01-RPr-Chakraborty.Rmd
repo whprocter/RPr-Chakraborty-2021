@@ -101,15 +101,15 @@ packages <- c(
 )
 
 # load and install required packages
-package.check <- lapply(
-  packages,
-  FUN = function(x) {
-    if (!require(x, character.only = TRUE)) {
-      install.packages(x, dependencies = TRUE, quietly = TRUE)
-      library(x, character.only = TRUE)
-    }
-  }
-)
+
+library(groundhog)
+groundhog.day <- "2023-06-26"
+
+groundhog.library(packages, groundhog.day)
+
+
+
+
 
 # save the R processing environment
 writeLines(

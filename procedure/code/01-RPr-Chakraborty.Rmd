@@ -3,8 +3,8 @@ title: "Reproduction of Chakraborty 2021: An intracategorical analysis of COVID-
 author: "Joseph Holler, Junyi Zhou, Peter Kedron, Drew An-Pham, Derrick Burt"
 date: "`r Sys.Date()`"
 output: pdf_document
-editor_options: 
-  markdown: 
+editor_options:
+  markdown:
     wrap: sentence
 knit: (function(inputFile, encoding) {
   rmarkdown::render(inputFile, encoding = encoding, output_dir = "../../docs/report") })
@@ -132,34 +132,34 @@ knitr::opts_chunk$set(
 The American Community Survey (ACS) five-year estimate (2014-2018) variables used in the study are outlined in the table below.
 Details on ACS data collection can be found at <https://www.census.gov/topics/health/disability/guidance/data-collection-acs.html> and details on sampling methods and accuracy can be found at <https://www.census.gov/programs-surveys/acs/technical-documentation/code-lists.html>.
 
-*Table 1: Disability Subgroup Variables*
+|                            Variable Name in Study                            |                                               ACS Variable name                                                |
+|:----------------------------------:|:----------------------------------:|
+| percent of total civilian non-institutionalized population with a disability |                                                 S1810_C03_001E                                                 |
+|                                   **Race**                                   |                                                                                                                |
+|                      percent w disability: White alone                       |                                                 S1810_C03_004E                                                 |
+|                      percent w disability: Black alone                       |                                                 S1810_C03_005E                                                 |
+|                    percent w disability: Native American                     |                                                 S1810_C03_006E                                                 |
+|                      percent w disability: Asian alone                       |                                                 S1810_C03_007E                                                 |
+|                       percent w disability: Other race                       |                                                 S1810_C03_009E                                                 |
+|                                **Ethnicity**                                 |                                                                                                                |
+|                   percent w disability: Non-Hispanic White                   |                                                S1810_C03_0011E                                                 |
+|                        percent w disability: Hispanic                        |                                                 S1810_C03_012E                                                 |
+|                 percent w disability: Non-Hispanic non-White                 | (S1810_C02_001E - S1810_C02_011E - S1810_C02_012E) / (S1810_C01_001E - S1810_C01_011E - S1810_C01_012E) \* 100 |
+|                       percent w disability: Other race                       |                                                 S1810_C03_009E                                                 |
+|                                 **Poverty**                                  |                                                                                                                |
+|                  percent w disability: Below poverty level                   |                         (C18130_004E + C18130_011E + C18130_018E) / C18130_001E \* 100                         |
+|                  percent w disability: Above poverty level                   |                         (C18130_005E + C18130_012E + C18130_019E) / C18130_001E \* 100                         |
+|                                   **Age**                                    |                                                                                                                |
+|                          percent w disability: 5-17                          |                                                 S1810_C03_014E                                                 |
+|                         percent w disability: 18-34                          |                                                 S1810_C03_015E                                                 |
+|                         percent w disability: 35-64                          |                                                 S1810_C03_016E                                                 |
+|                         percent w disability: 65-74                          |                                                 S1810_C03_017E                                                 |
+|                          percent w disability: 75+                           |                                                 S1810_C03_018E                                                 |
+|                              **Biological sex**                              |                                                                                                                |
+|                          percent w disability: male                          |                                                 S1810_C03_001E                                                 |
+|                         percent w disability: female                         |                                                 S1810_C03_003E                                                 |
 
-| Variable Name in Study                                                       | ACS Variable name                                                                                              |
-|------------------------------------|------------------------------------|
-| percent of total civilian non-institutionalized population with a disability | S1810_C03_001E                                                                                                 |
-| **Race**                                                                     |                                                                                                                |
-| percent w disability: White alone                                            | S1810_C03_004E                                                                                                 |
-| percent w disability: Black alone                                            | S1810_C03_005E                                                                                                 |
-| percent w disability: Native American                                        | S1810_C03_006E                                                                                                 |
-| percent w disability: Asian alone                                            | S1810_C03_007E                                                                                                 |
-| percent w disability: Other race                                             | S1810_C03_009E                                                                                                 |
-| **Ethnicity**                                                                |                                                                                                                |
-| percent w disability: Non-Hispanic White                                     | S1810_C03_0011E                                                                                                |
-| percent w disability: Hispanic                                               | S1810_C03_012E                                                                                                 |
-| percent w disability: Non-Hispanic non-White                                 | (S1810_C02_001E - S1810_C02_011E - S1810_C02_012E) / (S1810_C01_001E - S1810_C01_011E - S1810_C01_012E) \* 100 |
-| percent w disability: Other race                                             | S1810_C03_009E                                                                                                 |
-| **Poverty**                                                                  |                                                                                                                |
-| percent w disability: Below poverty level                                    | (C18130_004E + C18130_011E + C18130_018E) / C18130_001E \* 100                                                 |
-| percent w disability: Above poverty level                                    | (C18130_005E + C18130_012E + C18130_019E) / C18130_001E \* 100                                                 |
-| **Age**                                                                      |                                                                                                                |
-| percent w disability: 5-17                                                   | S1810_C03_014E                                                                                                 |
-| percent w disability: 18-34                                                  | S1810_C03_015E                                                                                                 |
-| percent w disability: 35-64                                                  | S1810_C03_016E                                                                                                 |
-| percent w disability: 65-74                                                  | S1810_C03_017E                                                                                                 |
-| percent w disability: 75+                                                    | S1810_C03_018E                                                                                                 |
-| **Biological sex**                                                           |                                                                                                                |
-| percent w disability: male                                                   | S1810_C03_001E                                                                                                 |
-| percent w disability: female                                                 | S1810_C03_003E                                                                                                 |
+: Disability Subgroup Variables
 
 American Community Survey (ACS) data for sociodemographic subcategories of people with disabilities can be accessed by using the `tidycensus` package to query the Census API. This requires an API key which can be acquired at [api.census.gov/data/key_signup.html](https://api.census.gov/data/key_signup.html).
 
@@ -291,9 +291,7 @@ acs_derived <- acs_derived %>%
     county = NAME.x,
     county_st = NAME,
     contains("pct")
-  ) 
-
-# head(acs_derived)
+  )
 ```
 
 ## COVID-19 data
@@ -326,11 +324,9 @@ Calculate the COVID incidence rate as the cases per 100,000 people (workflow ste
 Convert the COVID data to a non-geographic data frame.
 
 ```{r covid-rate}
-covid_table <- covid %>% 
-  mutate(covid_rate = round(covid$cases / covid$pop * 100000, 2)) %>% 
+covid_table <- covid %>%
+  mutate(covid_rate = round(covid$cases / covid$pop * 100000, 2)) %>%
   st_drop_geometry()
-
-# head(covid_table)
 ```
 
 Join dependent COVID data to independent ACS demographic data.
@@ -345,7 +341,6 @@ acs_covid <- acs_covid %>%
   select(fips, statefp, county, county_st, covid_rate, everything())
 
 rm(acs, acs_derived, covid)
-# acs_covid %>% st_drop_geometry() %>% head()
 ```
 
 ## Missing data
@@ -427,10 +422,11 @@ acs_covid_stats <- acs_covid %>%
   as.data.frame() %>%
   select(min, max, mean, SD = std.dev, ShapiroWilk = normtest.W, p = normtest.p)
 
-acs_covid_stats %>% 
-  kable() %>% 
-  column_spec(2:6, width_min = "5em") %>% 
-  column_spec(7, width_min = "2em") %>% 
+acs_covid_stats %>%
+  kable(caption = "Reproduced Descriptive Statistics",
+        align = "c") %>%
+  column_spec(2:6, width_min = "5em") %>%
+  column_spec(7, width_min = "2em") %>%
   kable_styling(full_width = FALSE)
 ```
 
@@ -445,8 +441,9 @@ table1 <- read.csv(here("data", "raw", "public", "chakraborty", "table1.csv"))
 # subtract original results from reproduced results
 (select(acs_covid_stats, min, max, mean, SD) -
   select(table1, min, max, mean, SD)) %>%
-  kable() %>% 
-  column_spec(2:5, width = "4em") %>% 
+  kable(caption = "Descriptive Statistics Comparison",
+        align = "c") %>%
+  column_spec(2:5, width = "4em") %>%
   kable_styling(full_width = FALSE)
 
 rm(acs_covid_stats)
@@ -481,9 +478,10 @@ pearsons_r <- acs_covid %>%
   rownames_to_column("variable") %>%
   filter(variable != "covid_rate")
 
-pearsons_r %>% 
-  kable() %>% 
-  column_spec(2:4, width = "4em") %>% 
+pearsons_r %>%
+  kable(caption = "Reproduced Pearson's R",
+        align = "c") %>%
+  column_spec(2:4, width = "4em") %>%
   kable_styling(full_width = FALSE)
 ```
 
@@ -514,7 +512,12 @@ correlations <- correlations %>%
 # find coefficients with different directions
 correlations <- correlations %>% mutate(rp_dir_diff = (rp_r > 0) - (or_r > 0))
 
-correlations %>% kable() %>% kable_styling()
+correlations %>%
+  kable(caption = "Compare reproduced and original Pearson's R",
+        col.names = c("Variable", "R", "Sig. Level", "R", "Sig. Level", "R", "Sig. Level", "Direction"),
+        align = "c") %>%
+  kable_styling() %>%
+  add_header_above(c(" " = 1, "Original" = 2, "Reproduced" = 2, "Difference" = 3))
 ```
 
 Reproduction correlation coefficients varied slightly from the original study coefficients by +/- 0.006.
@@ -539,7 +542,10 @@ original_gee %>%
   bind_cols(correlations[, 1:2]) %>%
   mutate(unplanned_r = round(unplanned_r, 3), diff = unplanned_r - or_r) %>%
   select(variable, unplanned_r, or_r, diff) %>%
-  kable() %>% kable_styling()
+  kable(caption = "Recalculation of Pearson's R with original data",
+        align = "c",
+        ) %>%
+  kable_styling(full_width = FALSE)
 ```
 
 The author's original data produced coefficients identical to the original publication!
@@ -556,9 +562,10 @@ original_gee <- original_gee %>%
 # with inconsistent results
 original_gee %>%
   filter(recalc_Incidence != Incidence) %>%
-  select(COUNTY_FIPS, ST_Name, Countyname, Total_POP, Cases, Incidence, recalc_Incidence) %>%
-  mutate(Incidence_diff = recalc_Incidence - Incidence) %>% 
-  kable() %>% kable_styling()
+  select(FIPS = COUNTY_FIPS, State = ST_Name, County = Countyname, Population = Total_POP, Cases, OR_Incidence = Incidence, RPr_Incidence = recalc_Incidence) %>%
+  mutate(Difference = RPr_Incidence - OR_Incidence) %>%
+  kable(caption = "Counties with inconsistent COVID-19 incidence rate") %>%
+  kable_styling(latex_options = "scale_down")
 ```
 
 We found that 13 counties had incorrect COVID-19 incidence scores, and the scores seem to be transposed from other counties, such that the overall descriptive statistics were accurate but the correlation coefficients were inaccurate.
@@ -568,28 +575,28 @@ This finding implies that subsequent analyses using the COVID-19 Incidence rate 
 Then report any counties for which the reproduced COVID incidence rate differs from the original author's COVID incidence rate.
 
 ```{r join-incidence-rate}
-original_incidence <- original_gee %>% 
-  select(COUNTY_FIPS, or_incidence = Incidence) %>% 
-  mutate(fips = 
-           ifelse(COUNTY_FIPS >= 10000, 
-                  as.character(COUNTY_FIPS), 
+original_incidence <- original_gee %>%
+  select(COUNTY_FIPS, or_incidence = Incidence) %>%
+  mutate(fips =
+           ifelse(COUNTY_FIPS >= 10000,
+                  as.character(COUNTY_FIPS),
                   paste0("0", COUNTY_FIPS)
                   )
          )
   # calculates a text version of FIPS code for joining, while adding back
-  # the leading '0' if the code was less than 10000 
+  # the leading '0' if the code was less than 10000
 
-acs_covid <- acs_covid %>% 
+acs_covid <- acs_covid %>%
   left_join(original_incidence, by = "fips")
 
 rm(original_incidence)
 
 acs_covid %>%
-  st_drop_geometry %>% 
+  st_drop_geometry %>%
   filter(covid_rate != or_incidence) %>%
-  arrange(fips) %>% 
-  select(county_st, covid_rate, or_incidence) %>% 
-  kable() %>% kable_styling()
+  arrange(fips) %>%
+  select(county_st, covid_rate, or_incidence) %>%
+  kable(caption = "Original incidence rate joined to reproduction data") %>% kable_styling()
 ```
 
 The join worked, highlighting the same 13 counties with inconsistent incidence rates.
@@ -642,9 +649,9 @@ correlations <- correlations %>% mutate(rp_rho_dir_diff = (rp_rho > 0) - (rp_r >
 correlations %>%
   select(variable, rp_r, rp_stars, starts_with("rp_rho")) %>%
   kable(col.names = c("Variable", "R", "Stars", "Rho", "Stars", "Rho - R", "Stars", "Direction"),
-        align = "c") %>% 
-  #column_spec(2:6, width_min = "5em") %>% 
-  kable_styling() %>% 
+        align = "c") %>%
+  #column_spec(2:6, width_min = "5em") %>%
+  kable_styling() %>%
   add_header_above(c(" " = 1, "Pearson's" = 2, "Spearman's" = 2, "Difference" = 3))
 ```
 
@@ -799,7 +806,7 @@ for (i in secondary) {
   cluster_locations <- i$location.IDs.included
   new_clusters <- covid_table[cluster_locations, "fips"] %>%
     mutate(clusterID = covid_table[[cluster_locations[1], "fips"]],
-           likelihood = i$log.likelihood.ratio) 
+           likelihood = i$log.likelihood.ratio)
   clusters <- clusters %>% rbind(new_clusters)
 }
 
@@ -833,9 +840,9 @@ tm_spatialepi_clusters <-
   tm_shape(state) +
     tm_fill("gray98") +
   tm_shape(acs_covid) +
-  tm_polygons(col = "isCluster", 
-          palette = "-Oranges", 
-          popup.vars = c("fips", "clusterID"), 
+  tm_polygons(col = "isCluster",
+          palette = "-Oranges",
+          popup.vars = c("fips", "clusterID"),
           colorNA = NULL,
           title = "SpatialEpi Kulldorff COVID-19 Clusters",
           border.col = "white",
@@ -866,7 +873,7 @@ acs_covid <- acs_covid %>%
       (sum(cases) / sum(pop)) / ((total_cases - sum(cases)) / (total_pop - sum(pop)))
     )
   ) %>%
-  ungroup() %>% 
+  ungroup() %>%
   mutate(
     rr_loc = (cases / pop) / ((total_cases - cases) / (total_pop - pop))
   )
@@ -912,9 +919,9 @@ class_freq <- acs_covid %>% st_drop_geometry() %>% count(loc_class)
 class_freq$qual <- ifelse(class_freq$n > 1, " counties", " county")
 class_freq[1, ]$qual <- paste(class_freq[1, ]$qual, "at low risk")
 class_freq[nrow(class_freq), ]$qual <- paste(class_freq[nrow(class_freq), ]$qual, "at high risk")
-class_freq$label <- paste0(class_freq$loc_class, 
-                           " (", 
-                           class_freq$n, 
+class_freq$label <- paste0(class_freq$loc_class,
+                           " (",
+                           class_freq$n,
                            class_freq$qual,
                            ")")
 
@@ -951,9 +958,9 @@ class_freq <- acs_covid %>% st_drop_geometry() %>% count(cluster_class)
 class_freq$qual <- ifelse(class_freq$n > 1, " counties", " county")
 class_freq[1, ]$qual <- paste(class_freq[1, ]$qual, "at low risk")
 class_freq[nrow(class_freq), ]$qual <- paste(class_freq[nrow(class_freq), ]$qual, "at high risk")
-class_freq$label <- paste0(class_freq$cluster_class, 
-                           " (", 
-                           class_freq$n, 
+class_freq$label <- paste0(class_freq$cluster_class,
+                           " (",
+                           class_freq$n,
                            class_freq$qual,
                            ")")
 
@@ -1027,7 +1034,7 @@ First, load and verify whether our SaTScan reproduction data compares to the aut
 
 ```{r load-satscan-col}
 # load author-provided data
-author_col <- read.dbf(here("data", "raw", "public", "chakraborty", "SatScan_output.dbf")) %>% 
+author_col <- read.dbf(here("data", "raw", "public", "chakraborty", "SatScan_output.dbf")) %>%
   select(LOC_ID, or_rel_risk = REL_RISK)
 
 # load SaTScan reproduced data
@@ -1044,9 +1051,9 @@ cat(
 
 # join and compare how many observations are identical?
 cat(
-  satscan_rpr_col %>% 
-  full_join(author_col, by = "LOC_ID") %>% 
-  filter(REL_RISK == or_rel_risk & REL_RISK > 0) %>% 
+  satscan_rpr_col %>%
+  full_join(author_col, by = "LOC_ID") %>%
+  filter(REL_RISK == or_rel_risk & REL_RISK > 0) %>%
   nrow(),
   "reproduced relative risk values match the original author's relative risk values"
   )
@@ -1062,15 +1069,15 @@ Join the SaTScan results to `acs_covid` for mapping and analysis.
 
 ```{r join-satscan-to-acs-covid}
 # check if there are any duplicated counties
-cat("Joining", 
-    length(satscan_rpr_col$LOC_ID), 
+cat("Joining",
+    length(satscan_rpr_col$LOC_ID),
     "records with",
     length(unique(satscan_rpr_col$LOC_ID)),
     "unique LOC_ID county values")
 
 # select important non-geographic columns
-satscan_rpr_col_t <- satscan_rpr_col %>% 
-  st_drop_geometry() %>% 
+satscan_rpr_col_t <- satscan_rpr_col %>%
+  st_drop_geometry() %>%
   select(fips = LOC_ID, GINI_CLUST, REL_RISK)
 
 # join
@@ -1084,9 +1091,9 @@ rm(satscan_rpr_col_t)
 
 ```{r map--author-clusters}
 # count frequencies of each cluster type
-clus_counts <- satscan_rpr_col %>% 
-  st_drop_geometry() %>% 
-  group_by(GINI_CLUST) %>% 
+clus_counts <- satscan_rpr_col %>%
+  st_drop_geometry() %>%
+  group_by(GINI_CLUST) %>%
   summarize(n = n())
 
 # create labels including frequencies in brackets
@@ -1107,8 +1114,8 @@ tm_author_clusters <-
               labels = clus_labels,
               border.col = "white",
               lwd = 0.5,
-              palette = c("tomato", "thistle3"), 
-              popup.vars = c("fips", "clusterID"), 
+              palette = c("tomato", "thistle3"),
+              popup.vars = c("fips", "clusterID"),
               colorNA = NULL,
               title = "SaTScan Kulldorff COVID-19 Clusters\nCluster Centers") +
   tm_shape(state) +
@@ -1124,7 +1131,7 @@ tm_author_clusters <-
     legend.title.size = 0.8,
     legend.text.size = 0.5
   ) +
-  tm_add_legend('symbol', 
+  tm_add_legend('symbol',
               	col = NA,
               	border.col = c("tomato", "thistle4"),
               	size = 0.7,
@@ -1193,30 +1200,30 @@ satscan_rpr_gis_t <- read_sf(
   select(fips = LOC_ID, CLU_RR, GINI_CLUST)
 
 # check if there are any duplicated counties
-cat("SaTScan combined GIS output has", 
-    length(satscan_rpr_gis_t$fips), 
+cat("SaTScan combined GIS output has",
+    length(satscan_rpr_gis_t$fips),
     "records with",
     length(unique(satscan_rpr_gis_t$fips)),
-    "unique county values")
+    "unique county values\n")
 
 satscan_rpr_gini <- satscan_rpr_gis_t %>% filter(GINI_CLUST == "T") %>% select(fips, gini_rr = CLU_RR)
 satscan_rpr_hier <- satscan_rpr_gis_t %>% filter(GINI_CLUST == "F") %>% select(fips, hier_rr = CLU_RR)
 
 # check if there are any duplicated counties
-cat("\n\nSaTScan Hierarchical clusters include", 
-    length(satscan_rpr_hier$fips), 
+cat("SaTScan Hierarchical clusters include",
+    length(satscan_rpr_hier$fips),
     "records with",
     length(unique(satscan_rpr_hier$fips)),
-    "unique county values")
+    "unique county values\n")
 
-cat("\n\nSaTScan GINI-optimized clusters include", 
-    length(satscan_rpr_gini$fips), 
+cat("SaTScan GINI-optimized clusters include",
+    length(satscan_rpr_gini$fips),
     "records with",
     length(unique(satscan_rpr_gini$fips)),
     "unique county values")
 
 acs_covid <- acs_covid[, 1:which(colnames(acs_covid) == "ss_clusID")] %>%
-  left_join(satscan_rpr_gini, by = "fips") %>% 
+  left_join(satscan_rpr_gini, by = "fips") %>%
   left_join(satscan_rpr_hier, by = "fips")
 
 rm(satscan_rpr_gis_t, satscan_rpr_gini, satscan_rpr_hier)
@@ -1322,14 +1329,15 @@ We can check by calculating cluster relative risk classes based on the SaTScan G
 acs_covid <- acs_covid %>%
   mutate(
     gini_class = ifelse(is.na(gini_rr), 1, cut(gini_rr, breaks, labels = FALSE)),
-    gini_clusID = as.integer(statefp) * 10 + gini_class 
+    gini_clusID = as.integer(statefp) * 10 + gini_class
   )
 
 table(acs_covid$cluster_class, acs_covid$gini_class) %>%
   kable(row.names = TRUE, caption = "COVID-19 Risk Class by County", align = "c") %>%
   column_spec(2:7, width = "3em") %>%
   column_spec(1, bold = TRUE) %>%
-  add_header_above(c("SpatialEpi" = 1, "SatScan" = 6)) %>% 
+  row_spec(2, bold = TRUE) %>%
+  add_header_above(c("SpatialEpi" = 1, "SatScan" = 6)) %>%
   kable_styling(full_width = FALSE, row_label_position = "c")
 ```
 
@@ -1340,7 +1348,7 @@ The maps and crosstabulation above indicate that there are important differences
 
 We summarize our understanding of the computational differences for default settings below, based on close examination of our software outputs, technical documentation for SaTScan, and the documentation and code repository for SpatialEpi.
 
-|                          | SaTScan Hierarchical Clusters  |       SaTScan GINI Clusters        |             SpatialEpi Clusters              |
+|                          |      SaTScan Hierarchical      |            SaTScan GINI            |                  SpatialEpi                  |
 |:----------------:|:----------------:|:----------------:|:----------------:|
 |     possible shapes      |  circle (default) or ellipse   |    circle (default) or ellipse     |                    circle                    |
 | possible cluster centers | locations with rates \> normal |   locations with rates \> normal   |                all locations                 |
@@ -1456,20 +1464,21 @@ Compare independent variables for GEE models by subtracting the original values 
 
 ```{r compare-indp-vars}
 # subtract original data matrix (table) from reproduced data matrix (table)
-# select, filter, and arrange (sort) data to make identical matrix sizes with 
+# select, filter, and arrange (sort) data to make identical matrix sizes with
 # identical order of observations (counties)
-gee_diff <- 
-  (gee_data %>% 
+gee_diff <-
+  (gee_data %>%
     st_drop_geometry() %>%  
     arrange(as.integer(fips)) %>%
     select(starts_with("z_"))  -
-  original_gee %>% 
-    filter(Cases > 0) %>% 
-    arrange(COUNTY_FIPS) %>% 
-    select(starts_with("ZPD"))) %>% 
+  original_gee %>%
+    filter(Cases > 0) %>%
+    arrange(COUNTY_FIPS) %>%
+    select(starts_with("ZPD"))) %>%
   round(digits = 3)
 
 # print results
+# this would be better as a table
 cat("Summary of difference between reproduction independent variables and original independent variables")
 cat("\n")
 cat("Mean:\n")
@@ -1521,12 +1530,13 @@ Load digitized version of Table 2 from the original publication.
 
 ```{r load-table2}
 table2 <- read.csv(here("data", "raw", "public", "chakraborty", "table2.csv"))
-table2 <- table2 %>% 
-  arrange(row_i_first) #%>% 
+table2 <- table2 %>%
+  arrange(row_i_first) #%>%
   #column_to_rownames("term")
 
-table2[, 3:ncol(table2)] %>% 
-  kable(caption = "Original Publication Table 2") %>% 
+table2[, 3:ncol(table2)] %>%
+  kable(caption = "Original Publication Table 2",
+        align = "c") %>%
   kable_styling()
 ```
 
@@ -1548,7 +1558,7 @@ onegee <- function(gee_data, dep_var, id, term_names) {
     "age",
     "biological sex"
   )
-  
+
   ind_vars <- c(
     "z_white_pct + z_black_pct + z_native_pct + z_asian_pct + z_other_pct",
     "z_non_hisp_white_pct + z_hisp_pct + z_non_hisp_non_white_pct",
@@ -1556,10 +1566,10 @@ onegee <- function(gee_data, dep_var, id, term_names) {
     "z_pct_5_17 + z_pct_18_34 + z_pct_35_64 + z_pct_65_74 + z_pct_75",
     "z_male_pct + z_female_pct"
   )
-  
+
   gee_models <- data.frame(model_names, ind_vars)
   gee_model <- list()
-  
+
   # empty data frame for storing model outputs
   coefficients <- data.frame()
   qics <- data.frame(model_names, qic = c(1:5))
@@ -1579,15 +1589,15 @@ onegee <- function(gee_data, dep_var, id, term_names) {
     # tidy and save variable coefficients, margins of error, significance...
     gee_table <- tidy(gee_model[[i]], conf.int = TRUE)
     gee_table[1, 1] <- paste(gee_models[i, 1], "model intercept")
-    coefficients <- coefficients %>% rbind(gee_table) 
+    coefficients <- coefficients %>% rbind(gee_table)
 
     # QIC: quasi-likelihood under the independence model information criterion
     QIC(gee_model[[i]])
     qics[i, 2] <- QIC(gee_model[[i]])[1]
-    
+
     gee_model[[i]]$model <- NA
   }
-  
+
   # calculate significance levels
   coefficients$stars <- as.numeric(
     as.character(
@@ -1597,12 +1607,12 @@ onegee <- function(gee_data, dep_var, id, term_names) {
       )
     )
   )
-  
+
   # reorder columns to match table2 in publication and round to 3 sig. digits
-  coefficients <- coefficients %>% 
-    select("estimate", "std.error", starts_with("conf"), "stars", "p.value") %>% 
-    round(digits = 3) 
-  
+  coefficients <- coefficients %>%
+    select("estimate", "std.error", starts_with("conf"), "stars", "p.value") %>%
+    round(digits = 3)
+
   # add tidy term names
   coefficients <- bind_cols(term = term_names, coefficients)
 
@@ -1612,7 +1622,7 @@ onegee <- function(gee_data, dep_var, id, term_names) {
     "QICs" = qics,
     "models" = gee_model
     )
-  
+
   return(return_data)
 }
 ```
@@ -1626,8 +1636,9 @@ gee_or_clus_ordep <- gee_data %>% onegee(
                     dep_var = "or_incidence",
                     id = gee_data$ss_clusID,
                     term_names = table2$term)
-gee_or_clus_ordep$coefficients %>% 
-  kable(caption = "Original Cluster IDs and Original COVID-19 Incidence") %>% 
+gee_or_clus_ordep$coefficients %>%
+  kable(caption = "Original Cluster IDs and Original COVID-19 Incidence",
+        align = "c") %>%
   kable_styling()
 ```
 
@@ -1636,12 +1647,13 @@ gee_or_clus_ordep$coefficients %>%
 Calculate GEE models with: - Clustering: SaTScan cluster centers & State ID - Dependent variable: reproduced COVID-19 incidence (fixed errors).
 
 ```{r gee-original-clusters-reproduced-incidence}
-gee_or_clus_rpdep <- onegee(gee_data, 
+gee_or_clus_rpdep <- onegee(gee_data,
                     dep_var = "covid_rate",
                     id = gee_data$ss_clusID,
                     term_names = table2$term)
-gee_or_clus_rpdep$coefficients %>% 
-  kable(caption = "Original Cluster IDs and Reproduced COVID-19 Incidence") %>% 
+gee_or_clus_rpdep$coefficients %>%
+  kable(caption = "Original Cluster IDs and Reproduced COVID-19 Incidence",
+        align = "c") %>%
   kable_styling()
 ```
 
@@ -1650,12 +1662,13 @@ gee_or_clus_rpdep$coefficients %>%
 Calculate GEE models with: - Clustering: Reproduced SaTScan GEE clusters & State ID - Dependent variable: reproduced COVID-19 incidence (fixed errors).
 
 ```{r gee-gini-clusters-reproduced-incidence}
-gee_gini_clus_rpdep <- onegee(gee_data, 
+gee_gini_clus_rpdep <- onegee(gee_data,
                     dep_var = "covid_rate",
                     id = gee_data$gini_clusID,
                     term_names = table2$term)
-gee_gini_clus_rpdep$coefficients %>% 
-  kable(caption = "Reproduced SaTScan GINI Cluster IDs and Reproduced COVID-19 Incidence") %>% 
+gee_gini_clus_rpdep$coefficients %>%
+  kable(caption = "Reproduced SaTScan GINI Cluster IDs and Reproduced COVID-19 Incidence",
+        align = "c") %>%
   kable_styling()
 ```
 
@@ -1664,12 +1677,13 @@ gee_gini_clus_rpdep$coefficients %>%
 Calculate GEE models with: - Clustering: Reproduced SpatialEpi clusters & State ID - Dependent variable: reproduced COVID-19 incidence (fixed errors).
 
 ```{r gee-spatialepi-clusters-reproduced-incidence}
-gee_rp_clus_rpdep <- onegee(gee_data, 
+gee_rp_clus_rpdep <- onegee(gee_data,
                     dep_var = "covid_rate",
                     id = gee_data$rp_clusID,
                     term_names = table2$term)
-gee_rp_clus_rpdep$coefficients %>% 
-  kable(caption = "Reproduced SpatialEpi Cluster IDs and Reproduced COVID-19 Incidence") %>% 
+gee_rp_clus_rpdep$coefficients %>%
+  kable(caption = "Reproduced SpatialEpi Cluster IDs and Reproduced COVID-19 Incidence",
+        align = "c") %>%
   kable_styling()
 ```
 
@@ -1680,37 +1694,37 @@ gee_rp_clus_rpdep$coefficients %>%
 ```{r dotwhisker-comparison, message=FALSE}
 # create summary data frame compatible with dotwhisker package functions
 # starting with original study results
-t2whisker <- table2 %>% 
-  mutate(model = "Original Study") %>% 
+t2whisker <- table2 %>%
+  mutate(model = "Original Study") %>%
   select(-c(starts_with("row"), "wald_chi_square", "p_stars"))
 
 geewhisker <- bind_rows(
-  mutate(gee_or_clus_ordep$coefficients, 
+  mutate(gee_or_clus_ordep$coefficients,
          model = "Switch to R Geepack"),
-  mutate(gee_or_clus_rpdep$coefficients, 
+  mutate(gee_or_clus_rpdep$coefficients,
          model = "Correct COVID Incidence"),
-  mutate(gee_gini_clus_rpdep$coefficients, 
+  mutate(gee_gini_clus_rpdep$coefficients,
          model = "SaTScan GINI-Optimized Clusters"),
-  mutate(gee_rp_clus_rpdep$coefficients, 
-         model = "SpatialEpi Clusters")) %>% 
+  mutate(gee_rp_clus_rpdep$coefficients,
+         model = "SpatialEpi Clusters")) %>%
   select(1:5, "model")
 
-geewhisker <- bind_rows(t2whisker, geewhisker) %>% 
+geewhisker <- bind_rows(t2whisker, geewhisker) %>%
   filter(!grepl("intercept", term))
 
 # generate create dot whisker plot
-geewhisker_fig <- geewhisker %>% 
+geewhisker_fig <- geewhisker %>%
   dwplot(dodge_size = 0.6,
          vline = geom_vline(
            xintercept = 0,
            colour = "grey60",
            linetype = 2
-       )) + 
-    scale_colour_brewer(type = "div", 
+       )) +
+    scale_colour_brewer(type = "div",
                         palette = "RdYlBu",
                         name = "Model Variations") +
     theme_bw() +
-    xlab("Coefficient") 
+    xlab("Coefficient")
 
 geewhisker_fig
 
@@ -1780,8 +1794,8 @@ No **weights** were applied in the study.
 
 ## Unplanned deviations
 
-One county was unexpectedly missing disability and poverty data: Rio Arriba County, New Mexico.
-We replaced the missing values with zeroes and, with this missing data treatment, confirmed that our descriptive statistics matched the original publication.
+Some minor unplanned deviations stemmed from small operational errors or the constraints of a short journal article for describing the data and methodology of a research project.
+These deviations could be resolved with computational notebooks, and include the resolution of some missing data for Rio Arriba County, New Mexico, mapping disability rates, and resolving data errors
 
 We planned to test the independent variables for normality prior to using the Pearson's r correlation coefficient for bivariate tests of correlation between the independent variables and COVID-19 incidence rates.
 Most of the independent variables had significantly non-normal distributions; and therefore our reproduction has used the nonparametric Spearman's rank correlation coefficient for bivariate tests of correlation between the independent variables and COVID-19 incidence rates.

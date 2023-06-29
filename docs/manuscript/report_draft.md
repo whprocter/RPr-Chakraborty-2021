@@ -38,7 +38,7 @@ Second, Chakraborty’s study has been influential in the academia; it has been 
 **Most of these studies continue to examine how PwDs have been adversely impacted by the pandemic in terms of their physical and mental health as well as access to food and medical resources.**
 **Other studies have developed on Chakraborty’s conclusion and investigate ways to mitigate and prevent adverse impacts of future pandemics on PwDs or applied the method and conceptualization of Chakraborty’s study to different parts of the world.**
 
-Third, Chakraborty’s original study is not reproducible.
+Third, Chakraborty’s original study was not computationally reproducible.
 Therefore, transforming it into a reproducible study by publishing a compendium could increase its accessibility, transparency, and potential impact.
 More importantly, among the 76 articles on COVID-19 and disability, we found only 40.7% of them have published some form of supplementary materials (8% provided raw data, 13.3% provided processed data, and 2.6% provided data access instructions and 21.3% provided survey instruments or interview guides).
 Few studies have provided both the raw data and intermediaries that allow others to reproduce the study and check for validity.

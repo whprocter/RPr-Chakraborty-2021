@@ -1812,21 +1812,13 @@ grps <- gee_resid %>% st_drop_geometry() %>% select(ss_clusID, residual)
 
 # create mask matrix
 n <- length(gee_resid$ss_clusID)
-m <- matrix(nrow = n, ncol = n)
+# m <- matrix(nrow = n, ncol = n)
 
 # this is very inefficient, but this makes matrix of equal clusID's:
 # just need to omit the bottom-left of matrix and the diagonal
 # selecting for rows 80-90 to help w debugging
-outer(grps$ss_clusID, grps$ss_clusID, "==")[80:90,80:90] - 
-  outer(rownames(grps), rownames(grps), "==")[80:90,80:90]
-
-for (x in 1:(n-1)){
-  for(y in (x+1):n){
-    if(grps[x,"ss_clusID"] == grps[y,"ss_clusID"]){
-      m[x,y] <- 1
-    }
-  }
-}
+m <- (outer(grps$ss_clusID, grps$ss_clusID, "==") &
+  outer(rownames(grps), rownames(grps), "<"))
 
 # calculate denominators
 covar_d <- sum(m, na.rm = TRUE) - 1

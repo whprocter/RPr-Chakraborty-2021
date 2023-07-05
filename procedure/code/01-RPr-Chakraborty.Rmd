@@ -92,7 +92,7 @@ Other software are not specified in the publication; however data files suggest 
 
 This reproduction study uses R, including the SpatialEpi package for the Kulldorff spatial scan statistics and the geepack package for GEE models.
 
-```{r setup, message = FALSE, include = FALSE}
+```{r setup, include = FALSE}
 # list of required packages
 packages <- c(
   "tidycensus", "tidyverse", "downloader", "sf", "classInt", "readr",
@@ -101,12 +101,21 @@ packages <- c(
 )
 
 # load and install required packages
+if(!require(groundhog)){
+  install.packages("groundhog")
+  require(groundhog)
+}
 
-library(groundhog)
 groundhog.day <- "2023-06-26"
+set.groundhog.folder("../../data/scratch/groundhog/")
 
-#groundhog.library(packages, groundhog.day)
-lapply(packages, require, character.only = TRUE)
+
+groundhog.library(packages, groundhog.day)
+#lapply(packages, library, character.only = TRUE)
+# you may need to install a correct version of R
+# you may need to respond OK in the console to permit groundhog to install packages
+# you may need to restart R and rerun this code to load installed packages
+# In RStudio, restart r with Session -> Restart Session
 
 # save the R processing environment
 writeLines(
@@ -160,7 +169,7 @@ Details on ACS data collection can be found at <https://www.census.gov/topics/he
 
 American Community Survey (ACS) data for sociodemographic subcategories of people with disabilities can be accessed by using the `tidycensus` package to query the Census API. This requires an API key which can be acquired at [api.census.gov/data/key_signup.html](https://api.census.gov/data/key_signup.html).
 
-```{r API-Load-ACS, message = FALSE, warning = FALSE, eval = FALSE}
+```{r API-Load-ACS, eval=FALSE}
 # get API Key
 # we could store this in the raw/private or scratch folder and load if the
 # researcher has already entered it once

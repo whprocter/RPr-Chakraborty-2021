@@ -1765,21 +1765,25 @@ gee_resid <- data.frame(
   select(gee_or_clus_rpdep$models[[1]]$data, covid_rate, ss_clusID),
   data.frame(fitvals = gee_or_clus_rpdep$models[[1]]$fitted.values),
   data.frame(residual = gee_or_clus_rpdep$models[[1]]$residual),
+  data.frame(working = residuals(gee_or_clus_rpdep$models[[1]], type = "working")),
   data.frame(response = residuals(gee_or_clus_rpdep$models[[1]], type = "response")),
-  data.frame(pearson = residuals(gee_or_clus_rpdep$models[[1]], type = "pearson")),
-  data.frame(working = residuals(gee_or_clus_rpdep$models[[1]], type = "working"))
+  data.frame(pearson = residuals(gee_or_clus_rpdep$models[[1]], type = "pearson"))
 ) %>%
   mutate(
-    my_response = covid_rate - fitvals,
     my_working = (covid_rate - fitvals) / fitvals,
-    my_pearson = my_response / sqrt(fitvals)
+    my_pearson = response * (sqrt(gee_or_clus_rpdep$models[[1]]$prior.weights)) / sqrt(fitvals^2)
   ) %>%
   st_sf()
 
-# response residual is: y - f(x)
-# the model residual is identical to working residual
-# my calculation of what I thought was the working residual (response / fitted value) is identical the Pearson's residual
-# resource on residuals of GLM models in R: https://www.datascienceblog.net/post/machine-learning/interpreting_generalized_linear_models/
+# working residual is the model residual (r) from gee, BUT HOW IS THIS CALCULATED?
+# it is not simply the response residual normalized by the fitted value as the
+# datascienceblog suggests
+# response residual is: y(observed value) - fitted value
+# my working residual normalizes response residual by fitted value, and effectively
+# the code version of pearsons does the same because the prior weights are all 1
+# if the datascienceblog is correct, the code pearson's residual should be divided by the square root of the fitted value.
+# code: https://github.com/cran/geepack/blob/master/R/geeglm.R
+# blog: https://www.datascienceblog.net/post/machine-learning/interpreting_generalized_linear_models
 ```
 
 ```{r map-residuals}
@@ -1808,7 +1812,7 @@ tm_gee_residuals <- tm_shape(gee_resid) +
 tm_gee_residuals
 ```
 
-Calculate variance, covariance, corrrelation, and weights
+Calculate variance, covariance, correlation, and weights
 
 ```{r weights}
 # calculate k number of observations per cluster
@@ -1817,7 +1821,7 @@ gee_resid <- gee_resid %>%
   mutate(k = n()) %>% 
   ungroup()
 
-grps <- gee_resid %>% st_drop_geometry() %>% select(ss_clusID, residual)
+grps <- gee_resid %>% st_drop_geometry() %>% select(ss_clusID, residual = residual)
 
 # create mask matrix
 n <- length(gee_resid$ss_clusID)
@@ -1833,7 +1837,7 @@ m <- (outer(grps$ss_clusID, grps$ss_clusID, "==") &
 covar_d <- sum(m, na.rm = TRUE) - 1
 
 # variance
-v <- sum(gee_resid$residual^2) / (n - 1)
+v <- sum(grps$residual^2) / (n - 1)
 # covariance
 c <- sum(outer(grps$residual, grps$residual, "*") * m, na.rm = TRUE) / covar_d
 # correlation

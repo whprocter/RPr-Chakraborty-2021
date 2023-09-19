@@ -106,16 +106,24 @@ if(!require(groundhog)){
   require(groundhog)
 }
 
-groundhog.day <- "2023-06-26"
-set.groundhog.folder("../../data/scratch/groundhog/")
+if(!require(here)){
+  install.packages("here")
+  require(here)
+}
 
+groundhog.day <- "2023-06-26"
+set.groundhog.folder(here("data", "scratch", "groundhog"))
 
 groundhog.library(packages, groundhog.day)
-#lapply(packages, library, character.only = TRUE)
-# you may need to install a correct version of R
-# you may need to respond OK in the console to permit groundhog to install packages
-# you may need to restart R and rerun this code to load installed packages
+# you may need to...
+# install a correct version of R
+# install the rstudioapi package with install.packages("rstudioapi")
+# respond OK in the console to permit groundhog to install packages
+# restart the R session and rerun this code to load installed packages
 # In RStudio, restart r with Session -> Restart Session
+
+# non-groundhog method for installing packages:
+# lapply(packages, library, character.only = TRUE)
 
 # save the R processing environment
 writeLines(

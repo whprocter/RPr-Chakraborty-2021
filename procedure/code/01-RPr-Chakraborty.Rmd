@@ -178,16 +178,7 @@ Details on ACS data collection can be found at <https://www.census.gov/topics/he
 American Community Survey (ACS) data for sociodemographic subcategories of people with disabilities can be accessed by using the `tidycensus` package to query the Census API. This requires an API key which can be acquired at [api.census.gov/data/key_signup.html](https://api.census.gov/data/key_signup.html).
 
 ```{r API-Load-ACS, eval=FALSE}
-# get API Key
-# we could store this in the raw/private or scratch folder and load if the
-# researcher has already entered it once
-census_api_key(
-  # dlgInput(
-  #   "Enter a Census API Key",
-    Sys.getenv("CENSUS_API_KEY")
-  # )$res,
-  overwrite = TRUE
-)
+# If you wish to use a census API key, run the census_api_key() function in the console
 
 # Query disability demographic data with geographic boundaries
 acs <- get_acs(

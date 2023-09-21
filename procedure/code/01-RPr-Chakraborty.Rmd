@@ -229,13 +229,13 @@ Therefore, join the poverty data to the other data using the GEOID (workflow ste
 Also transform the ACS geographic data into Contiguous USA Albers Equal Area projection and fix geometry errors.
 
 ```{r filter-join-acs}
-# Overwrite acs to emove Alaska, Hawaii & Puerto Rico,
+# Overwrite acs to remove Alaska, Hawaii & Puerto Rico,
 # transform coordinate system and fix geometries
 acs <- filter(acs, !STATEFP %in% c("02", "15", "72")) %>%
   st_transform(5070) %>%
   st_make_valid()
 
-# Remove Alaska, Hawaii & Puerto Rico,
+# Overwrite state to emove Alaska, Hawaii & Puerto Rico,
 state <- filter(state, !STATEFP %in% c("02", "15", "72")) %>%
   st_transform(5070)
 
@@ -264,14 +264,14 @@ Calculate independent socio-demographic variables of people with disabilities as
 Reproject the data into an Albers equal area conic projection.
 
 ```{r Preprocess-ACS}
-# calculate percentages
+# calculate percentages: subgroup population divided by total population
 acs_derived <- mutate(acs,
-  dis_pct = S1810_C02_001E / S1810_C01_001E * 100,
+  dis_pct = S1810_C02_001E / S1810_C01_001E * 100,                              #Would help here if the intermediate variables were identified in English, not encoded
   white_pct = S1810_C02_004E / S1810_C01_001E * 100,
   black_pct = S1810_C02_005E / S1810_C01_001E * 100,
   native_pct = S1810_C02_006E / S1810_C01_001E * 100,
   asian_pct = S1810_C02_007E / S1810_C01_001E * 100,
-  other_pct =
+  other_pct =                                                                   #Other is a vague variable name, should rename to "other_race_pct"
     (S1810_C02_008E + S1810_C02_009E + S1810_C02_010E) / S1810_C01_001E * 100,
   non_hisp_white_pct = S1810_C02_011E / S1810_C01_001E * 100,
   hisp_pct = S1810_C02_012E / S1810_C01_001E * 100,
@@ -288,14 +288,14 @@ acs_derived <- mutate(acs,
   female_pct = S1810_C02_003E / S1810_C01_001E * 100
 )
 
-# select only relevant geographic identifiers and derived percentages
+# select only relevant geographic identifiers and derived percentages           #Select only the columns that we care about: geographic identifiers and our derived %'s
 acs_derived <- acs_derived %>%
   select(
     fips = GEOID,
     statefp = STATEFP,
     county = NAME.x,
     county_st = NAME,
-    contains("pct")
+    contains("pct")                                                             #Selects all the new % columns using one line of code...If the column name contains "pct"
   )
 ```
 
@@ -305,16 +305,16 @@ Data on COVID-19 cases from the Johns Hopkins University dashboard have been pro
 The dashboard and cumulative counts of COVID-19 cases and deaths were continually updated, so an exact reproduction required communication with the original author, Jayajit Chakraborty, for assistance with provision of data from August 1, 2020.
 The data includes an estimate of the total population (`POP_ESTIMA`) and confirmed COVID-19 cases (`Confirmed`).
 The COVID-19 case data expresses cumulative count of reported COVID-19 from 1/22/2020 to 8/1/2020.
-Although metadata for this particular resource is no longer available from the original source, one can reasonably assume that the total population estimate was based on the 2014-2018 5-year ACS estimate, as the 2019 estimates data had not been released yet.
+Although metadata for this particular resource is no longer available from the original source, one can reasonably assume that the total population estimate was based on the 2014-2018 5-year ACS estimate, as the 2019 estimates data had not been released yet.\*\*\*\*\*\*\*UNCERTAINTY\*\*\*\*\*\*\*
 
 Versions of the data can be found at the John Hopkins CCSE COVID-19 Data Repository (<https://github.com/CSSEGISandData/COVID-19>).
 However, archived data only provides summaries at the national scale.
 We received the COVID-19 case data through 8/1/2020 at the county level from the author, as there is no readily apparent way to access archived data from the Johns Hopkins University Center for Systems Science Engineering database.
 
 ```{r load-covid-data}
-covid <- read_sf(here("data", "raw", "public", "covidcase080120.gpkg"))
+covid <- read_sf(here("data", "raw", "public", "covidcase080120.gpkg"))         #Reads in the Covid data
 
-# select and rename the fips code, population, cases, and x,y coordinates
+# select and rename the fips code, population, cases, and x,y coordinates       #renames columns to more readable and specific titles
 covid <- select(covid,
   fips = FIPS,
   pop = POP_ESTIMA,
@@ -331,32 +331,33 @@ Convert the COVID data to a non-geographic data frame.
 ```{r covid-rate}
 covid_table <- covid %>%
   mutate(covid_rate = round(covid$cases / covid$pop * 100000, 2)) %>%
-  st_drop_geometry()
+  st_drop_geometry()                                                            #This line converts to a non-geographic data frame?  Why do we need to do this?
 ```
 
 Join dependent COVID data to independent ACS demographic data.
 
 ```{r join-covid-to-acs}
-# Join COVID incidence rate data to acs data
+# Join COVID incidence rate data to acs data                                    #Joins covid_table to acs_derived --> acs_covid
 acs_covid <- acs_derived %>%
   left_join(covid_table, by = "fips")
 
 # move covid_rate column prior to disability percentages
 acs_covid <- acs_covid %>%
   select(fips, statefp, county, county_st, covid_rate, everything())
-
-rm(acs, acs_derived, covid)
+   
+rm(acs, acs_derived, covid)                                                     #This removes the inputs/intermediary data tables from our environment
 ```
 
 ## Missing data
 
 **Unplanned deviation for reproduction**: There is one county with missing disability and poverty data.
 This was not mentioned in the original study or in our pre-analyis plan.
-However, we replace the missing data with zeros, producing results identical to Chakraborty's.
+However, we replace the missing data with zeros, producing results identical to Chakraborty's. **WHAT IS THS JUSTIFICATION FOR THIS? WHY NOT REMOVE THE COUNTY?**
+
 
 ```{r missing data}
 # county with missing data
-filter(acs_covid, is.na(bpov_pct)) %>% st_drop_geometry() %>% kable()
+filter(acs_covid, is.na(bpov_pct)) %>% st_drop_geometry() %>% kable()           #Identify the county with N/A data     #What does kable() do??????
 
 # replace NA with 0 for missing data
 acs_covid[is.na(acs_covid$bpov_pct), ]$bpov_pct <- 0
@@ -420,10 +421,10 @@ Calculate descriptive statistics for dependent COVID-19 rate and independent soc
 ```{r descriptive-statistics}
 acs_covid_stats <- acs_covid %>%
   st_drop_geometry() %>%
-  select(covid_rate, contains("pct")) %>%
+  select(covid_rate, contains("pct")) %>%                                       #Selects all the generated PwD subgroup variable columns
   stat.desc(norm = TRUE) %>%
   round(2) %>%
-  t() %>%
+  t() %>%                                                                       #What does t() do?
   as.data.frame() %>%
   select(min, max, mean, SD = std.dev, ShapiroWilk = normtest.W, p = normtest.p)
 

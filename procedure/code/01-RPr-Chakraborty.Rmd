@@ -1,6 +1,6 @@
 ---
 title: "Reproduction of Chakraborty 2021: An intracategorical analysis of COVID-19 and people with disabilities"
-author: "Joseph Holler, Junyi Zhou, Peter Kedron, Drew An-Pham, Derrick Burt"
+author: "Joseph Holler, Junyi Zhou, Peter Kedron, Drew An-Pham, Derrick Burt, William Procter"
 date: "`r Sys.Date()`"
 output: pdf_document
 editor_options:
@@ -210,13 +210,13 @@ state <- get_acs(
 )
 
 # Save query results
-saveRDS(acs, here("data", "raw", "public", "acs.RDS"))
+saveRDS(acs, here("data", "raw", "public", "acs.RDS"))          #file path of where to store in our directory
 saveRDS(acs_pov, here("data", "raw", "public", "acs_pov.RDS"))
 saveRDS(state, here("data", "raw", "public", "state.RDS"))
 ```
 
 ```{r load-acs}
-acs <- readRDS(here("data", "raw", "public", "acs.RDS"))
+acs <- readRDS(here("data", "raw", "public", "acs.RDS"))        #store as data and load into project
 acs_pov <- readRDS(here("data", "raw", "public", "acs_pov.RDS"))
 state <- readRDS(here("data", "raw", "public", "state.RDS"))
 ```
@@ -229,7 +229,7 @@ Therefore, join the poverty data to the other data using the GEOID (workflow ste
 Also transform the ACS geographic data into Contiguous USA Albers Equal Area projection and fix geometry errors.
 
 ```{r filter-join-acs}
-# Remove Alaska, Hawaii & Puerto Rico,
+# Overwrite acs to emove Alaska, Hawaii & Puerto Rico,
 # transform coordinate system and fix geometries
 acs <- filter(acs, !STATEFP %in% c("02", "15", "72")) %>%
   st_transform(5070) %>%
@@ -1875,8 +1875,6 @@ tm_gee_weights
 
 # re
 ```
-
-
 
 ```{r save-figures, eval = F}
 # save figures as image files

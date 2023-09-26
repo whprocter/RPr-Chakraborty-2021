@@ -433,10 +433,10 @@ acs_covid_stats <- acs_covid %>%
   round(2) %>%
   t() %>%                                                                       #What does t() do?
   as.data.frame() %>%
-  select(min, max, mean, SD = std.dev, ShapiroWilk = normtest.W, p = normtest.p)
+  select(min, max, mean, SD = std.dev, ShapiroWilk = normtest.W, p = normtest.p)#Selects all the summary statistics for table
 
 acs_covid_stats %>%
-  kable(caption = "Reproduced Descriptive Statistics",
+  kable(caption = "Reproduced Descriptive Statistics",                          #Generates Table 1
         align = "c") %>%
   column_spec(2:6, width_min = "5em") %>%
   column_spec(7, width_min = "2em") %>%
@@ -462,7 +462,7 @@ table1 <- read.csv(here("data", "raw", "public", "chakraborty", "table1.csv"))
 rm(acs_covid_stats)
 ```
 
-The descriptive statistics are identical, except that the original study seems to have rounded the COVID-19 statistics to zero decimal places.
+The descriptive statistics are identical, except that the original study seems to have rounded the COVID-19 statistics to zero decimal places. **Great point here**
 
 # Analytical methods
 
@@ -501,6 +501,8 @@ pearsons_r %>%
 Compare the reproduced Pearson's *r* correlation coefficients to the original study's Pearson's *r* correlation coefficients.
 Stars indicates the significance level with two stars for `p < 0.01` and one star for `p < 0.05`.
 Correlation difference `rp_r_diff` is calculated between the reproduction study `rp_r` and original study `or_r` as `rp_r_diff = rp_r - or_r` Direction difference `rp_dir_diff` is calculated as `(rp_r > 0) - (or_r > 0)`, giving `0` if both coefficients have the same direction, `1` if the reproduction is positive and the original is negative, and `-1` if the reproduction is negative but the original is positive.
+
+**I AM CONFUSED HERE**
 
 ```{r compare-pearsons-correlation}
 # calculate number of significance stars at p < 0.01 and p < 0.05 levels.
@@ -582,7 +584,7 @@ original_gee %>%
 ```
 
 We found that 13 counties had incorrect COVID-19 incidence scores, and the scores seem to be transposed from other counties, such that the overall descriptive statistics were accurate but the correlation coefficients were inaccurate.
-This finding implies that subsequent analyses using the COVID-19 Incidence rate will be slightly different and more accurate in this reproduction study than in the original study.
+This finding implies that subsequent analyses using the COVID-19 Incidence rate will be slightly different and more accurate in this reproduction study than in the original study.  **WOW, CRAZY THAT THE INCIDENCE SCORES WERE INCORRECT.  HOW DID YOU THINK TO CHECK?**
 
 **Unplanned deviation for reproduction:** Join the original author's Incidence data into our reproduction data frame so that we can later test for sensitivity to this error.
 Then report any counties for which the reproduced COVID incidence rate differs from the original author's COVID incidence rate.

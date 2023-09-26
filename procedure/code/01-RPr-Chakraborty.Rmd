@@ -12,6 +12,13 @@ knit: (function(inputFile, encoding) {
 
 Version 2.0 \| First Created July 7, 2021 \| Updated June 26, 2023
 
+This is a test to see if everything syncs.
+
+What am I doing?
+
+Who knows.
+
+
 # Abstract
 
 Chakraborty (2021) investigates the relationships between COVID-19 rates and demographic characteristics of people with disabilities by county in the continental United States.

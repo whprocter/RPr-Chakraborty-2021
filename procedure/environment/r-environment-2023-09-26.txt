@@ -19,4 +19,6 @@ other attached packages:
 [1] here_1.0.1      groundhog_3.1.1
 
 loaded via a namespace (and not attached):
-[1] compiler_4.3.1  rprojroot_2.0.3 parallel_4.3.1  tools_4.3.1     knitr_1.44      xfun_0.40      
+ [1] compiler_4.3.1    fastmap_1.1.1     rprojroot_2.0.3   cli_3.6.1         parallel_4.3.1    htmltools_0.5.6  
+ [7] tools_4.3.1       rstudioapi_0.15.0 yaml_2.3.7        rmarkdown_2.25    knitr_1.44        xfun_0.40        
+[13] digest_0.6.33     rlang_1.1.1       evaluate_0.21    

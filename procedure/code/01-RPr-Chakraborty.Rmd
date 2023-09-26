@@ -18,6 +18,13 @@ What am I doing?
 
 Who knows.
 
+Experimenting with a different possible research decision, and evaluating how that changes the outcome
+
+Identify a part of the study where it would be good to have another map or visualization, and interpreting it
+
+Catch any errors and fix them?
+
+Is any of the code inefficient?
 
 # Abstract
 

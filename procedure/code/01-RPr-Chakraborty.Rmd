@@ -751,7 +751,7 @@ covid_geo <- covid_table %>%
 # calculate expected cases with one strata
 expected.cases <- expected(covid_table$pop, covid_table$cases, 1)
 
-# Kulldorff spatial scan statistic
+# Kulldorff spatial scan statistic                                        ####I CANNOT GET THIS TO RUN
 covid_kulldorff <- kulldorff(
   geo = covid_geo,
   cases = covid_table$cases,

@@ -9,22 +9,26 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+# Planned revisions to reproduction of ....
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Author: Will Procter
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+## Analysis
 
-```{r cars}
-summary(cars)
-```
+Enumerate and justify changes to analytical plan here
+First, I plan to revise the discussion at the end of the study into a cogent conclusion section that synthesizes my thoughts with those of prior authors.
 
-## Including Plots
+Second, I plan to fix the format on the "missing data" section table format so that the table does not run off the side of the page.
 
-You can also embed plots, for example:
+Third, I plan to fix the color ramp of the last map so that it covers the full range of oranges --> **Map each country's weight in GEE model**
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
+Fourth, I will overall break the more complex sections into intermediary steps in the name of clarity
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Results
+
+3) I changed the midpoint value for the map from 0 to 0.5 --> adds more contrast and extends the orange color ramp
+
+## Discussion
+
+Describe how you will interpret the results of your changes here.
+For example, in hypothetical terms, if my new/revised map shows ---, it will mean that ---.

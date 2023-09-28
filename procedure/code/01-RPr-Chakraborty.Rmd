@@ -366,8 +366,8 @@ rm(acs, acs_derived, covid)                                                     
 
 **Unplanned deviation for reproduction**: There is one county with missing disability and poverty data.
 This was not mentioned in the original study or in our pre-analyis plan.
-However, we replace the missing data with zeros, producing results identical to Chakraborty's. **WHAT IS THS JUSTIFICATION FOR THIS? WHY NOT REMOVE THE COUNTY?**
-
+However, we replace the missing data with zeros, producing results identical to Chakraborty's.
+**WHAT IS THS JUSTIFICATION FOR THIS? WHY NOT REMOVE THE COUNTY?**
 
 ```{r missing data}
 # county with missing data
@@ -469,7 +469,8 @@ table1 <- read.csv(here("data", "raw", "public", "chakraborty", "table1.csv"))
 rm(acs_covid_stats)
 ```
 
-The descriptive statistics are identical, except that the original study seems to have rounded the COVID-19 statistics to zero decimal places. **Great point here**
+The descriptive statistics are identical, except that the original study seems to have rounded the COVID-19 statistics to zero decimal places.
+**Great point here**
 
 # Analytical methods
 
@@ -591,7 +592,8 @@ original_gee %>%
 ```
 
 We found that 13 counties had incorrect COVID-19 incidence scores, and the scores seem to be transposed from other counties, such that the overall descriptive statistics were accurate but the correlation coefficients were inaccurate.
-This finding implies that subsequent analyses using the COVID-19 Incidence rate will be slightly different and more accurate in this reproduction study than in the original study.  **WOW, CRAZY THAT THE INCIDENCE SCORES WERE INCORRECT.  HOW DID YOU THINK TO CHECK?**
+This finding implies that subsequent analyses using the COVID-19 Incidence rate will be slightly different and more accurate in this reproduction study than in the original study.
+**WOW, CRAZY THAT THE INCIDENCE SCORES WERE INCORRECT. HOW DID YOU THINK TO CHECK?**
 
 **Unplanned deviation for reproduction:** Join the original author's Incidence data into our reproduction data frame so that we can later test for sensitivity to this error.
 Then report any counties for which the reproduced COVID incidence rate differs from the original author's COVID incidence rate.
@@ -1499,14 +1501,29 @@ gee_diff <-
     select(starts_with("ZPD"))) %>%
   round(digits = 3)
 
-# print results
-# this would be better as a table
-cat("Summary of difference between reproduction independent variables and original independent variables")
-cat("\n")
-cat("Mean:\n")
-colMeans(gee_diff) %>% round(digits = 3)
-cat("\nStandard deviation:\n")
-apply(gee_diff, 2, sd) %>% round(digits = 3)
+# I changed this section to report in a table, instead of printing
+
+# calculate mean and sd for the normalize difference values
+mean_diff <- colMeans(gee_diff) %>%
+  round(digits = 3)
+
+sd_diff <- apply(gee_diff, 2, sd) %>%
+  round(digits = 3)
+
+# create a data frame for the table
+summary_table <- data.frame(
+  Variable = colnames(gee_diff),
+  Mean = mean_diff,
+  `Standard Deviation` = sd_diff)
+
+
+kable(summary_table, format = "html", col.names = c("Variable", "Mean", "SD"), align = c("c", "c", "c"), row.names = FALSE,
+      caption = "Summary of difference between reproduction independent variables and original independent variables") %>%
+  column_spec(1, width_min = "5em") %>%
+  column_spec(2, width_min = "5em") %>%
+  column_spec(3, width_min = "5em") %>%
+  kable_styling(full_width = FALSE, row_label_position = "c")
+
 ```
 
 When we had filtered for COVID rates \> 0 first and then z-score standardized second, the means of differences ranged from -0.012 to 0.004, and standard deviations of differences ranged from 0.000 to 0.016.
@@ -1875,7 +1892,7 @@ tm_gee_weights <- tm_shape(gee_resid) +
     lwd = 0.2,
     palette = "Oranges",
     legend.hist = FALSE,
-    midpoint = 0
+    midpoint = .5
   ) +
   tm_shape(state) +
     tm_borders("grey", lwd = .5) +

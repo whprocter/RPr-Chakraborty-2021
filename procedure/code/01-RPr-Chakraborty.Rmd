@@ -375,10 +375,11 @@ missing_data_county <- acs_covid %>%
   filter(is.na(bpov_pct)) %>%
   st_drop_geometry()                    #Identify the county with N/A data     
 
-transposed_data <- missing_data_county %>%
-  gather(key = "Variable", value= "Value", -County)
+transposed_data <- as.data.frame(t(missing_data_county))
 
-kable(transposed_data, format = "html", row.names = FALSE)
+kable(transposed_data, format = "html", row.names = TRUE, col.names = "Missing County") %>%
+  kable_styling(full_width = FALSE) %>%
+  row_spec(0, bold = TRUE)
 
 # replace NA with 0 for missing data
 acs_covid[is.na(acs_covid$bpov_pct), ]$bpov_pct <- 0

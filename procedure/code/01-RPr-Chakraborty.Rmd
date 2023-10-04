@@ -934,8 +934,8 @@ breaks <- c(-Inf, 1, 2, 3, 4, 5, Inf)
 
 acs_covid <- acs_covid %>%
   mutate(
-    cluster_class = ifelse(is.na(clusterID), 1, cut(rr_cluster, breaks, labels = FALSE)),
-    loc_class = cut(rr_loc, breaks, labels = FALSE)
+    cluster_class = ifelse(is.na(clusterID), 1, cut(rr_cluster, breaks, labels = FALSE)), #cluster RR based on Spatial Epi Kuldorff
+    loc_class = cut(rr_loc, breaks, labels = FALSE) #local RR based on Spatial Epi Kulddorff
   )
 ```
 
@@ -1381,7 +1381,7 @@ The maps and crosstabulation above indicate that there are important differences
 We summarize our understanding of the computational differences for default settings below, based on close examination of our software outputs, technical documentation for SaTScan, and the documentation and code repository for SpatialEpi.
 
 |                          |      SaTScan Hierarchical      |            SaTScan GINI            |                  SpatialEpi                  |
-|:---------------:|:---------------:|:---------------:|:-------------------:|
+|:---------------:|:---------------:|:---------------:|:------------------:|
 |     possible shapes      |  circle (default) or ellipse   |    circle (default) or ellipse     |                    circle                    |
 | possible cluster centers | locations with rates \> normal |   locations with rates \> normal   |                all locations                 |
 |   maximum cluster size   |          50% of cases          | varies, not exceeding 50% of cases |              50% of population               |
@@ -1734,9 +1734,9 @@ gee_rp_clus_rpdep$coefficients %>%
   kable_styling()
 ```
 
-### TEST: Basic (6) Relative Risk Clusters and Fixed COVID-19 Rate.  Cluster Relative Risk Scores - Spatial EPI
+### TEST: Basic (6) Relative Risk Clusters and Fixed COVID-19 Rate. Cluster Relative Risk Scores - Spatial EPI
 
-Calculate GEE models with: - Clustering: SaTScan cluster centers - Dependent variable: fixed COVID-19 incidence (fixed errors).
+Calculate GEE models with: - Clustering: Six Spatial EPI RR Cluster IDs - Dependent variable: fixed COVID-19 incidence (fixed errors).
 
 ```{r gee-original-clusters-original-incidence}
 gee_spatialepi_RR_clusters <- gee_data %>% onegee(
@@ -1744,12 +1744,12 @@ gee_spatialepi_RR_clusters <- gee_data %>% onegee(
                     id = gee_data$cluster_class,
                     term_names = table2$term)
 gee_spatialepi_RR_clusters$coefficients %>%
-  kable(caption = "Basic 6 RR Cluster IDs (from Spatial Epi?) and Fixed COVID-19 Incidence",
+  kable(caption = "Basic 6 RR Cluster IDs (from Spatial Epi) and Fixed COVID-19 Incidence",
         align = "c") %>%
   kable_styling()
 ```
 
-### TEST: State Clusters and Fixed COVID-19 Rate.  
+### TEST: State Clusters and Fixed COVID-19 Rate.
 
 Calculate GEE models with: - Clustering: States - Dependent variable: fixed COVID-19 incidence (fixed errors).
 
@@ -1763,7 +1763,6 @@ gee_state_clusters$coefficients %>%
         align = "c") %>%
   kable_styling()
 ```
-
 
 ### Compare GEE results
 
@@ -1813,7 +1812,7 @@ geewhisker_fig
 rm(t2whisker)
 ```
 
-The figure above illustrates five model variations, starting with the results published in the original study.
+The figure above illustrates seven model variations, starting with the results published in the original study.
 The next two models make incremental adjustments to the research design and are most compatible with the goals of a reproduction study.
 
 The greatest differences were produced using the same input data in different computational environments, caused by switching the computational environment from SPSS to geepack in R.
@@ -1832,6 +1831,11 @@ The Asian and Age 5-17 coefficients also remained just above 0.
 All of these categories of people with disabilities would be considered intersectional with factors of vulnerability.
 Conversely, some robustly negative coefficients indicate people with disabilities intersecting with non-vulnerable identities, such as white, Non-Hispanic White, Above poverty level, and Male.
 Counter-intuitively, the two coefficients for elderly people with disability were also robustly negative.
+
+In this third iteration of the study, I was curious how results would vary if the clustering criteria used in the GEE model was reduced into just state clusters and just relative risk score (from Spatial Epi) clusters.
+The original study defined clusters in terms of these two variables, but I was curious on the intermediary steps of how clustering based on a single variable would impact the GEE results.
+I was not expecting much, but to my surprise, the 95% confidence intervals of the Relative Risk Clusters and the State Fips Code Clusters are roughly in line with the prior reproduced results.
+Compared to the five other GEEs (which all used the combined State-RR score), these two single-variable clustering GEEs had similar magnitude Betas that were similarly statistically significant.
 
 ### Interpret GEE Model
 

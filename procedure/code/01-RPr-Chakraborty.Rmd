@@ -1381,7 +1381,7 @@ The maps and crosstabulation above indicate that there are important differences
 We summarize our understanding of the computational differences for default settings below, based on close examination of our software outputs, technical documentation for SaTScan, and the documentation and code repository for SpatialEpi.
 
 |                          |      SaTScan Hierarchical      |            SaTScan GINI            |                  SpatialEpi                  |
-|:---------------:|:---------------:|:---------------:|:--------------------:|
+|:---------------:|:---------------:|:---------------:|:-------------------:|
 |     possible shapes      |  circle (default) or ellipse   |    circle (default) or ellipse     |                    circle                    |
 | possible cluster centers | locations with rates \> normal |   locations with rates \> normal   |                all locations                 |
 |   maximum cluster size   |          50% of cases          | varies, not exceeding 50% of cases |              50% of population               |
@@ -1734,6 +1734,37 @@ gee_rp_clus_rpdep$coefficients %>%
   kable_styling()
 ```
 
+### TEST: Basic (6) Relative Risk Clusters and Fixed COVID-19 Rate.  Cluster Relative Risk Scores - Spatial EPI
+
+Calculate GEE models with: - Clustering: SaTScan cluster centers - Dependent variable: fixed COVID-19 incidence (fixed errors).
+
+```{r gee-original-clusters-original-incidence}
+gee_spatialepi_RR_clusters <- gee_data %>% onegee(
+                    dep_var = "covid_rate",
+                    id = gee_data$cluster_class,
+                    term_names = table2$term)
+gee_spatialepi_RR_clusters$coefficients %>%
+  kable(caption = "Basic 6 RR Cluster IDs (from Spatial Epi?) and Fixed COVID-19 Incidence",
+        align = "c") %>%
+  kable_styling()
+```
+
+### TEST: State Clusters and Fixed COVID-19 Rate.  
+
+Calculate GEE models with: - Clustering: States - Dependent variable: fixed COVID-19 incidence (fixed errors).
+
+```{r gee-original-clusters-original-incidence}
+gee_state_clusters <- gee_data %>% onegee(
+                    dep_var = "covid_rate",
+                    id = gee_data$statefp,
+                    term_names = table2$term)
+gee_state_clusters$coefficients %>%
+  kable(caption = "State Clusters and Fixed COVID-19 Incidence",
+        align = "c") %>%
+  kable_styling()
+```
+
+
 ### Compare GEE results
 
 **Unplanned deviation for reanalysis**: Generate dot-and-whisker plot of coefficients for each of the model variations for efficient visual comparison of coefficients across each model.
@@ -1753,8 +1784,12 @@ geewhisker <- bind_rows(
   mutate(gee_gini_clus_rpdep$coefficients,
          model = "SaTScan GINI-Optimized Clusters"),
   mutate(gee_rp_clus_rpdep$coefficients,
-         model = "SpatialEpi Clusters")) %>%
-  select(1:5, "model")
+         model = "SpatialEpi Clusters"),
+  mutate(gee_spatialepi_RR_clusters$coefficients,
+         model = "Relative Risk Clusters"),
+  mutate(gee_state_clusters$coefficients,
+         model = "State Fips Cde Clusters")) %>%
+  select(1:7, "model")
 
 geewhisker <- bind_rows(t2whisker, geewhisker) %>%
   filter(!grepl("intercept", term))
@@ -2005,7 +2040,6 @@ We re-classified the GEE clustering IDs based on state and cluster relative risk
 Upon discovering different results in all of our reproduction GEE models compared to the original study, we added new models to assess the extent to which the different computational environment was causing differences in our results.
 We therefore ran another set of the five GEE models using data provided by the original author, expecting to find identical results.
 
-
 # Emily's Discussion
 
 Our reproduction of the original study was partially successful, leading to similar, but inexact results compared to the original study.
@@ -2103,10 +2137,7 @@ We reiterate Chakraborty's carefully limited interpretation emphasizing county-l
 Interpretation of the results were based on aggregate statistics at the county level and on statistical methods which produce approximate estimates, not inferences.
 Further work is needed to reliably infer relationships between minority PwDs and COVID-19 morbidity and mortality, especially at finer geographic scales.
 
-
-
 # Conclusion
-
 
 ### Rationale for updated report
 

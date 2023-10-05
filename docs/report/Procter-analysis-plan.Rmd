@@ -9,26 +9,32 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Planned revisions to reproduction of ....
+# Planned revisions to reproduction of Chakraborty (2020).
 
 Author: Will Procter
 
 ## Analysis
 
-Enumerate and justify changes to analytical plan here
-First, I plan to revise the discussion at the end of the study into a cogent conclusion section that synthesizes my thoughts with those of prior authors.
+First, I plan to revise the discussion at the end of the study into cogent discussion and conclusion section that synthesizes my thoughts with those of prior authors.
 
-Second, I plan to fix the format on the "missing data" section table format so that the table does not run off the side of the page.
+Second, I plan to fix the format on the "missing data" section table format so that the table does not run off the side of the page. Additionally, instead of printed tables, I will use Kable to create a actual table structures.
 
 Third, I plan to fix the color ramp of the last map so that it covers the full range of oranges --> **Map each country's weight in GEE model**
 
-Fourth, I will overall break the more complex sections into intermediary steps in the name of clarity
+Fourth, I will overall break the more complex sections into intermediary steps in the name of clarity...namely the GEE model that uses two-variable clustering. I will see what happens when you do this with just single-variable clustering (ie. just state and just relative risk.)
 
 ## Results
 
-3) I changed the midpoint value for the map from 0 to 0.5 --> adds more contrast and extends the orange color ramp
+1) There will be a better organized discussion and conclusion section at the end of the report.
+
+2) The missing data section will appear as a transposed table.  Other sections with "printed" tables will be displayed as Kable tables.  
+
+3) I will change the midpoint value for the map from 0 to 0.5 --> adds more contrast and extends the orange color ramp on the map that it produces.
+
+4) I will include regression tables for 2 more GEEs (one for state clusters, one for relative risk clusters).  The coefficients of these new GEES, as well as their confidence intervals, will be added to the box and whisker plot to show how they compare to the other GEE models.
 
 ## Discussion
 
-Describe how you will interpret the results of your changes here.
-For example, in hypothetical terms, if my new/revised map shows ---, it will mean that ---.
+Most of this stuff is just minor tweaks and aesthetics, and doesn't have any major implications beyond increased usability/readability.  
+
+For (4) specifically, however, if the regression tables for the two new single-variable clustering GEEs are close to the two-variable clustering GEEs, this will likely imply that the correlation problem within states and between counties may not be as significant as once thought.

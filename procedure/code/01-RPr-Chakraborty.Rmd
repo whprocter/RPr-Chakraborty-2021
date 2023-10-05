@@ -1730,7 +1730,7 @@ gee_rp_clus_rpdep$coefficients %>%
 
 Calculate GEE models with: - Clustering: Six Spatial EPI RR Cluster IDs - Dependent variable: fixed COVID-19 incidence (fixed errors).
 
-```{r gee-original-clusters-original-incidence}
+```{r gee-spatialepi_RR-clusters-corrected-incidence}
 gee_spatialepi_RR_clusters <- gee_data %>% onegee(
                     dep_var = "covid_rate",
                     id = gee_data$cluster_class,
@@ -1745,7 +1745,7 @@ gee_spatialepi_RR_clusters$coefficients %>%
 
 Calculate GEE models with: - Clustering: States - Dependent variable: fixed COVID-19 incidence (fixed errors).
 
-```{r gee-original-clusters-original-incidence}
+```{r gee-state-clusters-corrected-incidence}
 gee_state_clusters <- gee_data %>% onegee(
                     dep_var = "covid_rate",
                     id = gee_data$statefp,

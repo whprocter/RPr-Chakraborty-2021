@@ -12,14 +12,6 @@ knit: (function(inputFile, encoding) {
 
 Version 2.0 \| First Created July 7, 2021 \| Updated June 26, 2023
 
-This is a test to see if everything syncs.
-
-What am I doing?
-
-Who knows.
-
-Experimenting with a different possible research decision, and evaluating how that changes the outcome
-
 Identify a part of the study where it would be good to have another map or visualization, and interpreting it
 
 Catch any errors and fix them?
@@ -1734,7 +1726,7 @@ gee_rp_clus_rpdep$coefficients %>%
   kable_styling()
 ```
 
-### TEST: Basic (6) Relative Risk Clusters and Fixed COVID-19 Rate. Cluster Relative Risk Scores - Spatial EPI
+### Planned Addition for Reanalysis: Basic (6) Relative Risk Clusters and Fixed COVID-19 Rate. Cluster Relative Risk Scores - Spatial EPI
 
 Calculate GEE models with: - Clustering: Six Spatial EPI RR Cluster IDs - Dependent variable: fixed COVID-19 incidence (fixed errors).
 
@@ -1749,7 +1741,7 @@ gee_spatialepi_RR_clusters$coefficients %>%
   kable_styling()
 ```
 
-### TEST: State Clusters and Fixed COVID-19 Rate.
+### Planned Addition for Reanalysis: State Clusters and Fixed COVID-19 Rate.
 
 Calculate GEE models with: - Clustering: States - Dependent variable: fixed COVID-19 incidence (fixed errors).
 
@@ -2044,10 +2036,10 @@ We re-classified the GEE clustering IDs based on state and cluster relative risk
 Upon discovering different results in all of our reproduction GEE models compared to the original study, we added new models to assess the extent to which the different computational environment was causing differences in our results.
 We therefore ran another set of the five GEE models using data provided by the original author, expecting to find identical results.
 
-# Emily's Discussion
+# Discussion
 
 Our reproduction of the original study was partially successful, leading to similar, but inexact results compared to the original study.
-A portion of the inexactitude may be attributed to differences in the computational environments.
+A portion of the inexactitude may be attributed to differences in the computational environments (ie. SaTScan vs. Spatial Epi).
 However, we have also reanalyzed the study and tested its robustness by changing some research parameters.
 Our results suggest support for the conclusions of the original study, but also emphasize the importance of reproduction studies to critically review the full details of the research design, to evaluate internal validity, and to test for uncertainty and robustness to key parameters.
 
@@ -2064,7 +2056,7 @@ The original study used Pearson's correlation to test bivariate relationship bet
 Our reanalysis of the correlations generally found identical directions and increased magnitudes, confirming the bivariate correlations and significance levels of most of the socio-demographic subcategories.
 However, biological sex may not be correlated with COVID-19 incidence rates, as the percentage of females with disabilities changes direction and significance.
 
-The Kulldorff spatial scan statistic varied significantly between the original study and our reproduction and re-analysis with regards to selection of secondary clusters, interpretation of clusters, and relative risk scores.
+The Kulldorff spatial scan statistic varied significantly between the original study (using SatScan) and our reproduction and re-analysis (using open source SpatialEpi) with regards to selection of secondary clusters, interpretation of clusters, and relative risk scores.
 SatScan and SpatialEpi identify the same most likely cluster, but different sets of secondary clusters.
 They also employ slightly different distance calculations, where SatScan calculates a great circle spherical distance and SpatialEpi approximates a kilometer grid based on simplified conversions of latitude and longitude degrees into a planar grid using kilometer units.
 SaTScan uses GINI statistics to select secondary clusters which maximize the difference between the population within clusters and the population outside of clusters, allowing for geographic overlap and finding 96 total clusters.
@@ -2074,7 +2066,7 @@ This difference of parameters and computational environment explains the two dif
 The different sets of secondary clusters largely agree in terms of the most likely cluster in a region and diverge in terms of overlapping, small, and less likely clusters.
 
 The original study classified COVID risk using a local relative risk score for the county at the center of each cluster (Figure 4).
-Considering the relatively small number of clusters (102) compared to counties (3108), this method implies that the majority of counties in each state are classified as one low-risk cluster for the GEE analysis, and the remaining 53 clusters were composed of just a few counties at the centers of various COVID hotspots.
+Considering the relatively small number of clusters (102) compared to counties (3108), this method implies that the majority of counties in each state are classified as single low-risk clusters for the GEE analysis, and the remaining 53 clusters were composed of just a few counties at the centers of various COVID hotspots.
 When we extended the interpretation of clusters to use the local relative risk score of any county within a cluster (Figure 5), we find significantly more variance in COVID risk within states, resulting in 139 unique GEE clusters.
 However, this conceptualization apparently created GEE clusters defined in part by an ordinal classification of the dependent variable -- COVID incidence.
 Considering that the original motivation for using GEE models was to account for spatial dependence within states (accounting for COVID response policy) and within COVID hotspots (accounting for the uneven geographic diffusion of the pandemic).
@@ -2086,7 +2078,7 @@ Our analysis of COVID-19 clusters in the context of controlling for spatial depe
 These include inconsistent methods for determining secondary clusters, limitation to circular or ellipsoidal cluster shapes, inclusion of single-county clusters, and choosing a method to control for spatial dependence in COVID 19 risk without controlling for too much of the variance in the dependent variable.
 Ideally, we would have liked to use a GINI-based secondary cluster detection to classify counties by their maximum cluster-based relative risk score, but this particular conceptualization is not possible in available R packages.
 
-In the **third part** of our reproduction analysis, the results from each the five GEE models were largely consistent with Chakraborty's, suggesting robustness to modeling decisions with regards to GEE clusters.
+In the **third part** of our reproduction analysis, the results from each of the five (plus two single-variable clustering models) GEE models were largely consistent with Chakraborty's, suggesting robustness to modeling decisions with regards to GEE clusters.
 However, a few independent variables exhibited instability across models, suggesting weak or spurious relationships.
 We ultimately modeled three different scenarios: 1.
 We reproduced the original analysis with the original data while changing only the computational environment to geepack in R.
@@ -2105,7 +2097,7 @@ The original model excludes most counties from COVID-19 hotspots, assigning them
 Conversely, the reanalyzed cluster-based model includes most counties in COVID-19 hotspots at the same risk level.
 The results are similar because in both scenarios the majority of counties in each state are aggregated into the same cluster.
 
-Comparing across each version of the model, we observed that most variables exhibit stability in the direction and magnitude of the coefficients.
+Comparing across each version of the model, we observed that most variables exhibit stability in the direction and magnitude of the coefficients, even in the two additional models with single variable clustering mechanisms (just state and just RR scores).
 However, some variables are less stable -- especially the black and other race categories, Hispanic ethnicity, and some age groups less affected by severe COVID-19 cases (18-34 and 35-64).
 Therefore, these variables are more sensitive to the design of GEE clusters, warranting further investigation to evaluate the internal validity of these relationships with regard to the model assumptions of GEE.
 
@@ -2123,6 +2115,8 @@ We quickly diagnosed whether the clustering method was significantly skewing the
 Fortunately, we found the GLM coefficients to be consistent, and in most cases stronger, than the GEE model coefficients.
 Future replications of this research should consider selecting an alternative inferential statistical model which explicitly accounts for spatial dependence.
 
+# Conclusion
+
 With regards to the **overall conclusions** and **research design**, we agree with the original author's cautious interpretation emphasizing "county-level associations" and the need for "additional data and analysis".
 There are at least five sources of uncertainty in this study: ecological fallacy, scale dependency, modifiable areal unit problem, variable measurement, and spatial dependency.
 There is a risk of ecological fallacy with this research design, whereby county-level statistics for the whole population should not be interpreted as definitive inferential proof of individual-level relationships, especially for populations comprising no more than one third of any county.
@@ -2136,18 +2130,25 @@ The study accounts for spatial dependency using the GEE models to cluster county
 However, the GEE method simply uses correlation matrices to weight each county observation according to the number of observations in its cluster and the overall within-cluster correlation of standard errors.
 The spatial dependence between counties in different clusters is not modelled, even if the counties are adjacent to each other.
 
-In sum, although some of our results differed from Chakraborty's because of differences in analytical methods, conceptualizations, and computational environments, our reproduction results still suggest that PwDs are likely to experience multiple jeopardy based on the convergence of their disability, racial/ethnic minority, and poverty status.
+In sum, although some of our results differed from Chakraborty's because of differences in analytical methods, conceptualizations, and computational environments, our reproduction results still generally corroborate the findings of the original study suggest that PwDs are likely to experience multiple jeopardy based on the convergence of their disability, racial/ethnic minority, and poverty status.
 We reiterate Chakraborty's carefully limited interpretation emphasizing county-level relationships and the need for additional data and research, because the estimated relationship at the county level may not hold at the individual level.
 Interpretation of the results were based on aggregate statistics at the county level and on statistical methods which produce approximate estimates, not inferences.
 Further work is needed to reliably infer relationships between minority PwDs and COVID-19 morbidity and mortality, especially at finer geographic scales.
-
-# Conclusion
+Further replication and reanalysis work would be beneficial on this topic to further test the robustness of Chakraborty's findings.
+Future versions could more thoroughly vary the structural criteria of how counties are clustered (ie. using variables beyond just state and relative risk statistics) to better account for inter-county and intra-state correlations in COVID-19 cases.
+Ideally, a package gets added to R in the future that provides GINI-based secondary cluster detection to classify counties by their maximum cluster-based relative risk score, which would allow us to more directly test results and compare to the SatScan software used in the original report.
 
 ### Rationale for updated report
 
 This is the **THIRD** version of our reproduction report.
 The first, registered at <https://doi.org/10.17605/OSF.IO/647EX> on July 22, 2022, represented our best knowledge of the study at that time.
 Subsequently, we improved our approaches to reproduction studies by revising pre-analysis plans and post-analysis reports into legible code RMarkdown documents.
-This change prompted us to re-order some content to flow more linearly with the sequencing required by code, and prompted us to digitize (if necessary) and import results from the original research into Rmarkdown for quantitative comparison to the reproduction study.
+The second change prompted us to re-order some content to flow more linearly with the sequencing required by code, and prompted us to digitize (if necessary) and import results from the original research into Rmarkdown for quantitative comparison to the reproduction study.
 These comparisons led to further insights and research into discrepancies between the original and reproduced Pearsons's correlations between various forms of the Kulldorff spatial scan statistic.
-We also discovered an improved method for comparing the results of generalized linear models by plotting all of the model results on a dot-wisker graph using the dotwhisker package.
+We also discovered an improved method for comparing the results of generalized linear models by plotting all of the model results on a dot-whisker graph using the dotwhisker package.
+This third version of the reproduction report accomplished several changes, most of which were aesthetic.
+First, many printed tables were converted to formal tables using Kable and Kable Extra.
+Second, specific sections (including the discussion and conclusion) were rearranged and moved within the report to improve readability, organization, and clarity.
+Third, several map visualization aesthetics were tweaked to better spread the color gradient and thus emphasize minimums and maximums.
+Fourth, I attempted to run two additional GEE analyses that utilized single variable clustering criteria instead of the "taken for granted" combination cluster IDs: clustering by just state and clustering by just relative risk score (from Spatial Epi).
+For this last step, I utilized the corrected (or fixed) COVID-19 incidence rate for both additional GEE models.

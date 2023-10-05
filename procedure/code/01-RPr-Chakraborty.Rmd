@@ -2,12 +2,12 @@
 title: "Reproduction of Chakraborty 2021: An intracategorical analysis of COVID-19 and people with disabilities"
 author: "Joseph Holler, Junyi Zhou, Peter Kedron, Drew An-Pham, Derrick Burt, William Procter"
 date: "`r Sys.Date()`"
-output: pdf_document
+output: html_document
 editor_options:
   markdown:
     wrap: sentence
 knit: (function(inputFile, encoding) {
-  rmarkdown::render(inputFile, encoding = encoding, output_dir = "../../docs/report") })
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "../../docs") })
 ---
 
 Version 2.0 \| First Created July 7, 2021 \| Updated June 26, 2023

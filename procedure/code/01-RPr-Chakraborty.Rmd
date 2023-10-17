@@ -1373,7 +1373,7 @@ The maps and crosstabulation above indicate that there are important differences
 We summarize our understanding of the computational differences for default settings below, based on close examination of our software outputs, technical documentation for SaTScan, and the documentation and code repository for SpatialEpi.
 
 |                          |      SaTScan Hierarchical      |            SaTScan GINI            |                  SpatialEpi                  |
-|:---------------:|:---------------:|:---------------:|:------------------:|
+|:----------------:|:----------------:|:----------------:|:------------------:|
 |     possible shapes      |  circle (default) or ellipse   |    circle (default) or ellipse     |                    circle                    |
 | possible cluster centers | locations with rates \> normal |   locations with rates \> normal   |                all locations                 |
 |   maximum cluster size   |          50% of cases          | varies, not exceeding 50% of cases |              50% of population               |

@@ -12,12 +12,6 @@ knit: (function(inputFile, encoding) {
 
 Version 2.0 \| First Created July 7, 2021 \| Updated June 26, 2023
 
-Identify a part of the study where it would be good to have another map or visualization, and interpreting it
-
-Catch any errors and fix them?
-
-Is any of the code inefficient?
-
 # Abstract
 
 Chakraborty (2021) investigates the relationships between COVID-19 rates and demographic characteristics of people with disabilities by county in the continental United States.
@@ -359,7 +353,8 @@ rm(acs, acs_derived, covid)                                                     
 **Unplanned deviation for reproduction**: There is one county with missing disability and poverty data.
 This was not mentioned in the original study or in our pre-analyis plan.
 However, we replace the missing data with zeros, producing results identical to Chakraborty's.
-**WHAT IS THS JUSTIFICATION FOR THIS? WHY NOT REMOVE THE COUNTY?**
+I assert that it is valid to substitute 0 for this missing poverty value, considering that the data might have been suppressed due to low counts.
+Removing the county from the analysis is also a justifiable approach, as long as it is similarly excluded from other data inputs.
 
 ```{r missing data}
 # county with missing data
@@ -1373,7 +1368,7 @@ The maps and crosstabulation above indicate that there are important differences
 We summarize our understanding of the computational differences for default settings below, based on close examination of our software outputs, technical documentation for SaTScan, and the documentation and code repository for SpatialEpi.
 
 |                          |      SaTScan Hierarchical      |            SaTScan GINI            |                  SpatialEpi                  |
-|:----------------:|:----------------:|:----------------:|:------------------:|
+|:----------------:|:----------------:|:----------------:|:-----------------:|
 |     possible shapes      |  circle (default) or ellipse   |    circle (default) or ellipse     |                    circle                    |
 | possible cluster centers | locations with rates \> normal |   locations with rates \> normal   |                all locations                 |
 |   maximum cluster size   |          50% of cases          | varies, not exceeding 50% of cases |              50% of population               |
@@ -1548,7 +1543,6 @@ gee_data <- read_sf(here("data", "derived", "public", "gee_data.gpkg"))
 
 ## GEE models
 
-The generalized estimating equation (GEE) models were used to test association between intra-categorical rates of disability and COVID-19 incidence rates while accounting for spatial clustering.
 A separate hypothesis was formulated for each type of subcategorization of PwDs, numbered H2.1 through H2.5 in Table 4.
 
 As specified by the author, "GEEs extend the generalized linear model to accommodate clustered data, in addition to relaxing several assumptions of traditional regression (i.e., normality)".
@@ -1824,10 +1818,19 @@ All of these categories of people with disabilities would be considered intersec
 Conversely, some robustly negative coefficients indicate people with disabilities intersecting with non-vulnerable identities, such as white, Non-Hispanic White, Above poverty level, and Male.
 Counter-intuitively, the two coefficients for elderly people with disability were also robustly negative.
 
-In this third iteration of the study, I was curious how results would vary if the clustering criteria used in the GEE model was reduced into just state clusters and just relative risk score (from Spatial Epi) clusters.
-The original study defined clusters in terms of these two variables, but I was curious on the intermediary steps of how clustering based on a single variable would impact the GEE results.
+In this third iteration of the study, I was curious how results would vary if the clustering criteria used in the GEE model was reduced into **just** state clusters and **just** relative risk score (from Spatial Epi) clusters.
+The original study defined clusters in terms of these two variables, but I was curious on the intermediary steps of how clustering based on a single variable (instead of two) would impact the GEE results.
 I was not expecting much, but to my surprise, the 95% confidence intervals of the Relative Risk Clusters and the State Fips Code Clusters are roughly in line with the prior reproduced results.
 Compared to the five other GEEs (which all used the combined State-RR score), these two single-variable clustering GEEs had similar magnitude Betas that were similarly statistically significant.
+Comparing the state clusters model to the relative risk model (the two additional models that I created), the state cluster criteria consistently had greater magnitudes and more uncertainty than the relative risk clusters.
+The greater uncertainty of the state clusters model is not unexpected, since the size of each state is different.
+Not all the states have the same geographic area, nor do they have the same demographic, socioeconomic, and capital characteristics.
+Additionally, I suspect that the consistently greater magnitude of the coefficients from the state clusters model is likely due to the fact that relative to each other, some states had incredibly high rates of COVID-19 incidence (ex. Louisiana) while others had incredibly low relative rates (ex. VT), which leads to increased magnitudes.
+However, this although this is purely hypothetical and I do not test this hypothesis.
+But ultimately, neither of my new models had much effect on the ultimate outcome of the models.
+
+The GEE models were used to test association between intracategorical rates of disability and COVID-19 incidence rates while accounting for spatial clustering of COVID-19 cases.
+Again, the aim of these GEE models is to control for spatial dependence, which refers to the degree of spatial autocorrelation between independently measured values observed in geographical space.
 
 ### Interpret GEE Model
 

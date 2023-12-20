@@ -37,4 +37,4 @@ Fourth, I will overall break the more complex sections into intermediary steps i
 
 Most of this stuff is just minor tweaks and aesthetics, and doesn't have any major implications beyond increased usability/readability.  
 
-For (4) specifically, however, if the regression tables for the two new single-variable clustering GEEs are close to the two-variable clustering GEEs, this will likely imply that the correlation problem within states and between counties may not be as significant as once thought.
+For (4) specifically, however, if the regression tables for the two new single-variable clustering GEEs are close to the two-variable clustering GEEs, this will likely imply that the correlation problem within states and between counties may not be as significant as once thought.  Additionally, if I GEE models are similar with this new clustering criteria, another possible explanation is that different sets of clusters are similarly good or similarly poor at controlling for correlation problems.

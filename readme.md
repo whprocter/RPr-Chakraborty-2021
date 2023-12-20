@@ -25,7 +25,7 @@ This study is a replication of:
 - Preregistration: https://doi.org/10.17605/OSF.IO/MJXHD
 - Publication: t.b.d.
 - Pre-analysis plan: [docs/report/preanalysis.pdf](docs/report/preanalysis.pdf)
-- Study report: [docs/report/report.pdf](docs/index.html)
+- Study report: [docs/report/report.pdf](docs/index.html) and [here for thee published report](https://whprocter.github.io/RPr-Chakraborty-2021/)
 - Computed R Markdown notebook: [docs/report/01-RPr-Chakraborty.pdf](docs/report/01-RPr-Chakraborty.pdf) or [docs/report/01-RPr-Chakraborty.html](docs/report/01-RPr-Chakraborty.html)
 
 ## Repository Contents
